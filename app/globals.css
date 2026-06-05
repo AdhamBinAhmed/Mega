@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #09090b;
+  --color-surface: #09090b;
+  --color-surface-raised: #111113;
+  --color-surface-hover: #27272a;
+  --color-muted: #52525b;
+  --color-subtle: #71717a;
+  --color-text: #a1a1aa;
+  --color-text-strong: #fafafa;
+  --color-accent: #ef4444;
+  --color-accent-soft: rgba(239, 68, 68, 0.3);
+}
+
+/* === PREMIUM GLASSMORPHISM + 60FPS MOTION === */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #09090b;
+  color: #fafafa;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism 3D Style */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+[data-theme="dark"] .glass {
+  background: rgba(15, 15, 15, 0.75);
+  border: 1px solid rgba(224, 89, 64, 0.2);
+}
+
+.glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--color-accent);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.glass-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(45deg, var(--color-accent), var(--color-coral), var(--color-gold));
+  z-index: -1;
+  filter: blur(12px);
+  opacity: 0.35;
+  border-radius: inherit;
+  transition: opacity 0.4s ease;
+}
+
+.glass:hover.glass-border::before {
+  opacity: 0.6;
+}
+
+/* Magnetic Hover Effect */
+.magnetic {
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Reveal Animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(80px);
+  transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+::selection {
+  background-color: #ef4444;
+  color: #fafafa;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track { background: #09090b; }
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
