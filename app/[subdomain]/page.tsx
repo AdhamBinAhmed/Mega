@@ -15,7 +15,7 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
     notFound();
   }
 
-  const profile = docSnap.data();
+  const profile = docSnap.data() as any;
   const theme = "dark"; // Defaulting profiles to dark theme for consistency
   const bgStyle = profile.backgroundStyle || "bg-grid";
 

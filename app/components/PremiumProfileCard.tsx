@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 
 // Define the shape of the profile data based on Firebase structure
@@ -20,7 +20,7 @@ interface Profile {
 
 export default function PremiumProfileCard({ profile, bgStyle }: { profile: Profile, bgStyle: string }) {
   // Animation variants for staggering children
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -31,7 +31,7 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
