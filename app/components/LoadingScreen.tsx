@@ -13,8 +13,8 @@ export default function LoadingScreen() {
     window.scrollTo(0, 0);
 
     // Progress counter logic
-    const duration = 2400;
-    const intervalTime = 40; // update every 40ms
+    const duration = 1200;
+    const intervalTime = 20; // update every 20ms
     const totalSteps = duration / intervalTime;
     let step = 0;
 

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source "./";
+@source "./[subdomain]";
 
 @theme {
   --color-ink: #09090b;

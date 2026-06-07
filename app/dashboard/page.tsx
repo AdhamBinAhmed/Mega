@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { collection, doc, setDoc, getDoc, query, where, getDocs } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// Firebase storage imports removed for Cloudinary
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import { db, storage, auth } from "../../lib/firebase";
+import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
@@ -25,6 +25,7 @@ export default function DashboardPage() {
     instagram: "",
     facebook: "",
     whatsapp: "",
+    gmail: "",
     backgroundStyle: "bg-grid", // default
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -46,7 +47,7 @@ export default function DashboardPage() {
         return;
       }
       setUser(currentUser);
-      
+
       try {
         const q = query(collection(db, "profiles"), where("uid", "==", currentUser.uid));
         const snapshot = await getDocs(q);
@@ -64,6 +65,7 @@ export default function DashboardPage() {
             instagram: data.instagram || "",
             facebook: data.facebook || "",
             whatsapp: data.whatsapp || "",
+            gmail: data.gmail || "",
             backgroundStyle: data.backgroundStyle || "bg-grid",
           });
           if (data.photoUrl) setImagePreview(data.photoUrl);
@@ -96,11 +98,11 @@ export default function DashboardPage() {
 
     // Basic sanitization for subdomain
     const cleanSubdomain = formData.subdomain.toLowerCase().replace(/[^a-z0-9-]/g, "");
-    
+
     setIsSubmitting(true);
     try {
       console.log("Starting Firebase write for:", cleanSubdomain);
-      
+
       if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
         throw new Error("Firebase API key is missing. Did you restart the server?");
       }
@@ -114,11 +116,23 @@ export default function DashboardPage() {
 
       let finalPhotoUrl = formData.photoUrl;
 
-      // Upload image to Firebase Storage if provided
+      // Upload image to Cloudinary if provided
       if (imageFile) {
-        const fileRef = ref(storage, `profile_pictures/${cleanSubdomain}_${Date.now()}`);
-        await uploadBytes(fileRef, imageFile);
-        finalPhotoUrl = await getDownloadURL(fileRef);
+        const uploadData = new FormData();
+        uploadData.append('file', imageFile);
+        uploadData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'my_preset');
+
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'my_cloud_name';
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: uploadData,
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to upload image to Cloudinary. Make sure your upload preset is set to unsigned.');
+        }
+        const data = await res.json();
+        finalPhotoUrl = data.secure_url;
       }
 
       // Add a 10-second timeout so it doesn't hang forever
@@ -137,7 +151,7 @@ export default function DashboardPage() {
         updatedAt: new Date().toISOString(),
       }, { merge: true });
 
-      const timeoutPromise = new Promise((_, reject) => 
+      const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Firebase write timed out (10s). Database might not be created or rules are blocking it.")), 10000)
       );
 
@@ -361,12 +375,19 @@ export default function DashboardPage() {
           margin: 0 auto 16px; display: block;
         }
 
+        .grid-2-col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+        }
+
         @media (max-width: 768px) {
           .content { padding: 100px 24px 60px; }
           .nav { padding: 0 20px; }
           .subdomain-group { flex-direction: column; align-items: stretch; }
           .subdomain-group .input { border-right: 1px solid var(--border2); }
           .subdomain-suffix { border-top: none; text-align: center; }
+          .grid-2-col { grid-template-columns: 1fr; gap: 16px; }
         }
       `}</style>
 
@@ -412,9 +433,9 @@ export default function DashboardPage() {
             <div className="form-group">
               <label className="label">Custom Subdomain</label>
               <div className="subdomain-group">
-                <input 
-                  type="text" className="input" name="subdomain" 
-                  placeholder="e.g. adham" value={formData.subdomain} onChange={handleChange} required 
+                <input
+                  type="text" className="input" name="subdomain"
+                  placeholder="e.g. adham" value={formData.subdomain} onChange={handleChange} required
                   disabled={isEditing}
                   style={isEditing ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                 />
@@ -424,23 +445,23 @@ export default function DashboardPage() {
 
             <div className="form-group">
               <label className="label">Full Name</label>
-              <input 
-                type="text" className="input" name="name" 
-                placeholder="John Doe" value={formData.name} onChange={handleChange} required 
+              <input
+                type="text" className="input" name="name"
+                placeholder="John Doe" value={formData.name} onChange={handleChange} required
               />
             </div>
 
             <div className="form-group">
               <label className="label">Role / Tagline</label>
-              <input 
-                type="text" className="input" name="role" 
-                placeholder="Frontend Developer" value={formData.role} onChange={handleChange} 
+              <input
+                type="text" className="input" name="role"
+                placeholder="Frontend Developer" value={formData.role} onChange={handleChange}
               />
             </div>
 
             <div className="form-group">
               <label className="label">Profile Photo</label>
-              <div 
+              <div
                 className={`dropzone ${isDragging ? "dragging" : ""}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -458,63 +479,71 @@ export default function DashboardPage() {
                     <span style={{ fontSize: "0.9rem" }}>Drag & drop an image, or click to browse</span>
                   </>
                 )}
-                <input 
-                  type="file" 
-                  id="fileInput" 
-                  accept="image/*" 
-                  style={{ display: "none" }} 
-                  onChange={handleFileChange} 
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
                 />
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <div className="form-group">
+              <label className="label">Gmail Address</label>
+              <input
+                type="email" className="input" name="gmail"
+                placeholder="your.email@gmail.com" value={formData.gmail} onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid-2-col">
               <div className="form-group">
                 <label className="label">Telegram Link</label>
-                <input 
-                  type="url" className="input" name="telegram" 
-                  placeholder="https://t.me/username" value={formData.telegram} onChange={handleChange} 
+                <input
+                  type="url" className="input" name="telegram"
+                  placeholder="https://t.me/username" value={formData.telegram} onChange={handleChange}
                 />
               </div>
               <div className="form-group">
                 <label className="label">WhatsApp Link / Number</label>
-                <input 
-                  type="text" className="input" name="whatsapp" 
-                  placeholder="https://wa.me/1234567890" value={formData.whatsapp} onChange={handleChange} 
+                <input
+                  type="text" className="input" name="whatsapp"
+                  placeholder="https://wa.me/1234567890" value={formData.whatsapp} onChange={handleChange}
                 />
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <div className="grid-2-col">
               <div className="form-group">
                 <label className="label">Instagram Link</label>
-                <input 
-                  type="url" className="input" name="instagram" 
-                  placeholder="https://instagram.com/username" value={formData.instagram} onChange={handleChange} 
+                <input
+                  type="url" className="input" name="instagram"
+                  placeholder="https://instagram.com/username" value={formData.instagram} onChange={handleChange}
                 />
               </div>
               <div className="form-group">
                 <label className="label">Facebook Link</label>
-                <input 
-                  type="url" className="input" name="facebook" 
-                  placeholder="https://facebook.com/username" value={formData.facebook} onChange={handleChange} 
+                <input
+                  type="url" className="input" name="facebook"
+                  placeholder="https://facebook.com/username" value={formData.facebook} onChange={handleChange}
                 />
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <div className="grid-2-col">
               <div className="form-group">
                 <label className="label">GitHub Link</label>
-                <input 
-                  type="url" className="input" name="github" 
-                  placeholder="https://github.com/username" value={formData.github} onChange={handleChange} 
+                <input
+                  type="url" className="input" name="github"
+                  placeholder="https://github.com/username" value={formData.github} onChange={handleChange}
                 />
               </div>
               <div className="form-group">
                 <label className="label">Phone Number</label>
-                <input 
-                  type="tel" className="input" name="phone" 
-                  placeholder="+1 234 567 8900" value={formData.phone} onChange={handleChange} 
+                <input
+                  type="tel" className="input" name="phone"
+                  placeholder="+1 234 567 8900" value={formData.phone} onChange={handleChange}
                 />
               </div>
             </div>
@@ -523,8 +552,13 @@ export default function DashboardPage() {
               <label className="label">Background Style</label>
               <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
                 <option value="bg-grid">Grid & Glow (Default)</option>
+                <option value="bg-aurora">Aurora Borealis (New)</option>
+                <option value="bg-cyber">Cyberpunk Grid (New)</option>
+                <option value="bg-stars">Starlight Space (New)</option>
+                <option value="bg-holo">Holographic Scanlines (New)</option>
+                <option value="bg-glass">Frosted Glass Orbs (New)</option>
                 <option value="noise">Static Noise</option>
-                <option value="plain">Plain</option>
+                <option value="plain">Plain Dark</option>
               </select>
             </div>
 
