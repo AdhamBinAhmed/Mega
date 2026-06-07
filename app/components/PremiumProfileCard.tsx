@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 // Define the shape of the profile data based on Firebase structure
@@ -20,7 +20,7 @@ interface Profile {
 
 export default function PremiumProfileCard({ profile, bgStyle }: { profile: Profile, bgStyle: string }) {
   // Animation variants for staggering children
-  const containerVariants: Variants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -31,7 +31,7 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
     },
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -44,126 +44,198 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
     },
   };
 
-  // Helper for generating dynamic colors for social buttons
-  const getSocialColor = (type: string) => {
-    switch (type) {
-      case "telegram": return "group-hover:border-blue-400/50 group-hover:bg-blue-500/10 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] text-blue-400";
-      case "whatsapp": return "group-hover:border-green-400/50 group-hover:bg-green-500/10 group-hover:shadow-[0_0_20px_rgba(34,197,94,0.15)] text-green-400";
-      case "instagram": return "group-hover:border-pink-400/50 group-hover:bg-pink-500/10 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.15)] text-pink-400";
-      case "facebook": return "group-hover:border-blue-600/50 group-hover:bg-blue-600/10 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] text-blue-500";
-      case "github": return "group-hover:border-gray-400/50 group-hover:bg-gray-500/10 group-hover:shadow-[0_0_20px_rgba(156,163,175,0.15)] text-gray-300";
-      case "phone": return "group-hover:border-indigo-400/50 group-hover:bg-indigo-500/10 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] text-indigo-400";
-      default: return "group-hover:border-white/30 group-hover:bg-white/5";
-    }
-  };
-
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={`relative z-10 w-full max-w-md p-10 sm:p-14 text-center rounded-[2.5rem] border border-white/10 bg-[#09090b]/80 backdrop-blur-3xl shadow-2xl shadow-black/80 ring-1 ring-white/5 ${bgStyle === "bg-glass" ? "bg-[#0d0d10]/40 border-white/20" : ""}`}
-    >
-      {/* Dynamic Glow Behind Card Content */}
-      <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
+    <>
+      <style>{`
+        .pc-wrapper {
+          position: relative; z-index: 10;
+          width: 100%; max-width: 448px;
+          padding: 40px 56px; text-align: center;
+          border-radius: 40px; border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(9, 9, 11, 0.8);
+          backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .pc-wrapper.glass-mode {
+          background: rgba(13, 13, 16, 0.4);
+          border-color: rgba(255,255,255,0.2);
+        }
+        .pc-glow-bg {
+          position: absolute; inset: 0; border-radius: 40px; pointer-events: none;
+          background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+        }
+
+        .pc-avatar-container {
+          position: relative; width: 144px; height: 144px; margin: 0 auto 32px;
+        }
+        .pc-avatar-halo {
+          position: absolute; inset: -4px; border-radius: 50%;
+          background: linear-gradient(to bottom right, #ef4444, #f97316, transparent);
+          opacity: 0.7; filter: blur(8px); transition: opacity 0.5s;
+        }
+        .pc-avatar-container:hover .pc-avatar-halo {
+          opacity: 1; animation: pc-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pc-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        
+        .pc-avatar-inner {
+          position: relative; width: 100%; height: 100%; border-radius: 50%; padding: 4px;
+          background: linear-gradient(to bottom right, #ef4444, #18181b);
+        }
+        .pc-avatar-img {
+          width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+          background: #18181b; border: 2px solid rgba(0,0,0,0.5);
+        }
+        .pc-avatar-placeholder {
+          width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+          border-radius: 50%; background: #18181b;
+          font-family: monospace; color: #71717a; font-size: 2.25rem; font-weight: 300;
+        }
+
+        .pc-name {
+          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 8px;
+          background: linear-gradient(to bottom right, #ffffff, #6b7280);
+          -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        @media (min-width: 640px) { .pc-name { font-size: 3rem; } }
+        .pc-role {
+          font-family: monospace; font-size: 0.75rem; color: #ef4444; font-weight: 500;
+          letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 40px;
+        }
+        @media (min-width: 640px) { .pc-role { font-size: 0.875rem; } }
+
+        .pc-links { display: flex; flex-direction: column; gap: 12px; }
+        .pc-link-btn {
+          display: flex; align-items: center; gap: 16px; padding: 16px 24px;
+          background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; color: #fff;
+          font-weight: 600; font-size: 0.875rem; text-decoration: none; transition: all 0.3s;
+        }
+        .pc-link-icon { font-size: 1.125rem; transition: transform 0.3s; }
+        .pc-link-label { flex: 1; text-align: center; letter-spacing: 0.025em; }
+        .pc-link-arrow { width: 20px; opacity: 0; color: #9ca3af; transition: all 0.3s; transform: translateX(-4px); }
+        
+        .pc-link-btn:hover .pc-link-icon { transform: scale(1.1) rotate(-12deg); }
+        .pc-link-btn:hover .pc-link-arrow { opacity: 1; transform: translateX(4px); }
+
+        .btn-tg:hover { border-color: rgba(96, 165, 250, 0.5); background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 20px rgba(59,130,246,0.15); color: #60a5fa; }
+        .btn-wa:hover { border-color: rgba(74, 222, 128, 0.5); background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 20px rgba(34,197,94,0.15); color: #4ade80; }
+        .btn-ig:hover { border-color: rgba(244, 114, 182, 0.5); background: rgba(236, 72, 153, 0.1); box-shadow: 0 0 20px rgba(236,72,153,0.15); color: #f472b6; }
+        .btn-fb:hover { border-color: rgba(37, 99, 235, 0.5); background: rgba(37, 99, 235, 0.1); box-shadow: 0 0 20px rgba(37,99,235,0.15); color: #3b82f6; }
+        .btn-gh:hover { border-color: rgba(156, 163, 175, 0.5); background: rgba(107, 114, 128, 0.1); box-shadow: 0 0 20px rgba(156,163,175,0.15); color: #d1d5db; }
+        .btn-ph:hover { border-color: rgba(129, 140, 248, 0.5); background: rgba(99, 102, 241, 0.1); box-shadow: 0 0 20px rgba(99,102,241,0.15); color: #818cf8; }
+
+        .pc-gmail-wrapper { margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); position: relative; }
+        .pc-gmail-line { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); width: 50%; height: 1px; background: linear-gradient(to right, transparent, rgba(239,68,68,0.5), transparent); }
+        .pc-gmail-label { font-size: 10px; color: #9ca3af; margin-bottom: 16px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; font-family: monospace; }
+        
+        .pc-gmail-card {
+          display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 24px;
+          background: linear-gradient(to right, rgba(239,68,68,0.1), rgba(24,24,27,0.5), transparent);
+          border: 1px solid rgba(239,68,68,0.2); border-radius: 16px; text-decoration: none; position: relative; overflow: hidden;
+          transition: all 0.3s;
+        }
+        .pc-gmail-card:hover { border-color: rgba(239,68,68,0.5); box-shadow: 0 0 30px rgba(239,68,68,0.2); }
+        .pc-gmail-shimmer { position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent); pointer-events: none; }
+        .pc-gmail-card:hover .pc-gmail-shimmer { animation: pc-shimmer 1.5s infinite; }
+        @keyframes pc-shimmer { 100% { transform: translateX(100%); } }
+
+        .pc-gmail-col { display: flex; flex-direction: column; text-align: left; z-index: 10; }
+        .pc-gmail-title { color: #fff; font-weight: 700; font-size: 0.875rem; letter-spacing: 0.025em; }
+        .pc-gmail-address { color: rgba(248,113,113,0.8); font-size: 0.75rem; font-family: monospace; margin-top: 2px; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .pc-gmail-icon {
+          width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; z-index: 10;
+          background: linear-gradient(to bottom right, #ef4444, #ea580c); color: #fff; border-radius: 12px;
+          box-shadow: 0 0 15px rgba(239,68,68,0.5); transition: transform 0.3s;
+        }
+        .pc-gmail-card:hover .pc-gmail-icon { transform: scale(1.1) rotate(12deg); }
+        .pc-gmail-icon svg { width: 20px; height: 20px; }
+      `}</style>
 
       <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10"
+        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className={`pc-wrapper ${bgStyle === "bg-glass" ? "glass-mode" : ""}`}
       >
-        {/* Avatar Section */}
-        <motion.div variants={itemVariants} className="relative w-36 h-36 mx-auto mb-8 group">
-          {/* Animated Halo */}
-          <div className="absolute inset-[-4px] rounded-full bg-gradient-to-br from-red-500 via-orange-500 to-transparent opacity-70 group-hover:opacity-100 blur-md transition-opacity duration-500 group-hover:animate-pulse" />
-          
-          <div className="relative w-full h-full rounded-full p-1 bg-gradient-to-br from-red-500 to-[#18181b]">
-            {profile.photoUrl ? (
-              <img 
-                src={profile.photoUrl} 
-                alt={profile.name} 
-                className="w-full h-full object-cover rounded-full bg-[#18181b] ring-2 ring-black/50" 
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center rounded-full bg-[#18181b] font-mono text-gray-500 text-4xl font-light">
-                {profile.name.charAt(0)}
-              </div>
-            )}
-          </div>
-        </motion.div>
+        <div className="pc-glow-bg" />
 
-        {/* Info Section */}
-        <motion.div variants={itemVariants} className="mb-10">
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-500 mb-2 drop-shadow-sm">
-            {profile.name}
-          </h1>
-          {profile.role && (
-            <div className="font-mono text-xs sm:text-sm text-red-500 font-medium tracking-[0.25em] uppercase">
-              {profile.role}
+        <motion.div 
+          variants={containerVariants as any}
+          initial="hidden"
+          animate="visible"
+          style={{ position: "relative", zIndex: 10 }}
+        >
+          {/* Avatar Section */}
+          <motion.div variants={itemVariants as any} className="pc-avatar-container">
+            <div className="pc-avatar-halo" />
+            
+            <div className="pc-avatar-inner">
+              {profile.photoUrl ? (
+                <img 
+                  src={profile.photoUrl} 
+                  alt={profile.name} 
+                  className="pc-avatar-img" 
+                />
+              ) : (
+                <div className="pc-avatar-placeholder">
+                  {profile.name.charAt(0)}
+                </div>
+              )}
             </div>
-          )}
-        </motion.div>
-
-        {/* Standard Links */}
-        <motion.div variants={itemVariants} className="flex flex-col gap-3">
-          {profile.telegram && (
-            <SocialButton href={profile.telegram} icon="✈" label="Telegram" colors={getSocialColor('telegram')} />
-          )}
-          {profile.whatsapp && (
-            <SocialButton href={profile.whatsapp} icon="💬" label="WhatsApp" colors={getSocialColor('whatsapp')} />
-          )}
-          {profile.instagram && (
-            <SocialButton href={profile.instagram} icon="📷" label="Instagram" colors={getSocialColor('instagram')} />
-          )}
-          {profile.facebook && (
-            <SocialButton href={profile.facebook} icon="📘" label="Facebook" colors={getSocialColor('facebook')} />
-          )}
-          {profile.github && (
-            <SocialButton href={profile.github} icon="⌥" label="GitHub" colors={getSocialColor('github')} />
-          )}
-          {profile.phone && (
-            <SocialButton href={`tel:${profile.phone.replace(/[^0-9+]/g, '')}`} icon="📞" label={profile.phone} colors={getSocialColor('phone')} />
-          )}
-        </motion.div>
-
-        {/* Premium Gmail Section */}
-        {profile.gmail && (
-          <motion.div variants={itemVariants} className="mt-8 pt-8 border-t border-white/10 relative">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-            
-            <p className="text-[10px] text-gray-400 mb-4 font-bold tracking-[0.2em] uppercase font-mono">
-              Get In Touch
-            </p>
-            
-            <motion.a 
-              href={`mailto:${profile.gmail}?subject=Contact%20${profile.name}`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-between p-2 pl-6 bg-gradient-to-r from-red-500/10 via-[#18181b]/50 to-transparent border border-red-500/20 rounded-2xl group transition-all duration-300 hover:border-red-500/50 hover:shadow-[0_0_30px_rgba(239,68,68,0.2)] overflow-hidden relative"
-            >
-              {/* Shine effect on hover */}
-              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
-
-              <div className="flex flex-col text-left z-10">
-                <span className="text-white font-bold text-sm tracking-wide">Drop an Email</span>
-                <span className="text-red-400/80 text-xs truncate max-w-[180px] font-mono mt-0.5">{profile.gmail}</span>
-              </div>
-              <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-red-500 to-orange-600 text-white rounded-xl shadow-[0_0_15px_rgba(239,68,68,0.5)] z-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </motion.a>
           </motion.div>
-        )}
+
+          {/* Info Section */}
+          <motion.div variants={itemVariants as any}>
+            <h1 className="pc-name">{profile.name}</h1>
+            {profile.role && <div className="pc-role">{profile.role}</div>}
+          </motion.div>
+
+          {/* Standard Links */}
+          <motion.div variants={itemVariants as any} className="pc-links">
+            {profile.telegram && <SocialButton href={profile.telegram} icon="✈" label="Telegram" btnClass="btn-tg" />}
+            {profile.whatsapp && <SocialButton href={profile.whatsapp} icon="💬" label="WhatsApp" btnClass="btn-wa" />}
+            {profile.instagram && <SocialButton href={profile.instagram} icon="📷" label="Instagram" btnClass="btn-ig" />}
+            {profile.facebook && <SocialButton href={profile.facebook} icon="📘" label="Facebook" btnClass="btn-fb" />}
+            {profile.github && <SocialButton href={profile.github} icon="⌥" label="GitHub" btnClass="btn-gh" />}
+            {profile.phone && <SocialButton href={`tel:${profile.phone.replace(/[^0-9+]/g, '')}`} icon="📞" label={profile.phone} btnClass="btn-ph" />}
+          </motion.div>
+
+          {/* Premium Gmail Section */}
+          {profile.gmail && (
+            <motion.div variants={itemVariants as any} className="pc-gmail-wrapper">
+              <div className="pc-gmail-line" />
+              <p className="pc-gmail-label">Get In Touch</p>
+              
+              <motion.a 
+                href={`mailto:${profile.gmail}?subject=Contact%20${profile.name}`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="pc-gmail-card"
+              >
+                <div className="pc-gmail-shimmer" />
+
+                <div className="pc-gmail-col">
+                  <span className="pc-gmail-title">Drop an Email</span>
+                  <span className="pc-gmail-address">{profile.gmail}</span>
+                </div>
+                <div className="pc-gmail-icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </motion.a>
+            </motion.div>
+          )}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </>
   );
 }
 
 // Reusable micro-component for social buttons
-function SocialButton({ href, icon, label, colors }: { href: string, icon: string, label: string, colors: string }) {
+function SocialButton({ href, icon, label, btnClass }: { href: string, icon: string, label: string, btnClass: string }) {
   return (
     <motion.a 
       href={href} 
@@ -171,11 +243,11 @@ function SocialButton({ href, icon, label, colors }: { href: string, icon: strin
       rel="noopener noreferrer"
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`group flex items-center gap-4 px-6 py-4 bg-[#18181b]/80 backdrop-blur-md border border-white/10 rounded-2xl text-white font-semibold text-sm transition-colors duration-300 ${colors}`}
+      className={`pc-link-btn ${btnClass}`}
     >
-      <span className={`text-lg transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110`}>{icon}</span>
-      <span className="flex-1 text-center tracking-wide">{label}</span>
-      <span className="w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 text-gray-400">→</span>
+      <span className="pc-link-icon">{icon}</span>
+      <span className="pc-link-label">{label}</span>
+      <span className="pc-link-arrow">→</span>
     </motion.a>
   );
 }
