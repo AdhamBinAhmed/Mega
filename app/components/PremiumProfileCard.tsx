@@ -18,6 +18,19 @@ interface Profile {
 }
 
 export default function PremiumProfileCard({ profile, bgStyle }: { profile: Profile, bgStyle: string }) {
+  const themeColor = profile.themeColor || "blue";
+  const isGlassy = profile.glassyEffect !== undefined ? profile.glassyEffect : true;
+
+  const themeColors: Record<string, { halo: string, hoverBorder: string }> = {
+    blue: { halo: "rgba(59,130,246,0.6) 0%, rgba(99,102,241,0.3) 50%", hoverBorder: "rgba(59,130,246,0.4)" },
+    purple: { halo: "rgba(168,85,247,0.6) 0%, rgba(217,70,239,0.3) 50%", hoverBorder: "rgba(168,85,247,0.4)" },
+    emerald: { halo: "rgba(16,185,129,0.6) 0%, rgba(52,211,153,0.3) 50%", hoverBorder: "rgba(16,185,129,0.4)" },
+    rose: { halo: "rgba(244,63,94,0.6) 0%, rgba(251,113,133,0.3) 50%", hoverBorder: "rgba(244,63,94,0.4)" },
+    amber: { halo: "rgba(245,158,11,0.6) 0%, rgba(252,211,77,0.3) 50%", hoverBorder: "rgba(245,158,11,0.4)" },
+    slate: { halo: "rgba(148,163,184,0.6) 0%, rgba(203,213,225,0.3) 50%", hoverBorder: "rgba(148,163,184,0.4)" },
+  };
+  const activeTheme = themeColors[themeColor] || themeColors.blue;
+
   // Animation variants for staggering children
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -44,7 +57,10 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
   };
 
   return (
-    <>
+    <div style={{
+      '--theme-halo': `radial-gradient(circle, ${activeTheme.halo}, transparent 70%)`,
+      '--theme-hover-border': activeTheme.hoverBorder,
+    } as React.CSSProperties}>
       <style>{`
         /* ── GLOBAL WIDE LAYOUT ── */
         .glass-container {
@@ -60,7 +76,7 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
         }
         .glass-avatar-halo {
           position: absolute; inset: -15px; border-radius: 50%;
-          background: radial-gradient(circle, rgba(59,130,246,0.6) 0%, rgba(99,102,241,0.3) 50%, transparent 70%);
+          background: var(--theme-halo);
           filter: blur(15px); animation: halo-pulse 4s ease-in-out infinite alternate;
           z-index: 0;
         }
@@ -95,17 +111,28 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
         .glass-btn {
           display: flex; align-items: center; gap: 16px;
           width: 100%; padding: 12px 20px;
-          background: rgba(30, 41, 59, 0.4);
-          backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255,255,255,0.05); border-radius: 24px;
+          border-radius: 24px;
           text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
+        
+        /* Glassy vs Solid Toggle */
+        .glass-btn.style-glassy {
+          background: rgba(30, 41, 59, 0.4);
+          backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255,255,255,0.05);
+        }
+        .glass-btn.style-solid {
+          background: rgba(15, 23, 42, 0.85);
+          backdrop-filter: none; -webkit-backdrop-filter: none;
+          border: 1px solid rgba(255,255,255,0.1);
+        }
+
         .glass-btn:hover {
           background: rgba(30, 41, 59, 0.7);
-          border-color: rgba(255,255,255,0.15);
+          border-color: var(--theme-hover-border);
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+          box-shadow: 0 8px 30px rgba(0,0,0,0.4);
         }
 
         /* ── BUTTON INTERNAL LAYOUT ── */
@@ -178,12 +205,12 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
 
           {/* Links Section */}
           <motion.div variants={itemVariants as any} className="glass-links">
-            {profile.telegram && <SocialButton href={profile.telegram} icon="✈" bgClass="icon-tg" title="Telegram" subtitle="Chat with me on Telegram" />}
-            {profile.whatsapp && <SocialButton href={profile.whatsapp} icon="💬" bgClass="icon-wa" title="WhatsApp" subtitle="Send me a message" />}
-            {profile.instagram && <SocialButton href={profile.instagram} icon="📷" bgClass="icon-ig" title="Instagram" subtitle="Follow my journey" />}
-            {profile.facebook && <SocialButton href={profile.facebook} icon="📘" bgClass="icon-fb" title="Facebook" subtitle="Connect with me" />}
-            {profile.github && <SocialButton href={profile.github} icon="⌥" bgClass="icon-gh" title="GitHub" subtitle="View my open source projects" />}
-            {profile.phone && <SocialButton href={`tel:${profile.phone.replace(/[^0-9+]/g, '')}`} icon="📞" bgClass="icon-ph" title="Call Now" subtitle={profile.phone} />}
+            {profile.telegram && <SocialButton href={profile.telegram} icon="✈" bgClass="icon-tg" title="Telegram" subtitle="Chat with me on Telegram" isGlassy={isGlassy} />}
+            {profile.whatsapp && <SocialButton href={profile.whatsapp} icon="💬" bgClass="icon-wa" title="WhatsApp" subtitle="Send me a message" isGlassy={isGlassy} />}
+            {profile.instagram && <SocialButton href={profile.instagram} icon="📷" bgClass="icon-ig" title="Instagram" subtitle="Follow my journey" isGlassy={isGlassy} />}
+            {profile.facebook && <SocialButton href={profile.facebook} icon="📘" bgClass="icon-fb" title="Facebook" subtitle="Connect with me" isGlassy={isGlassy} />}
+            {profile.github && <SocialButton href={profile.github} icon="⌥" bgClass="icon-gh" title="GitHub" subtitle="View my open source projects" isGlassy={isGlassy} />}
+            {profile.phone && <SocialButton href={`tel:${profile.phone.replace(/[^0-9+]/g, '')}`} icon="📞" bgClass="icon-ph" title="Call Now" subtitle={profile.phone} isGlassy={isGlassy} />}
           </motion.div>
 
           {/* Direct Contact Section */}
@@ -201,17 +228,18 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
                 bgClass="icon-gm" 
                 title="Email Me" 
                 subtitle={profile.gmail} 
+                isGlassy={isGlassy}
               />
             </motion.div>
           )}
         </motion.div>
       </div>
-    </>
+    </div>
   );
 }
 
 // Reusable micro-component for wide glassy buttons
-function SocialButton({ href, icon, title, subtitle, bgClass }: { href: string, icon: string, title: string, subtitle: string, bgClass: string }) {
+function SocialButton({ href, icon, title, subtitle, bgClass, isGlassy }: { href: string, icon: string, title: string, subtitle: string, bgClass: string, isGlassy: boolean }) {
   return (
     <motion.a 
       href={href} 
@@ -219,7 +247,7 @@ function SocialButton({ href, icon, title, subtitle, bgClass }: { href: string, 
       rel="noopener noreferrer"
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
-      className="glass-btn"
+      className={`glass-btn ${isGlassy ? 'style-glassy' : 'style-solid'}`}
     >
       <div className={`glass-btn-icon-wrapper ${bgClass}`}>
         {icon}

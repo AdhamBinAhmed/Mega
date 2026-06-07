@@ -27,6 +27,8 @@ export default function DashboardPage() {
     whatsapp: "",
     gmail: "",
     backgroundStyle: "bg-grid", // default
+    themeColor: "blue",
+    glassyEffect: true,
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -67,6 +69,8 @@ export default function DashboardPage() {
             whatsapp: data.whatsapp || "",
             gmail: data.gmail || "",
             backgroundStyle: data.backgroundStyle || "bg-grid",
+            themeColor: data.themeColor || "blue",
+            glassyEffect: data.glassyEffect !== undefined ? data.glassyEffect : true,
           });
           if (data.photoUrl) setImagePreview(data.photoUrl);
           setIsEditing(true);
@@ -83,7 +87,9 @@ export default function DashboardPage() {
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const target = e.target;
+    const value = target.type === "checkbox" ? (target as HTMLInputElement).checked : target.value;
+    setFormData({ ...formData, [target.name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -148,6 +154,8 @@ export default function DashboardPage() {
         facebook: formData.facebook,
         whatsapp: formData.whatsapp,
         backgroundStyle: formData.backgroundStyle,
+        themeColor: formData.themeColor,
+        glassyEffect: formData.glassyEffect,
         updatedAt: new Date().toISOString(),
       }, { merge: true });
 
@@ -548,18 +556,48 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="label">Background Style</label>
-              <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
-                <option value="bg-grid">Grid & Glow (Default)</option>
-                <option value="bg-aurora">Aurora Borealis (New)</option>
-                <option value="bg-cyber">Cyberpunk Grid (New)</option>
-                <option value="bg-stars">Starlight Space (New)</option>
-                <option value="bg-holo">Holographic Scanlines (New)</option>
-                <option value="bg-glass">Frosted Glass Orbs (New)</option>
-                <option value="noise">Static Noise</option>
-                <option value="plain">Plain Dark</option>
-              </select>
+            <div className="grid-2-col">
+              <div className="form-group">
+                <label className="label">Background Style</label>
+                <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
+                  <option value="bg-grid">Grid & Glow (Default)</option>
+                  <option value="bg-aurora">Aurora Borealis (New)</option>
+                  <option value="bg-cyber">Cyberpunk Grid (New)</option>
+                  <option value="bg-stars">Starlight Space (New)</option>
+                  <option value="bg-holo">Holographic Scanlines (New)</option>
+                  <option value="bg-glass">Frosted Glass Orbs (New)</option>
+                  <option value="noise">Static Noise</option>
+                  <option value="plain">Plain Dark</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="label">Accent Color Theme</label>
+                <select className="select" name="themeColor" value={formData.themeColor} onChange={handleChange}>
+                  <option value="blue">Electric Blue</option>
+                  <option value="purple">Deep Purple</option>
+                  <option value="emerald">Neon Emerald</option>
+                  <option value="rose">Cyber Rose</option>
+                  <option value="amber">Solar Amber</option>
+                  <option value="slate">Monochrome Slate</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-group" style={{ flexDirection: "row", alignItems: "center", gap: "12px", background: "var(--surface)", padding: "16px 20px", border: "1px solid var(--border2)", borderRadius: "8px" }}>
+              <input 
+                type="checkbox" 
+                name="glassyEffect" 
+                id="glassyEffect"
+                checked={formData.glassyEffect} 
+                onChange={handleChange}
+                style={{ width: "20px", height: "20px", accentColor: "var(--accent)", cursor: "pointer" }}
+              />
+              <div style={{ display: "flex", flex: 1, justifyContent: "space-between", alignItems: "center" }}>
+                <label htmlFor="glassyEffect" className="label" style={{ cursor: "pointer", margin: 0, fontSize: "0.75rem", color: "var(--text)" }}>
+                  Enable Glassy Effect (Translucent frosted buttons)
+                </label>
+              </div>
             </div>
 
             <button type="submit" className="submit-btn" disabled={isSubmitting}>
