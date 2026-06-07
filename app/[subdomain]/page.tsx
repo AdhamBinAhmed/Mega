@@ -20,7 +20,7 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
   const bgStyle = profile.backgroundStyle || "bg-grid";
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative p-6 overflow-hidden" data-theme={theme}>
+    <div className="min-h-screen relative overflow-x-hidden pt-12 pb-24 px-4 sm:px-6" data-theme={theme}>
       {/* Dynamic Background */}
       {bgStyle === "bg-grid" && <div className="bg-grid" />}
       {(bgStyle === "bg-grid" || bgStyle === "bg-glow") && <div className="bg-glow" />}
