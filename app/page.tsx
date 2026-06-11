@@ -11,8 +11,8 @@ const developers = [
   {
     name: "Adham Ahmed",
     role: "Frontend, ROM & Web Developer",
-    telegram: "https://t.me/AdhamBinAhmed",
-    github: "https://github.com/llxcd",
+    telegram: "https://t.me/llxcd_EGy",
+    github: "https://github.com/AdhamBinAhmed",
     image: "/developers/ahmed.jpg",
     tag: "Founder",
     index: "01",
@@ -156,6 +156,7 @@ export default function Home() {
   const [hoveredWork, setHoveredWork] = useState<number | null>(null);
   const [activeService, setActiveService] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(hover: none) and (pointer: coarse)");
@@ -954,7 +955,7 @@ export default function Home() {
       <AnimatePresence>
         {menuOpen && (
           <>
-            <motion.div 
+            <motion.div
               className="mobile-menu-overlay"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
@@ -1035,13 +1036,29 @@ export default function Home() {
             Two engineers from Cairo building <strong>high-performance web apps</strong>, custom Android ROMs, and production-grade AI systems for clients across the Middle East and beyond.
           </motion.p>
           <motion.div className="hero-actions" style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-  <MagneticButton href="#contact" className="btn-primary">
-    Start a Project &rarr;
-  </MagneticButton>
-  <a href="/works" className="btn-ghost glass-panel">
-    Our Works
-  </a>
-</motion.div>
+            <MagneticButton href="#contact" className="btn-primary">
+              Start a Project &rarr;
+            </MagneticButton>
+            <a href="/works" className="btn-ghost glass-panel">
+              Our Works
+            </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            style={{ marginTop: "32px", display: "flex" }}
+          >
+            <div className="glass-card" style={{ padding: "12px 16px 12px 24px", display: "inline-flex", alignItems: "center", gap: "20px", borderRadius: "999px", border: "1px solid var(--border)", background: "rgba(255, 255, 255, 0.03)", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "0.95rem", fontWeight: 500, color: "var(--text)" }}>
+                Make your first free portfolio online website
+              </span>
+              <a href="https://megadevs.site/login" className="btn-primary" style={{ padding: "10px 24px", fontSize: "0.85rem" }}>
+                Start Now &rarr;
+              </a>
+            </div>
+          </motion.div>
         </div>
         <div className="hero-status">
           <div className="hero-status-row">

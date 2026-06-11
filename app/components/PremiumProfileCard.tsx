@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { QRCodeCanvas } from "qrcode.react";
 
 // Define the shape of the profile data based on Firebase structure
 interface Profile {
@@ -20,6 +22,15 @@ interface Profile {
 export default function PremiumProfileCard({ profile, bgStyle }: { profile: Profile, bgStyle: string }) {
   const themeColor = profile.themeColor || "blue";
   const isGlassy = profile.glassyEffect !== undefined ? profile.glassyEffect : true;
+
+  const [isQrOpen, setIsQrOpen] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
+    }
+  }, []);
 
   const themeColors: Record<string, { halo: string, hoverBorder: string }> = {
     blue: { halo: "rgba(59,130,246,0.6) 0%, rgba(99,102,241,0.3) 50%", hoverBorder: "rgba(59,130,246,0.4)" },
@@ -177,9 +188,33 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           color: #64748b; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em;
           text-transform: uppercase; padding: 0 16px;
         }
+
+        /* ── SHARE BTN ── */
+        .share-btn {
+          position: absolute; top: 16px; right: 16px; z-index: 20;
+          background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+          width: 44px; height: 44px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          color: #fff; cursor: pointer; transition: all 0.3s;
+          backdrop-filter: blur(10px);
+        }
+        .share-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
       `}</style>
 
       <div className="glass-container">
+        <button className="share-btn" onClick={() => setIsQrOpen(true)} title="Share Profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+            <path d="M7 7h.01"></path>
+            <path d="M18 7h.01"></path>
+            <path d="M18 18h.01"></path>
+            <path d="M7 18h.01"></path>
+          </svg>
+        </button>
+
         <motion.div 
           variants={containerVariants as any}
           initial="hidden"
@@ -234,6 +269,62 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           )}
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {isQrOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 999,
+              background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '24px'
+            }}
+            onClick={() => setIsQrOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              style={{
+                background: 'rgba(15, 23, 42, 0.95)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '24px',
+                padding: '32px',
+                textAlign: 'center',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                maxWidth: '360px',
+                width: '100%'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 600, marginBottom: '8px' }}>Share Profile</h3>
+              <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '24px', wordBreak: 'break-all' }}>{currentUrl}</p>
+              
+              <div style={{ background: '#fff', padding: '16px', borderRadius: '16px', display: 'inline-block' }}>
+                <QRCodeCanvas value={currentUrl || "https://megadevs.site"} size={200} bgColor={"#ffffff"} fgColor={"#000000"} level={"H"} />
+              </div>
+
+              <div style={{ marginTop: '32px' }}>
+                <button
+                  onClick={() => setIsQrOpen(false)}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff',
+                    padding: '10px 24px', borderRadius: '99px', fontSize: '0.9rem', cursor: 'pointer',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

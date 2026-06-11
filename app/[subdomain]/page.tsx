@@ -94,6 +94,19 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
       {bgStyle === "bg-stars" && <div className="bg-stars" />}
       {bgStyle === "bg-holo" && <div className="bg-holo" />}
       {bgStyle === "bg-glass" && <div className="bg-glass-orbs" />}
+      {bgStyle === "custom" && profile.customBgUrl && (
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          backgroundImage: `url(${profile.customBgUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+          opacity: 0.3
+        }} />
+      )}
 
       {/* Premium UI Component */}
       <PremiumProfileCard profile={profile} bgStyle={bgStyle} />

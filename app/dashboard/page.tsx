@@ -19,6 +19,7 @@ export default function DashboardPage() {
     name: "",
     role: "",
     photoUrl: "",
+    customBgUrl: "",
     telegram: "",
     github: "",
     phone: "",
@@ -32,7 +33,10 @@ export default function DashboardPage() {
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [bgImageFile, setBgImageFile] = useState<File | null>(null);
+  const [bgImagePreview, setBgImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDraggingBg, setIsDraggingBg] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -61,6 +65,7 @@ export default function DashboardPage() {
             name: data.name || "",
             role: data.role || "",
             photoUrl: data.photoUrl || "",
+            customBgUrl: data.customBgUrl || "",
             telegram: data.telegram || "",
             github: data.github || "",
             phone: data.phone || "",
@@ -73,6 +78,7 @@ export default function DashboardPage() {
             glassyEffect: data.glassyEffect !== undefined ? data.glassyEffect : true,
           });
           if (data.photoUrl) setImagePreview(data.photoUrl);
+          if (data.customBgUrl) setBgImagePreview(data.customBgUrl);
           setIsEditing(true);
         }
       } catch (err) {
@@ -141,12 +147,34 @@ export default function DashboardPage() {
         finalPhotoUrl = data.secure_url;
       }
 
+      let finalCustomBgUrl = formData.customBgUrl;
+
+      // Upload background image to Cloudinary if provided
+      if (bgImageFile) {
+        const uploadData = new FormData();
+        uploadData.append('file', bgImageFile);
+        uploadData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'my_preset');
+
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'my_cloud_name';
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: uploadData,
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to upload background image to Cloudinary. Make sure your upload preset is set to unsigned.');
+        }
+        const data = await res.json();
+        finalCustomBgUrl = data.secure_url;
+      }
+
       // Add a 10-second timeout so it doesn't hang forever
       const writePromise = setDoc(doc(db, "profiles", cleanSubdomain), {
         uid: user!.uid,
         name: formData.name,
         role: formData.role,
         photoUrl: finalPhotoUrl,
+        customBgUrl: finalCustomBgUrl,
         telegram: formData.telegram,
         github: formData.github,
         phone: formData.phone,
@@ -204,6 +232,15 @@ export default function DashboardPage() {
     }
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleBgFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setError("Please upload an image file.");
+      return;
+    }
+    setBgImageFile(file);
+    setBgImagePreview(URL.createObjectURL(file));
   };
 
   if (loadingAuth) {
@@ -568,6 +605,7 @@ export default function DashboardPage() {
                   <option value="bg-glass">Frosted Glass Orbs (New)</option>
                   <option value="noise">Static Noise</option>
                   <option value="plain">Plain Dark</option>
+                  <option value="custom">Custom Image</option>
                 </select>
               </div>
 
@@ -582,6 +620,48 @@ export default function DashboardPage() {
                   <option value="slate">Monochrome Slate</option>
                 </select>
               </div>
+
+              {formData.backgroundStyle === "custom" && (
+                <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+                  <label className="label">Custom Background Image</label>
+                  <div
+                    className={`dropzone ${isDraggingBg ? "dragging" : ""}`}
+                    onDragOver={(e) => { e.preventDefault(); setIsDraggingBg(true); }}
+                    onDragLeave={() => setIsDraggingBg(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDraggingBg(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        handleBgFile(e.dataTransfer.files[0]);
+                      }
+                    }}
+                    onClick={() => document.getElementById("bgFileInput")?.click()}
+                  >
+                    {bgImagePreview ? (
+                      <>
+                        <img src={bgImagePreview} alt="BG Preview" className="dropzone-img" style={{ borderRadius: '12px', width: '100%', height: '160px', objectFit: 'cover' }} />
+                        <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change background</span>
+                      </>
+                    ) : (
+                      <>
+                        <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🖼️</div>
+                        <span style={{ fontSize: "0.9rem" }}>Drag & drop a background image, or click to browse</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      id="bgFileInput"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleBgFile(e.target.files[0]);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="form-group" style={{ flexDirection: "row", alignItems: "center", gap: "12px", background: "var(--surface)", padding: "16px 20px", border: "1px solid var(--border2)", borderRadius: "8px" }}>
