@@ -17,6 +17,7 @@ interface Profile {
   gmail?: string;
   themeColor?: string;
   glassyEffect?: boolean;
+  customLinks?: { id: string, title: string, url: string }[];
   [key: string]: any;
 }
 
@@ -452,13 +453,23 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
                 <div className="ppc-badge"><span className="ppc-badge-dot" />available for work</div>
               </motion.div>
 
-              {/* SOCIAL LINKS — each button is its own box */}
-              {socials.length > 0 && (
+              {/* SOCIAL LINKS AND CUSTOM LINKS */}
+              {(socials.length > 0 || (profile.customLinks && profile.customLinks.length > 0)) && (
                 <motion.div variants={item} className="ppc-btn-wrap">
                   {socials.map(({ key, href, sub }) => {
                     const s = SOCIAL[key];
                     return <Btn key={key} href={href} grad={s.grad} icon={s.icon} label={s.label} sub={sub ?? s.sub} />;
                   })}
+                  {profile.customLinks?.map((link) => (
+                    <Btn
+                      key={link.id}
+                      href={link.url}
+                      grad="linear-gradient(145deg, #64748b, #334155)"
+                      icon={<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"></path></svg>}
+                      label={link.title}
+                      sub="Link"
+                    />
+                  ))}
                 </motion.div>
               )}
 

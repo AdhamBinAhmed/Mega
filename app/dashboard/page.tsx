@@ -30,6 +30,7 @@ export default function DashboardPage() {
     backgroundStyle: "bg-grid", // default
     themeColor: "blue",
     glassyEffect: true,
+    customLinks: [] as { id: string, title: string, url: string }[],
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -76,6 +77,7 @@ export default function DashboardPage() {
             backgroundStyle: data.backgroundStyle || "bg-grid",
             themeColor: data.themeColor || "blue",
             glassyEffect: data.glassyEffect !== undefined ? data.glassyEffect : true,
+            customLinks: data.customLinks || [],
           });
           if (data.photoUrl) setImagePreview(data.photoUrl);
           if (data.customBgUrl) setBgImagePreview(data.customBgUrl);
@@ -96,6 +98,25 @@ export default function DashboardPage() {
     const target = e.target;
     const value = target.type === "checkbox" ? (target as HTMLInputElement).checked : target.value;
     setFormData({ ...formData, [target.name]: value });
+  };
+
+  const handleCustomLinkChange = (index: number, field: "title" | "url", value: string) => {
+    const newLinks = [...formData.customLinks];
+    newLinks[index][field] = value;
+    setFormData({ ...formData, customLinks: newLinks });
+  };
+
+  const handleAddCustomLink = () => {
+    setFormData({
+      ...formData,
+      customLinks: [...formData.customLinks, { id: Date.now().toString(), title: "", url: "" }]
+    });
+  };
+
+  const handleRemoveCustomLink = (index: number) => {
+    const newLinks = [...formData.customLinks];
+    newLinks.splice(index, 1);
+    setFormData({ ...formData, customLinks: newLinks });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -184,6 +205,7 @@ export default function DashboardPage() {
         backgroundStyle: formData.backgroundStyle,
         themeColor: formData.themeColor,
         glassyEffect: formData.glassyEffect,
+        customLinks: formData.customLinks,
         updatedAt: new Date().toISOString(),
       }, { merge: true });
 
@@ -662,6 +684,44 @@ export default function DashboardPage() {
                   </div>
                 </div>
               )}
+            </div>
+
+            <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+              <label className="label">Custom Links (Add anything, e.g. LinkedIn, Portfolio)</label>
+              {formData.customLinks.map((link, index) => (
+                <div key={link.id} style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="Link Title (e.g. LinkedIn)"
+                    value={link.title}
+                    onChange={(e) => handleCustomLinkChange(index, "title", e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                  <input
+                    type="url"
+                    className="input"
+                    placeholder="URL (https://...)"
+                    value={link.url}
+                    onChange={(e) => handleCustomLinkChange(index, "url", e.target.value)}
+                    style={{ flex: 2 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCustomLink(index)}
+                    style={{ background: "rgba(232, 69, 69, 0.1)", color: "var(--accent)", border: "1px solid var(--accent)", padding: "0 16px", borderRadius: "8px", cursor: "pointer", fontFamily: "var(--font-display)" }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={handleAddCustomLink}
+                style={{ background: "var(--surface2)", color: "var(--text)", border: "1px dashed var(--border2)", padding: "12px", borderRadius: "8px", cursor: "pointer", fontFamily: "var(--font-display)", fontSize: "0.9rem", fontWeight: 600 }}
+              >
+                + Add Custom Link
+              </button>
             </div>
 
             <div className="form-group" style={{ flexDirection: "row", alignItems: "center", gap: "12px", background: "var(--surface)", padding: "16px 20px", border: "1px solid var(--border2)", borderRadius: "8px" }}>
