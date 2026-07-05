@@ -124,17 +124,17 @@ export default function PalestinePage() {
 
           {/* Authentic Flag Colors inside Glass Container */}
           <div className="absolute inset-0 flex flex-col opacity-90 mix-blend-screen">
-            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 0.3, ease: "easeOut", originX: 0 }} className="flex-1 bg-[#111]" />
-            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 0.5, ease: "easeOut", originX: 0 }} className="flex-1 bg-[#ffffff]" />
-            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 0.7, ease: "easeOut", originX: 0 }} className="flex-1 bg-[#007A3D]" />
+            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }} style={{ originX: 0 }} className="flex-1 bg-[#111]" />
+            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }} style={{ originX: 0 }} className="flex-1 bg-[#ffffff]" />
+            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, delay: 0.7, ease: "easeOut" }} style={{ originX: 0 }} className="flex-1 bg-[#007A3D]" />
           </div>
           
           <motion.div 
             initial={{ scaleX: 0, opacity: 0 }} 
             animate={{ scaleX: 1, opacity: 0.95 }} 
-            transition={{ duration: 1.5, delay: 1.0, ease: "easeOut", originX: 0 }}
+            transition={{ duration: 1.5, delay: 1.0, ease: "easeOut" }}
             className="absolute top-0 bottom-0 left-0 w-1/2 bg-[#CE1126] mix-blend-screen"
-            style={{ clipPath: 'polygon(0 0, 100% 50%, 0 100%)' }}
+            style={{ clipPath: 'polygon(0 0, 100% 50%, 0 100%)', originX: 0 }}
           />
 
           {/* Reflections for Glass Emblem Effect */}
