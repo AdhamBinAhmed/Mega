@@ -520,6 +520,12 @@ export default function DashboardPage() {
                       <option value="bg-stars">Starlight Space (New)</option>
                       <option value="bg-holo">Holographic Scanlines (New)</option>
                       <option value="bg-glass">Frosted Glass Orbs (New)</option>
+                      <option value="bg-mesh">Gradient Mesh (New)</option>
+                      <option value="bg-matrix">Digital Rain (New)</option>
+                      <option value="bg-vapor">Vaporwave Sunset (New)</option>
+                      <option value="bg-topo">Topographic Lines (New)</option>
+                      <option value="bg-bokeh">Floating Bokeh (New)</option>
+                      <option value="bg-liquid">Liquid Chrome (New)</option>
                       <option value="noise">Static Noise</option>
                       <option value="plain">Plain Dark</option>
                       <option value="custom">Custom Image</option>
@@ -658,6 +664,12 @@ export default function DashboardPage() {
                   {formData.backgroundStyle === "bg-stars" && <div className="bg-stars" />}
                   {formData.backgroundStyle === "bg-holo" && <div className="bg-holo" />}
                   {formData.backgroundStyle === "bg-glass" && <div className="bg-glass-orbs" />}
+                  {formData.backgroundStyle === "bg-mesh" && <div className="bg-mesh" />}
+                  {formData.backgroundStyle === "bg-matrix" && <div className="bg-matrix" />}
+                  {formData.backgroundStyle === "bg-vapor" && <div className="bg-vapor" />}
+                  {formData.backgroundStyle === "bg-topo" && <div className="bg-topo" />}
+                  {formData.backgroundStyle === "bg-bokeh" && <div className="bg-bokeh" />}
+                  {formData.backgroundStyle === "bg-liquid" && <div className="bg-liquid" />}
                   {formData.backgroundStyle === "custom" && bgImagePreview && (
                     <div style={{
                       position: "absolute", inset: 0, pointerEvents: "none",
