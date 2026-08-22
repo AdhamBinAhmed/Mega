@@ -7,6 +7,9 @@ import { collection, doc, setDoc, getDoc, query, where, getDocs } from "firebase
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
+import PremiumProfileCard from "../components/PremiumProfileCard";
+import "./dashboard.css";
+import "../[subdomain]/subdomain-bg.css";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -41,6 +44,7 @@ export default function DashboardPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -117,6 +121,13 @@ export default function DashboardPage() {
     const newLinks = [...formData.customLinks];
     newLinks.splice(index, 1);
     setFormData({ ...formData, customLinks: newLinks });
+  };
+
+  const handleCopyLink = () => {
+    if (!formData.subdomain) return;
+    navigator.clipboard?.writeText(`https://${formData.subdomain.toLowerCase()}.megadevs.site`);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -216,6 +227,8 @@ export default function DashboardPage() {
       await Promise.race([writePromise, timeoutPromise]);
 
       console.log("Firebase write successful!");
+      setFormData((f) => ({ ...f, subdomain: cleanSubdomain }));
+      setIsEditing(true);
       setSuccess(true);
     } catch (err: any) {
       console.error("Firebase Error:", err);
@@ -269,195 +282,11 @@ export default function DashboardPage() {
     return <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#050507", color: "white", fontFamily: "monospace" }}>Loading Secure Dashboard...</div>;
   }
 
+  const isLive = isEditing && !!formData.subdomain;
+  const previewProfile = { ...formData, photoUrl: imagePreview || formData.photoUrl };
+
   return (
     <div className="create-root" data-theme={theme}>
-      <style>{`
-        /* ── TOKENS ── */
-        .create-root, .create-root [data-theme="dark"] {
-          --bg:       #050507;
-          --surface:  #0d0d10;
-          --surface2: #131318;
-          --border:   rgba(255,255,255,0.06);
-          --border2:  rgba(255,255,255,0.12);
-          --text:     #f0f0f2;
-          --muted:    #6b6b7a;
-          --accent:   #e84545;
-          --accent2:  #ff7043;
-          --accent3:  #ffd166;
-          --green:    #22c55e;
-          --font-display: var(--font-outfit,'Outfit'),sans-serif;
-          --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
-          --font-logo:    var(--font-logo,'Orbitron'),sans-serif;
-        }
-        .create-root[data-theme="light"] {
-          --bg:       #faf8f5;
-          --surface:  #ffffff;
-          --surface2: #f0ede8;
-          --border:   rgba(0,0,0,0.07);
-          --border2:  rgba(0,0,0,0.14);
-          --text:     #111111;
-          --muted:    #7a7570;
-          --accent:   #c8392b;
-          --accent2:  #e8571a;
-          --green:    #14532d;
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-
-        .create-root {
-          min-height: 100vh;
-          background: var(--bg);
-          color: var(--text);
-          font-family: var(--font-display);
-          -webkit-font-smoothing: antialiased;
-          position: relative;
-        }
-
-        /* ── BG EFFECTS ── */
-        .bg-grid {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none;
-          background-image:
-            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-          background-size: 60px 60px;
-        }
-        .bg-glow {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none;
-          background:
-            radial-gradient(ellipse 60% 50% at 10% 20%, rgba(232,69,69,0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 90% 80%, rgba(255,112,67,0.06) 0%, transparent 70%);
-        }
-        .create-root[data-theme="light"] .bg-grid {
-          background-image:
-            linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-        }
-        .create-root[data-theme="light"] .bg-glow {
-          background:
-            radial-gradient(ellipse 60% 50% at 10% 20%, rgba(200,57,43,0.07) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 90% 80%, rgba(232,87,26,0.05) 0%, transparent 70%);
-        }
-
-        /* ── NAV ── */
-        .nav {
-          position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-          padding: 0 56px; height: 64px;
-          display: flex; align-items: center; justify-content: space-between;
-          border-bottom: 1px solid var(--border);
-          background: rgba(5,5,7,0.85);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-        }
-        .create-root[data-theme="light"] .nav { background: rgba(250,248,245,0.85); }
-        
-        .logo {
-          font-family: var(--font-logo); font-size: 1.1rem; font-weight: 700;
-          color: var(--text); text-decoration: none; letter-spacing: 0.12em;
-          display: flex; align-items: center; gap: 6px;
-        }
-        .logo-accent { color: var(--accent); }
-        .logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-
-        .nav-right { display: flex; align-items: center; gap: 20px; }
-        .theme-btn, .back-btn {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 8px 12px;
-          background: none; letter-spacing: 0.08em; text-transform: uppercase;
-          transition: all 0.2s; cursor: pointer; text-decoration: none;
-        }
-        .theme-btn:hover, .back-btn:hover { color: var(--text); border-color: var(--accent); }
-
-        /* ── CONTENT ── */
-        .content {
-          position: relative; z-index: 2;
-          padding: 140px 56px 100px;
-          max-width: 700px; margin: 0 auto;
-        }
-        .title {
-          font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800;
-          letter-spacing: -0.04em; line-height: 1; margin-bottom: 16px; color: var(--text);
-        }
-        .title em { font-style: normal; color: var(--accent); }
-        .sub { font-size: 1.05rem; color: var(--muted); line-height: 1.6; margin-bottom: 56px; }
-
-        /* ── FORM ── */
-        .form {
-          display: flex; flex-direction: column; gap: 24px;
-        }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .label {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          letter-spacing: 0.1em; text-transform: uppercase;
-        }
-        .input, .select {
-          background: var(--surface); border: 1px solid var(--border2);
-          color: var(--text); font-family: var(--font-display); font-size: 1rem;
-          padding: 16px 20px; outline: none; transition: all 0.2s;
-        }
-        .input:focus, .select:focus { border-color: var(--accent); background: var(--surface2); }
-        
-        .subdomain-group { display: flex; align-items: center; }
-        .subdomain-group .input { flex: 1; border-right: none; }
-        .subdomain-suffix {
-          background: var(--surface2); border: 1px solid var(--border2);
-          color: var(--muted); padding: 16px 20px; font-family: var(--font-mono); font-size: 0.85rem;
-        }
-
-        .submit-btn {
-          margin-top: 16px;
-          background: var(--text); color: var(--bg);
-          font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
-          padding: 18px 32px; border: none; cursor: pointer;
-          transition: all 0.2s; letter-spacing: 0.05em;
-        }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
-        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .success-box {
-          background: rgba(34, 197, 94, 0.1); border: 1px solid var(--green);
-          color: var(--green); padding: 24px; margin-bottom: 24px;
-        }
-        .error-box {
-          background: rgba(232, 69, 69, 0.1); border: 1px solid var(--accent);
-          color: var(--accent); padding: 16px; margin-bottom: 24px; font-size: 0.9rem;
-        }
-
-        .dropzone {
-          border: 2px dashed var(--border2);
-          border-radius: 12px;
-          padding: 32px;
-          text-align: center;
-          cursor: pointer;
-          transition: all 0.2s;
-          background: var(--surface);
-          color: var(--muted);
-          position: relative;
-          overflow: hidden;
-        }
-        .dropzone.dragging { border-color: var(--accent); background: rgba(232, 69, 69, 0.05); }
-        .dropzone:hover { border-color: var(--accent); }
-        .dropzone-img {
-          width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
-          margin: 0 auto 16px; display: block;
-        }
-
-        .grid-2-col {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 24px;
-        }
-
-        @media (max-width: 768px) {
-          .content { padding: 100px 24px 60px; }
-          .nav { padding: 0 20px; }
-          .subdomain-group { flex-direction: column; align-items: stretch; }
-          .subdomain-group .input { border-right: 1px solid var(--border2); }
-          .subdomain-suffix { border-top: none; text-align: center; }
-          .grid-2-col { grid-template-columns: 1fr; gap: 16px; }
-        }
-      `}</style>
-
       {/* BG LAYERS */}
       <div className="bg-grid" />
       <div className="bg-glow" />
@@ -468,6 +297,11 @@ export default function DashboardPage() {
           <span className="logo-dot" /> MEGA<span className="logo-accent">Devs</span>
         </a>
         <div className="nav-right">
+          {isLive && (
+            <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">
+              ↗ View Live Site
+            </a>
+          )}
           <button className="theme-btn" onClick={() => signOut(auth)}>Sign Out</button>
           <button className="theme-btn" onClick={toggleTheme}>
             {theme === "dark" ? "☀" : "◑"}
@@ -479,12 +313,34 @@ export default function DashboardPage() {
       {/* CONTENT */}
       <div className="content">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="title">{isEditing ? "Edit Your" : "Create Your"} <em>Profile</em></h1>
-          <p className="sub">{isEditing ? "Update your details below to keep your developer presence fresh." : "Launch your own personalized developer page on the Mega Devs network. Pick your custom subdomain and start shining."}</p>
+
+          {/* DASH HEADER */}
+          <div className="dash-header">
+            <div>
+              <div className="dash-eyebrow">
+                <span className="dash-eyebrow-dot" />
+                <span>{isEditing ? "Editing Profile" : "New Profile"}</span>
+              </div>
+              <h1 className="title">{isEditing ? "Edit Your" : "Create Your"} <em>Profile</em></h1>
+              <p className="sub">{isEditing ? "Update your details below to keep your developer presence fresh." : "Launch your own personalized developer page on the Mega Devs network. Pick your custom subdomain and start shining."}</p>
+            </div>
+
+            {isEditing && (
+              <div className="status-card glass-card">
+                <span className={`status-pill ${isLive ? "live" : "draft"}`}>
+                  <span className="status-dot" /> {isLive ? "Live" : "Draft"}
+                </span>
+                <div className="status-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
+                <button type="button" className="copy-btn" onClick={handleCopyLink}>
+                  {copiedLink ? "Copied ✓" : "Copy Link"}
+                </button>
+              </div>
+            )}
+          </div>
 
           {success && (
             <div className="success-box">
-              <h3>Profile Created!</h3>
+              <h3>Profile Saved!</h3>
               <p style={{ marginTop: '8px' }}>
                 Your site is live at: <strong><a href={`http://${formData.subdomain.toLowerCase()}.megadevs.site`} style={{ color: 'inherit' }}>{formData.subdomain.toLowerCase()}.megadevs.site</a></strong>
               </p>
@@ -496,254 +352,340 @@ export default function DashboardPage() {
 
           {error && <div className="error-box">{error}</div>}
 
-          <form className="form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="label">Custom Subdomain</label>
-              <div className="subdomain-group">
-                <input
-                  type="text" className="input" name="subdomain"
-                  placeholder="e.g. adham" value={formData.subdomain} onChange={handleChange} required
-                  disabled={isEditing}
-                  style={isEditing ? { opacity: 0.5, cursor: "not-allowed" } : {}}
-                />
-                <div className="subdomain-suffix">.megadevs.site</div>
-              </div>
-            </div>
+          <div className="dashboard-layout">
+            {/* ── FORM ── */}
+            <form id="profile-form" className="form form-col" onSubmit={handleSubmit}>
 
-            <div className="form-group">
-              <label className="label">Full Name</label>
-              <input
-                type="text" className="input" name="name"
-                placeholder="John Doe" value={formData.name} onChange={handleChange} required
-              />
-            </div>
+              <div className="form-section glass-card">
+                <div className="form-section-head">
+                  <span className="form-section-num">01</span>
+                  <div>
+                    <div className="form-section-title">Basics</div>
+                    <div className="form-section-desc">Your identity on the network</div>
+                  </div>
+                </div>
 
-            <div className="form-group">
-              <label className="label">Role / Tagline</label>
-              <input
-                type="text" className="input" name="role"
-                placeholder="Frontend Developer" value={formData.role} onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="label">Profile Photo</label>
-              <div
-                className={`dropzone ${isDragging ? "dragging" : ""}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById("fileInput")?.click()}
-              >
-                {imagePreview ? (
-                  <>
-                    <img src={imagePreview} alt="Preview" className="dropzone-img" />
-                    <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change</span>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ fontSize: "2rem", marginBottom: "8px" }}>📸</div>
-                    <span style={{ fontSize: "0.9rem" }}>Drag & drop an image, or click to browse</span>
-                  </>
-                )}
-                <input
-                  type="file"
-                  id="fileInput"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="label">Gmail Address</label>
-              <input
-                type="email" className="input" name="gmail"
-                placeholder="your.email@gmail.com" value={formData.gmail} onChange={handleChange}
-              />
-            </div>
-
-            <div className="grid-2-col">
-              <div className="form-group">
-                <label className="label">Telegram Link</label>
-                <input
-                  type="url" className="input" name="telegram"
-                  placeholder="https://t.me/username" value={formData.telegram} onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label className="label">WhatsApp Link / Number</label>
-                <input
-                  type="text" className="input" name="whatsapp"
-                  placeholder="https://wa.me/1234567890" value={formData.whatsapp} onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="grid-2-col">
-              <div className="form-group">
-                <label className="label">Instagram Link</label>
-                <input
-                  type="url" className="input" name="instagram"
-                  placeholder="https://instagram.com/username" value={formData.instagram} onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label className="label">Facebook Link</label>
-                <input
-                  type="url" className="input" name="facebook"
-                  placeholder="https://facebook.com/username" value={formData.facebook} onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="grid-2-col">
-              <div className="form-group">
-                <label className="label">GitHub Link</label>
-                <input
-                  type="url" className="input" name="github"
-                  placeholder="https://github.com/username" value={formData.github} onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label className="label">Phone Number</label>
-                <input
-                  type="tel" className="input" name="phone"
-                  placeholder="+1 234 567 8900" value={formData.phone} onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="grid-2-col">
-              <div className="form-group">
-                <label className="label">Background Style</label>
-                <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
-                  <option value="bg-grid">Grid & Glow (Default)</option>
-                  <option value="bg-aurora">Aurora Borealis (New)</option>
-                  <option value="bg-cyber">Cyberpunk Grid (New)</option>
-                  <option value="bg-stars">Starlight Space (New)</option>
-                  <option value="bg-holo">Holographic Scanlines (New)</option>
-                  <option value="bg-glass">Frosted Glass Orbs (New)</option>
-                  <option value="noise">Static Noise</option>
-                  <option value="plain">Plain Dark</option>
-                  <option value="custom">Custom Image</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="label">Accent Color Theme</label>
-                <select className="select" name="themeColor" value={formData.themeColor} onChange={handleChange}>
-                  <option value="blue">Electric Blue</option>
-                  <option value="purple">Deep Purple</option>
-                  <option value="emerald">Neon Emerald</option>
-                  <option value="rose">Cyber Rose</option>
-                  <option value="amber">Solar Amber</option>
-                  <option value="slate">Monochrome Slate</option>
-                </select>
-              </div>
-
-              {formData.backgroundStyle === "custom" && (
-                <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                  <label className="label">Custom Background Image</label>
-                  <div
-                    className={`dropzone ${isDraggingBg ? "dragging" : ""}`}
-                    onDragOver={(e) => { e.preventDefault(); setIsDraggingBg(true); }}
-                    onDragLeave={() => setIsDraggingBg(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setIsDraggingBg(false);
-                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                        handleBgFile(e.dataTransfer.files[0]);
-                      }
-                    }}
-                    onClick={() => document.getElementById("bgFileInput")?.click()}
-                  >
-                    {bgImagePreview ? (
-                      <>
-                        <img src={bgImagePreview} alt="BG Preview" className="dropzone-img" style={{ borderRadius: '12px', width: '100%', height: '160px', objectFit: 'cover' }} />
-                        <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change background</span>
-                      </>
-                    ) : (
-                      <>
-                        <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🖼️</div>
-                        <span style={{ fontSize: "0.9rem" }}>Drag & drop a background image, or click to browse</span>
-                      </>
-                    )}
+                <div className="form-group">
+                  <label className="label">Custom Subdomain</label>
+                  <div className="subdomain-group">
                     <input
-                      type="file"
-                      id="bgFileInput"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          handleBgFile(e.target.files[0]);
-                        }
-                      }}
+                      type="text" className="input" name="subdomain"
+                      placeholder="e.g. adham" value={formData.subdomain} onChange={handleChange} required
+                      disabled={isEditing}
+                      style={isEditing ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                    />
+                    <div className="subdomain-suffix">.megadevs.site</div>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="label">Full Name</label>
+                  <input
+                    type="text" className="input" name="name"
+                    placeholder="John Doe" value={formData.name} onChange={handleChange} required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="label">Role / Tagline</label>
+                  <input
+                    type="text" className="input" name="role"
+                    placeholder="Frontend Developer" value={formData.role} onChange={handleChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="label">Gmail Address</label>
+                  <input
+                    type="email" className="input" name="gmail"
+                    placeholder="your.email@gmail.com" value={formData.gmail} onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-section glass-card">
+                <div className="form-section-head">
+                  <span className="form-section-num">02</span>
+                  <div>
+                    <div className="form-section-title">Profile Photo</div>
+                    <div className="form-section-desc">Shown on your avatar ring</div>
+                  </div>
+                </div>
+
+                <div
+                  className={`dropzone ${isDragging ? "dragging" : ""}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById("fileInput")?.click()}
+                >
+                  {imagePreview ? (
+                    <>
+                      <img src={imagePreview} alt="Preview" className="dropzone-img" />
+                      <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change</span>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: "2rem", marginBottom: "8px" }}>📸</div>
+                      <span style={{ fontSize: "0.9rem" }}>Drag & drop an image, or click to browse</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-section glass-card">
+                <div className="form-section-head">
+                  <span className="form-section-num">03</span>
+                  <div>
+                    <div className="form-section-title">Social Links</div>
+                    <div className="form-section-desc">Where people can reach you</div>
+                  </div>
+                </div>
+
+                <div className="grid-2-col">
+                  <div className="form-group">
+                    <label className="label">Telegram Link</label>
+                    <input
+                      type="url" className="input" name="telegram"
+                      placeholder="https://t.me/username" value={formData.telegram} onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="label">WhatsApp Link / Number</label>
+                    <input
+                      type="text" className="input" name="whatsapp"
+                      placeholder="https://wa.me/1234567890" value={formData.whatsapp} onChange={handleChange}
                     />
                   </div>
                 </div>
-              )}
-            </div>
 
-            <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-              <label className="label">Custom Links (Add anything, e.g. LinkedIn, Portfolio)</label>
-              {formData.customLinks.map((link, index) => (
-                <div key={link.id} style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
-                  <input
-                    type="text"
-                    className="input"
-                    placeholder="Link Title (e.g. LinkedIn)"
-                    value={link.title}
-                    onChange={(e) => handleCustomLinkChange(index, "title", e.target.value)}
-                    style={{ flex: 1 }}
-                  />
-                  <input
-                    type="url"
-                    className="input"
-                    placeholder="URL (https://...)"
-                    value={link.url}
-                    onChange={(e) => handleCustomLinkChange(index, "url", e.target.value)}
-                    style={{ flex: 2 }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCustomLink(index)}
-                    style={{ background: "rgba(232, 69, 69, 0.1)", color: "var(--accent)", border: "1px solid var(--accent)", padding: "0 16px", borderRadius: "8px", cursor: "pointer", fontFamily: "var(--font-display)" }}
-                  >
-                    Remove
-                  </button>
+                <div className="grid-2-col">
+                  <div className="form-group">
+                    <label className="label">Instagram Link</label>
+                    <input
+                      type="url" className="input" name="instagram"
+                      placeholder="https://instagram.com/username" value={formData.instagram} onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="label">Facebook Link</label>
+                    <input
+                      type="url" className="input" name="facebook"
+                      placeholder="https://facebook.com/username" value={formData.facebook} onChange={handleChange}
+                    />
+                  </div>
                 </div>
-              ))}
-              <button
-                type="button"
-                onClick={handleAddCustomLink}
-                style={{ background: "var(--surface2)", color: "var(--text)", border: "1px dashed var(--border2)", padding: "12px", borderRadius: "8px", cursor: "pointer", fontFamily: "var(--font-display)", fontSize: "0.9rem", fontWeight: 600 }}
-              >
-                + Add Custom Link
-              </button>
-            </div>
 
-            <div className="form-group" style={{ flexDirection: "row", alignItems: "center", gap: "12px", background: "var(--surface)", padding: "16px 20px", border: "1px solid var(--border2)", borderRadius: "8px" }}>
-              <input 
-                type="checkbox" 
-                name="glassyEffect" 
-                id="glassyEffect"
-                checked={formData.glassyEffect} 
-                onChange={handleChange}
-                style={{ width: "20px", height: "20px", accentColor: "var(--accent)", cursor: "pointer" }}
-              />
-              <div style={{ display: "flex", flex: 1, justifyContent: "space-between", alignItems: "center" }}>
-                <label htmlFor="glassyEffect" className="label" style={{ cursor: "pointer", margin: 0, fontSize: "0.75rem", color: "var(--text)" }}>
-                  Enable Glassy Effect (Translucent frosted buttons)
-                </label>
+                <div className="grid-2-col">
+                  <div className="form-group">
+                    <label className="label">GitHub Link</label>
+                    <input
+                      type="url" className="input" name="github"
+                      placeholder="https://github.com/username" value={formData.github} onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="label">Phone Number</label>
+                    <input
+                      type="tel" className="input" name="phone"
+                      placeholder="+1 234 567 8900" value={formData.phone} onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-section glass-card">
+                <div className="form-section-head">
+                  <span className="form-section-num">04</span>
+                  <div>
+                    <div className="form-section-title">Appearance</div>
+                    <div className="form-section-desc">Background, accent color & effects</div>
+                  </div>
+                </div>
+
+                <div className="grid-2-col">
+                  <div className="form-group">
+                    <label className="label">Background Style</label>
+                    <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
+                      <option value="bg-grid">Grid & Glow (Default)</option>
+                      <option value="bg-aurora">Aurora Borealis (New)</option>
+                      <option value="bg-cyber">Cyberpunk Grid (New)</option>
+                      <option value="bg-stars">Starlight Space (New)</option>
+                      <option value="bg-holo">Holographic Scanlines (New)</option>
+                      <option value="bg-glass">Frosted Glass Orbs (New)</option>
+                      <option value="noise">Static Noise</option>
+                      <option value="plain">Plain Dark</option>
+                      <option value="custom">Custom Image</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="label">Accent Color Theme</label>
+                    <select className="select" name="themeColor" value={formData.themeColor} onChange={handleChange}>
+                      <option value="blue">Electric Blue</option>
+                      <option value="purple">Deep Purple</option>
+                      <option value="emerald">Neon Emerald</option>
+                      <option value="rose">Cyber Rose</option>
+                      <option value="amber">Solar Amber</option>
+                      <option value="slate">Monochrome Slate</option>
+                    </select>
+                  </div>
+
+                  {formData.backgroundStyle === "custom" && (
+                    <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+                      <label className="label">Custom Background Image</label>
+                      <div
+                        className={`dropzone ${isDraggingBg ? "dragging" : ""}`}
+                        onDragOver={(e) => { e.preventDefault(); setIsDraggingBg(true); }}
+                        onDragLeave={() => setIsDraggingBg(false)}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          setIsDraggingBg(false);
+                          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                            handleBgFile(e.dataTransfer.files[0]);
+                          }
+                        }}
+                        onClick={() => document.getElementById("bgFileInput")?.click()}
+                      >
+                        {bgImagePreview ? (
+                          <>
+                            <img src={bgImagePreview} alt="BG Preview" className="dropzone-img" style={{ borderRadius: '12px', width: '100%', height: '160px', objectFit: 'cover' }} />
+                            <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change background</span>
+                          </>
+                        ) : (
+                          <>
+                            <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🖼️</div>
+                            <span style={{ fontSize: "0.9rem" }}>Drag & drop a background image, or click to browse</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          id="bgFileInput"
+                          accept="image/*"
+                          style={{ display: "none" }}
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleBgFile(e.target.files[0]);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="glassyEffect"
+                    id="glassyEffect"
+                    checked={formData.glassyEffect}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="glassyEffect">Enable Glassy Effect (Translucent frosted buttons)</label>
+                </div>
+              </div>
+
+              <div className="form-section glass-card">
+                <div className="form-section-head">
+                  <span className="form-section-num">05</span>
+                  <div>
+                    <div className="form-section-title">Custom Links</div>
+                    <div className="form-section-desc">Add anything — LinkedIn, portfolio, anything else</div>
+                  </div>
+                </div>
+
+                {formData.customLinks.map((link, index) => (
+                  <div key={link.id} className="link-row">
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="Link Title (e.g. LinkedIn)"
+                      value={link.title}
+                      onChange={(e) => handleCustomLinkChange(index, "title", e.target.value)}
+                      style={{ flex: 1 }}
+                    />
+                    <input
+                      type="url"
+                      className="input"
+                      placeholder="URL (https://...)"
+                      value={link.url}
+                      onChange={(e) => handleCustomLinkChange(index, "url", e.target.value)}
+                      style={{ flex: 2 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCustomLink(index)}
+                      className="link-remove-btn"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleAddCustomLink}
+                  className="link-add-btn"
+                >
+                  + Add Custom Link
+                </button>
+              </div>
+            </form>
+
+            {/* ── LIVE PREVIEW ── */}
+            <div className="preview-col">
+              <div className="preview-sticky">
+                <div className="preview-label">
+                  <span className="preview-label-dot" /> Live Preview
+                </div>
+                <div className="browser-chrome glass-panel">
+                  <div className="browser-dots"><span /><span /><span /></div>
+                  <div className="browser-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
+                </div>
+                <div className="preview-frame" data-theme="dark">
+                  {formData.backgroundStyle === "bg-grid" && <div className="bg-grid" />}
+                  {(formData.backgroundStyle === "bg-grid" || formData.backgroundStyle === "bg-glow") && <div className="bg-glow" />}
+                  {formData.backgroundStyle === "noise" && <div className="noise" />}
+                  {formData.backgroundStyle === "bg-aurora" && <div className="bg-aurora" />}
+                  {formData.backgroundStyle === "bg-cyber" && <div className="bg-cyber" />}
+                  {formData.backgroundStyle === "bg-stars" && <div className="bg-stars" />}
+                  {formData.backgroundStyle === "bg-holo" && <div className="bg-holo" />}
+                  {formData.backgroundStyle === "bg-glass" && <div className="bg-glass-orbs" />}
+                  {formData.backgroundStyle === "custom" && bgImagePreview && (
+                    <div style={{
+                      position: "absolute", inset: 0, pointerEvents: "none",
+                      backgroundImage: `url(${bgImagePreview})`, backgroundSize: "cover",
+                      backgroundPosition: "center", opacity: 0.3,
+                    }} />
+                  )}
+                  {previewProfile.name ? (
+                    <PremiumProfileCard profile={previewProfile} bgStyle={formData.backgroundStyle} />
+                  ) : (
+                    <div style={{ position: "relative", zIndex: 1, padding: "80px 24px", textAlign: "center", color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                      Fill in your name to see a live preview
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+          </div>
 
-            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+          {/* ── SAVE BAR ── */}
+          <div className="save-bar glass-panel">
+            <div className="save-bar-info">
+              {isSubmitting ? "Saving changes..." : isEditing ? "Editing existing profile" : "Ready to launch"}
+            </div>
+            <button type="submit" form="profile-form" className="submit-btn" disabled={isSubmitting}>
               {isSubmitting ? "Saving..." : (isEditing ? "Save Changes" : "Launch Profile 🚀")}
             </button>
-          </form>
+          </div>
         </motion.div>
       </div>
     </div>

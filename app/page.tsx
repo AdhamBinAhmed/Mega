@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef, useMemo } from "react";
 import MagneticButton from "./components/MagneticButton";
+import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -136,10 +137,54 @@ const techStack = [
   { name: "Nginx", cat: "Server" },
 ];
 
+const process = [
+  {
+    num: "01",
+    title: "Discover",
+    desc: "A technical audit that maps your requirements, constraints, and existing systems before we write a line of code.",
+  },
+  {
+    num: "02",
+    title: "Build",
+    desc: "Tight sprints, daily commits, and a shared staging environment so you watch the product take shape in real time.",
+  },
+  {
+    num: "03",
+    title: "Ship",
+    desc: "Zero-downtime deploys, automated rollbacks, and a launch checklist covering performance, security, and monitoring.",
+  },
+  {
+    num: "04",
+    title: "Support",
+    desc: "Post-launch we stay on-call for bug fixes, scaling advice, and whatever's next on your roadmap.",
+  },
+];
+
+const faqs = [
+  {
+    q: "How fast can you start a new project?",
+    a: "Most engagements kick off within 48 hours of a signed scope — we keep our roster small on purpose so there's no queue.",
+  },
+  {
+    q: "Do you work with existing codebases?",
+    a: "Yes. We regularly inherit legacy stacks, audit them first, then plan incremental refactors instead of risky rewrites.",
+  },
+  {
+    q: "What's your typical engagement length?",
+    a: "Anywhere from a two-week sprint to an open-ended retainer. We scope in phases so you're never locked into more than you need.",
+  },
+  {
+    q: "Can you handle both the app and the infrastructure?",
+    a: "Yes — frontend, backend, deployment, CI/CD, and monitoring. One team, one point of contact.",
+  },
+];
+
 const nav = [
   { l: "Services", h: "#services" },
+  { l: "Process", h: "#process" },
   { l: "Works", h: "/works" },
   { l: "Stack", h: "#stack" },
+  { l: "FAQ", h: "#faq" },
   { l: "Team", h: "#developers" },
   { l: "Contact", h: "#contact" },
 ];
@@ -157,6 +202,9 @@ export default function Home() {
   const [activeService, setActiveService] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState("");
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(hover: none) and (pointer: coarse)");
@@ -231,685 +279,46 @@ export default function Home() {
     return () => clearInterval(t);
   }, []);
 
+  // Scroll-spy: highlight the nav link for the section currently in view
+  useEffect(() => {
+    const ids = nav.filter((n) => n.h.startsWith("#")).map((n) => n.h.slice(1));
+    const sections = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    if (!sections.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Toast auto-dismiss
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2200);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  const cmdActions = [
+    { l: "Toggle Theme", icon: "◐", run: () => setTheme((t) => (t === "light" ? "dark" : "light")) },
+    {
+      l: "Copy Email",
+      icon: "✉",
+      run: () => {
+        navigator.clipboard?.writeText("megatrondevs@gmail.com");
+        setToast("Email copied to clipboard");
+      },
+    },
+    { l: "Scroll to Top", icon: "↑", run: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+    { l: "Open GitHub", icon: "⌥", run: () => window.open("https://github.com/AdhamBinAhmed", "_blank") },
+  ];
+
   return (
     <div className="root" data-theme={theme}>
-      <style>{`
-        /* ── THEME TOKENS ── */
-        :root, [data-theme="dark"] {
-          --bg:       #050507;
-          --surface:  #0d0d10;
-          --surface2: #131318;
-          --border:   rgba(255,255,255,0.06);
-          --border2:  rgba(255,255,255,0.12);
-          --text:     #f0f0f2;
-          --muted:    #6b6b7a;
-          --faint:    #2a2a32;
-          --accent:   #e84545;
-          --accent2:  #ff7043;
-          --accent3:  #ffd166;
-          --green:    #22c55e;
-          --glow:     rgba(232,69,69,0.15);
-          --nav-bg:   rgba(5,5,7,0.85);
-          --stats-bg: #0d0d10;
-        }
-
-        [data-theme="light"] {
-          --bg:       #faf8f5;
-          --surface:  #ffffff;
-          --surface2: #f0ede8;
-          --border:   rgba(0,0,0,0.07);
-          --border2:  rgba(0,0,0,0.14);
-          --text:     #111111;
-          --muted:    #7a7570;
-          --faint:    #e0dbd4;
-          --accent:   #c8392b;
-          --accent2:  #e8571a;
-          --accent3:  #c08b20;
-          --green:    #14532d;
-          --glow:     rgba(200,57,43,0.08);
-          --nav-bg:   rgba(250,248,245,0.9);
-          --stats-bg: #ffffff;
-        }
-
-        [data-theme="light"] .bg-grid {
-          background-image:
-            linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-        }
-        [data-theme="light"] .bg-glow {
-          background:
-            radial-gradient(ellipse 60% 50% at 10% 20%, rgba(200,57,43,0.07) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 90% 80%, rgba(232,87,26,0.05) 0%, transparent 70%);
-        }
-        [data-theme="light"] .noise { opacity: 0.02; }
-
-        .theme-btn { font-size: 1rem !important; padding: 0 12px !important; }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-
-        :root {
-          --font-display: var(--font-outfit, 'Outfit'), sans-serif;
-          --font-mono:    var(--font-jetbrains, 'JetBrains Mono'), monospace;
-          --font-logo:    var(--font-logo, 'Orbitron'), sans-serif;
-          --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-          --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        body {
-          background: var(--bg);
-          color: var(--text);
-          font-family: var(--font-display);
-          -webkit-font-smoothing: antialiased;
-          overflow-x: hidden;
-          cursor: auto;
-          transition: background 0.3s, color 0.3s;
-        }
-        @media (hover: hover) and (pointer: fine) {
-          body { cursor: none; }
-        }
-
-        ::selection { background: var(--accent); color: #fff; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
-        :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-
-        @media (hover: hover) and (pointer: fine) {
-          a { cursor: none; }
-        }
-
-        /* ── GLASSMORPHISM ── */
-        .glass-panel {
-          background: rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(16px) saturate(180%);
-          -webkit-backdrop-filter: blur(16px) saturate(180%);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-        [data-theme="light"] .glass-panel {
-          background: rgba(255, 255, 255, 0.6);
-          border: 1px solid rgba(255, 255, 255, 0.4);
-          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
-        }
-        
-        .glass-card {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          border-left: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        [data-theme="light"] .glass-card {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-        }
-
-        /* ── CUSTOM CURSOR ── */
-        .cursor {
-          position: fixed; z-index: 9999; top: 0; left: 0;
-          width: 12px; height: 12px; background: var(--accent);
-          border-radius: 50%; pointer-events: none;
-          transform: translate(-50%, -50%);
-          mix-blend-mode: difference;
-          transition: width 0.2s, height 0.2s, background 0.2s;
-        }
-
-        /* ── SCROLL BAR ── */
-        .scroll-bar {
-          position: fixed; top: 0; left: 0; height: 2px;
-          background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
-          z-index: 200; transition: width 0.1s linear; pointer-events: none;
-        }
-        @supports (animation-timeline: scroll()) {
-          @media (hover: none) and (pointer: coarse) {
-            .scroll-bar {
-              width: 100% !important;
-              transform-origin: left;
-              transform: scaleX(0);
-              animation: scroll-progress linear both;
-              animation-timeline: scroll(root block);
-              transition: none;
-            }
-            @keyframes scroll-progress { to { transform: scaleX(1); } }
-          }
-        }
-
-        /* ── BG EFFECTS ── */
-        .bg-grid {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none;
-          background-image:
-            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-          background-size: 60px 60px;
-        }
-        .bg-glow {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none;
-          background:
-            radial-gradient(ellipse 60% 50% at 10% 20%, rgba(232,69,69,0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 90% 80%, rgba(255,112,67,0.06) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,209,102,0.04) 0%, transparent 70%);
-        }
-        .noise {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-          background-size: 200px 200px;
-        }
-        /* Noise and heavy bg layers disabled on mobile — they paint every scroll frame */
-        @media (hover: none) and (pointer: coarse) {
-          .noise { display: none; }
-          .bg-glow { display: none; }
-        }
-
-        /* ── NAV ── */
-        nav {
-          position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-          display: flex; justify-content: space-between; align-items: center;
-          padding: 0 56px; height: 72px;
-        }
-        .logo {
-          font-family: var(--font-logo); font-size: 1.1rem; font-weight: 700;
-          color: var(--text); text-decoration: none; letter-spacing: 0.12em;
-          display: flex; align-items: center; gap: 6px; cursor: pointer;
-        }
-        .logo-accent { color: var(--accent); }
-        .logo-dot {
-          width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
-          animation: blink 2s ease-in-out infinite;
-        }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-        .nav-links { display: flex; align-items: center; gap: 36px; }
-        .nav-link {
-          color: var(--muted); font-size: 0.75rem; text-decoration: none;
-          font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
-          transition: color 0.2s; position: relative; padding: 4px 0; cursor: pointer;
-        }
-        .nav-link::after {
-          content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
-          background: var(--accent); transition: width 0.3s var(--ease-out);
-        }
-        .nav-link:hover { color: var(--text); }
-        .nav-link:hover::after { width: 100%; }
-
-        .nav-actions { display: flex; align-items: center; gap: 10px; }
-        .nav-badge {
-          font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 4px 8px; letter-spacing: 0.08em;
-          background: rgba(255,255,255,0.02);
-        }
-        .nav-btn {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 8px 14px; background: transparent;
-          cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase;
-          transition: all 0.2s; min-height: 36px; display: flex; align-items: center; gap: 6px;
-        }
-        .nav-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--glow); }
-        .hamburger {
-          display: none; flex-direction: column; gap: 5px;
-          background: none; border: none; cursor: pointer; padding: 8px; align-items: center;
-          -webkit-tap-highlight-color: transparent; min-width: 44px; min-height: 44px; justify-content: center;
-        }
-        .hamburger span { display: block; width: 20px; height: 1.5px; background: var(--muted); transition: all 0.3s; }
-        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px,4px); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
-
-        /* ── MOBILE MENU ── */
-        .mobile-menu-overlay {
-          position: fixed; inset: 0; z-index: 97;
-          background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
-        }
-        .mobile-menu {
-          position: fixed; top: 0; right: 0; bottom: 0; width: 360px; max-width: 85vw; z-index: 98;
-          background: linear-gradient(160deg, var(--surface), var(--surface2)); border-left: 1px solid var(--border); box-shadow: -30px 0 80px rgba(0,0,0,0.6);
-          display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 48px 40px;
-        }
-        .mobile-menu-header {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent);
-          letter-spacing: 0.2em; text-transform: uppercase; padding-bottom: 24px; border-bottom: 1px solid var(--border); width: 100%;
-        }
-        .mobile-menu-footer {
-          margin-top: auto; padding-top: 32px; border-top: 1px solid var(--border); width: 100%;
-        }
-        .mobile-menu a.nav-link-mobile {
-          font-size: 2.2rem; font-weight: 800; color: var(--text); text-decoration: none;
-          letter-spacing: -0.04em; text-transform: uppercase; transition: all 0.3s var(--ease-out); cursor: pointer;
-          display: flex; align-items: center; position: relative;
-        }
-        .mobile-menu a.nav-link-mobile::before {
-          content: ''; position: absolute; left: -24px; width: 12px; height: 2px; background: var(--accent);
-          opacity: 0; transform: translateX(-10px); transition: all 0.3s var(--ease-out);
-        }
-        .mobile-menu a.nav-link-mobile:hover { color: var(--accent); transform: translateX(24px); }
-        .mobile-menu a.nav-link-mobile:hover::before { opacity: 1; transform: translateX(0); }
-
-        /* ── CMD PALETTE ── */
-        .cmd-overlay {
-          position: fixed; inset: 0; z-index: 200;
-          background: rgba(5,5,7,0.6); backdrop-filter: blur(16px);
-          display: flex; align-items: flex-start; justify-content: center; padding: 80px 16px 16px;
-        }
-        .cmd-box {
-          width: 100%; max-width: 560px; overflow: hidden;
-          border-radius: 16px; margin: 0 auto;
-        }
-        .cmd-head {
-          display: flex; align-items: center; gap: 12px;
-          padding: 20px 24px; border-bottom: 1px solid var(--border);
-        }
-        .cmd-prompt { color: var(--accent); font-family: var(--font-mono); font-size: 0.875rem; font-weight: 700; }
-        .cmd-input {
-          background: transparent; border: none; color: var(--text);
-          font-size: 1rem; font-family: var(--font-display); outline: none; width: 100%; font-weight: 600;
-        }
-        .cmd-esc { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); border: 1px solid var(--border2); padding: 3px 7px; }
-        .cmd-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; padding: 12px 24px 8px; }
-        .cmd-item {
-          display: flex; align-items: center; gap: 12px; padding: 12px 24px;
-          color: var(--text); text-decoration: none; font-weight: 500; font-size: 0.875rem;
-          border-left: 2px solid transparent; transition: all 0.15s;
-        }
-        .cmd-item:hover { background: var(--faint); border-left-color: var(--accent); color: var(--accent); }
-        .cmd-arrow { color: var(--accent); font-family: var(--font-mono); }
-
-        /* ── HERO ── */
-        .hero {
-          min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
-          padding: 120px 56px 80px; position: relative; z-index: 2;
-        }
-        .hero-inner { max-width: 1200px; }
-        .hero-eyebrow {
-          display: flex; align-items: center; gap: 16px; margin-bottom: 36px;
-        }
-        .hero-tag {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent);
-          letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
-        }
-        .hero-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--accent), transparent); max-width: 120px; }
-        .hero-title {
-          font-family: var(--font-display); font-weight: 900;
-          font-size: clamp(2.8rem, 9vw, 11rem); line-height: 1; letter-spacing: -0.05em;
-          color: var(--text); margin-bottom: 40px;
-          display: flex; flex-direction: column; gap: 0;
-        }
-        .hero-title-accent {
-          display: block;
-          background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .hero-sub {
-          font-size: clamp(0.95rem, 1.5vw, 1.2rem); color: var(--muted);
-          line-height: 1.75; max-width: 52ch; margin-bottom: 56px;
-        }
-        .hero-sub strong { color: var(--text); font-weight: 600; }
-        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
-        .btn-primary {
-          display: inline-flex; align-items: center; gap: 10px;
-          padding: 16px 36px; background: var(--accent); color: #fff;
-          font-weight: 700; font-size: 0.875rem; text-decoration: none; letter-spacing: 0.04em;
-          transition: all 0.2s; position: relative; overflow: hidden;
-        }
-        .btn-primary {
-          background: var(--text);
-          color: var(--bg);
-          border-radius: 9999px;
-          padding: 16px 32px;
-          border: none;
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-          transition: all 0.2s ease;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-ghost {
-          display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-          padding: 16px 32px; color: var(--text); font-size: 0.95rem; font-weight: 600;
-          border: 1px solid var(--border2); text-decoration: none;
-          border-radius: 9999px; background: transparent;
-          transition: all 0.2s ease;
-        }
-        .btn-ghost:hover { border-color: var(--text); transform: translateY(-2px); }
-        .hero-status {
-          position: absolute; bottom: 48px; right: 56px;
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
-        }
-        @media (max-width: 480px) {
-          .hero-status { right: 16px; bottom: 20px; font-size: 0.55rem; }
-        }
-        .hero-status-row { display: flex; align-items: center; gap: 8px; }
-        .status-live { width: 6px; height: 6px; border-radius: 50%; background: var(--green); background: #14532d; animation: pulse 2s ease-in-out infinite; flex-shrink: 0; }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
-
-        /* ── STATS BAR ── */
-        .stats-bar {
-          position: relative; z-index: 2; border-top: 1px solid var(--border);
-          border-bottom: 1px solid var(--border);
-          display: grid; grid-template-columns: repeat(4, 1fr);
-          background: var(--surface);
-        }
-        .stat-item {
-          padding: 40px 48px; border-right: 1px solid var(--border);
-          display: flex; flex-direction: column; gap: 6px;
-        }
-        .stat-item:last-child { border-right: none; }
-        .stat-value {
-          font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3rem);
-          font-weight: 900; letter-spacing: -0.04em; color: var(--text);
-          background: linear-gradient(135deg, var(--text), var(--muted));
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .stat-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
-
-        /* ── SECTION CORE ── */
-        .section { padding: 140px 56px; position: relative; z-index: 2; }
-        .section-inner { max-width: 1200px; margin: 0 auto; }
-        .section-eyebrow {
-          display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
-        }
-        .section-tag {
-          font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent);
-          letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
-        }
-        .section-line { height: 1px; width: 40px; background: var(--accent); }
-        .section-num { font-family: var(--font-mono); font-size: 0.6rem; color: var(--faint); letter-spacing: 0.1em; }
-        .section-title {
-          font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 5rem);
-          font-weight: 900; letter-spacing: -0.04em; color: var(--text);
-          line-height: 1; margin-bottom: 80px; max-width: 16ch;
-        }
-        .section-title em { font-style: normal; color: var(--accent); }
-
-        /* ── SERVICES ── */
-        .services-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); }
-        .service-card {
-          padding: 56px 48px; text-decoration: none; display: block;
-          position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
-          border-radius: 24px;
-          margin: 8px; /* space for the hover spring */
-        }
-        .service-card::before {
-          content: ''; position: absolute; inset: 0;
-          background: linear-gradient(135deg, var(--glow), transparent 60%);
-          opacity: 0; transition: opacity 0.4s;
-        }
-        .service-card.active { background: var(--surface2); border-color: var(--border2); }
-        .service-card.active::before { opacity: 1; }
-        .service-card:hover { background: var(--surface2); }
-        .service-card:hover::before { opacity: 1; }
-        .service-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
-        .service-icon { font-size: 1.5rem; color: var(--accent); line-height: 1; }
-        .service-num-tag { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.12em; }
-        .service-title { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 800; color: var(--text); letter-spacing: -0.03em; margin-bottom: 6px; }
-        .service-sub { font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; }
-        .service-desc { color: var(--muted); font-size: 0.925rem; line-height: 1.75; margin-bottom: 32px; }
-        .service-metric { display: flex; align-items: baseline; gap: 8px; padding-top: 24px; border-top: 1px solid var(--border); }
-        .service-metric-val { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: var(--accent); letter-spacing: -0.04em; }
-        .service-metric-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-        .service-output {
-          position: absolute; bottom: 24px; right: 24px;
-          font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted);
-          opacity: 0; transition: opacity 0.3s; pointer-events: none;
-        }
-        .service-card:hover .service-output,
-        .service-card.active .service-output { opacity: 1; }
-
-        /* ── WORKS ── */
-        .works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 80px; flex-wrap: wrap; gap: 32px; }
-        .works-filter-hint { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
-        .works-list { display: flex; flex-direction: column; gap: 2px; }
-        .work-row {
-          display: grid; grid-template-columns: 80px 1fr 120px 120px;
-          align-items: center; gap: 32px;
-          padding: 32px 40px; background: var(--surface); border: 1px solid transparent;
-          text-decoration: none; transition: all 0.3s var(--ease-out); position: relative; overflow: hidden;
-        }
-        .work-row::before {
-          content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-          background: var(--accent); transform: scaleY(0); transform-origin: bottom;
-          transition: transform 0.3s var(--ease-out);
-        }
-        .work-row:hover { background: var(--surface2); border-color: var(--border2); padding-left: 56px; }
-        .work-row:hover::before { transform: scaleY(1); }
-        .work-row-num { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
-        .work-row-info { min-width: 0; }
-        .work-row-cat { font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
-        .work-row-title { font-size: 1.4rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; margin-bottom: 8px; }
-        .work-row-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-        .work-tag { font-family: var(--font-mono); font-size: 0.55rem; color: var(--muted); border: 1px solid var(--border2); padding: 3px 8px; letter-spacing: 0.06em; }
-        .work-row-year { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); text-align: right; }
-        .work-status {
-          font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600;
-          letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px;
-          border: 1px solid; text-align: center;
-        }
-        .work-status.live { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.05); }
-        .work-status.private { color: var(--accent); border-color: rgba(232,69,69,0.3); background: var(--glow); }
-        .work-expand {
-          position: absolute; inset: 0; pointer-events: none;
-          display: flex; align-items: flex-end; padding: 16px 40px;
-          font-size: 0.8rem; color: var(--muted); opacity: 0; transition: opacity 0.2s;
-          background: linear-gradient(90deg, transparent 0%, rgba(5,5,7,0.8) 60%);
-        }
-        .work-row:hover .work-expand { opacity: 1; }
-
-        /* ── STACK ── */
-        .stack-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; align-items: start; }
-        .stack-left-title {
-          font-size: clamp(2rem, 4vw, 4rem); font-weight: 900; letter-spacing: -0.04em;
-          color: var(--text); line-height: 1; margin-bottom: 32px;
-        }
-        .stack-meta-list { display: flex; flex-direction: column; gap: 16px; }
-        .stack-meta-row { display: flex; flex-direction: column; gap: 4px; padding: 16px 0; border-bottom: 1px solid var(--border); }
-        .stack-meta-key { font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
-        .stack-meta-val { font-size: 0.875rem; color: var(--muted); }
-        .stack-tags { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 2px; background: var(--border); }
-        .stack-tag {
-          background: var(--surface); padding: 24px 28px; display: flex; flex-direction: column; gap: 6px;
-          transition: all 0.2s; border: 1px solid transparent;
-        }
-        .stack-tag:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-2px); }
-        .stack-tag-name { font-size: 0.95rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
-        .stack-tag-cat { font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
-
-        /* ── TEAM ── */
-        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-        .dev-card {
-          background: var(--surface); border: 1px solid var(--border);
-          padding: 48px; position: relative; overflow: hidden;
-          transition: all 0.4s var(--ease-out);
-        }
-        .dev-card::after {
-          content: attr(data-index);
-          position: absolute; bottom: -20px; right: -10px;
-          font-family: var(--font-display); font-size: 8rem; font-weight: 900;
-          color: var(--faint); pointer-events: none; line-height: 1; letter-spacing: -0.05em;
-          transition: color 0.3s;
-        }
-        .dev-card:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 32px 80px rgba(0,0,0,0.4); }
-        @media (hover: none) { .dev-card { transition: none !important; } }
-        .dev-card:hover::after { color: rgba(232,69,69,0.1); }
-        .dev-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
-        .dev-tag { font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; }
-        .dev-online { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 900; color: #14532d; }
-        .dev-avatar {
-          width: 72px; height: 72px; object-fit: cover; display: block;
-          margin-bottom: 24px; border: 2px solid var(--border2); position: relative; z-index: 1;
-          clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
-          transition: border-color 0.3s;
-        }
-        .dev-card:hover .dev-avatar { border-color: var(--accent); }
-        .dev-name { font-size: 1.6rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; margin-bottom: 6px; position: relative; z-index: 1; }
-        .dev-role { font-size: 0.85rem; color: var(--muted); margin-bottom: 32px; line-height: 1.6; position: relative; z-index: 1; }
-        .dev-links { display: flex; gap: 10px; position: relative; z-index: 1; flex-wrap: wrap; }
-        .dev-link {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 10px 16px; text-decoration: none;
-          transition: all 0.2s; display: flex; align-items: center; gap: 6px;
-          min-height: 44px; cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
-        .dev-link:hover { border-color: var(--accent); color: var(--accent); background: var(--glow); }
-
-        /* ── CONTACT ── */
-        .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-        .contact-desc { font-size: 1.1rem; color: var(--muted); line-height: 1.8; margin-bottom: 48px; max-width: 42ch; }
-        .contact-links { display: flex; flex-direction: column; gap: 0; margin-bottom: 48px; }
-        .contact-link {
-          color: var(--text); font-size: clamp(1rem, 2.5vw, 1.6rem); font-weight: 800;
-          text-decoration: none; letter-spacing: -0.02em; padding: 24px 0;
-          border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
-          transition: all 0.3s; group: true; cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
-        .contact-link:first-child { border-top: 1px solid var(--border); }
-        .contact-link:hover { color: var(--accent); padding-left: 16px; }
-        .contact-link-arrow { opacity: 0; transform: translateX(-8px); transition: all 0.3s; }
-        .contact-link:hover .contact-link-arrow { opacity: 1; transform: translateX(0); }
-        .contact-meta { display: flex; flex-direction: column; gap: 0; background: var(--surface); border: 1px solid var(--border); }
-        .contact-meta-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--border); }
-        .contact-meta-row:last-child { border-bottom: none; }
-        .contact-meta-key { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-        .contact-meta-val { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text); font-weight: 600; }
-        .contact-meta-green { color: var(--green) !important; }
-        .contact-code {
-          background: var(--surface2); border: 1px solid var(--border);
-          padding: 40px; font-family: var(--font-mono); font-size: 0.8rem; line-height: 2.2;
-          position: relative; overflow: hidden;
-        }
-        .contact-code::before {
-          content: 'SEND_REQUEST.sh'; position: absolute; top: 0; right: 0;
-          font-size: 0.6rem; color: var(--muted); padding: 8px 16px;
-          background: var(--faint); border-bottom: 1px solid var(--border); border-left: 1px solid var(--border);
-          letter-spacing: 0.1em;
-        }
-        .code-comment { color: var(--muted); }
-        .code-key { color: var(--accent3); }
-        .code-val { color: var(--accent2); }
-        .code-status { color: var(--green); }
-        .code-cursor { animation: blink 1s step-end infinite; }
-
-        /* ── FOOTER ── */
-        footer {
-          border-top: 1px solid var(--border); padding: 32px 56px;
-          display: flex; justify-content: space-between; align-items: center;
-          position: relative; z-index: 2; flex-wrap: wrap; gap: 16px;
-        }
-        .footer-logo { font-family: var(--font-logo); font-size: 0.85rem; color: var(--muted); letter-spacing: 0.12em; }
-        .footer-logo span { color: var(--accent); }
-        .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.08em; }
-        .footer-links { display: flex; gap: 24px; }
-        .footer-link { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); text-decoration: none; letter-spacing: 0.08em; transition: color 0.2s; }
-        .footer-link:hover { color: var(--accent); }
-
-        /* ── HISTORY SECTION ── */
-        .history-section {
-          position: relative; z-index: 2; padding: 100px 56px;
-          background: var(--surface);
-          border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-          text-align: center; display: flex; flex-direction: column; align-items: center; gap: 32px;
-        }
-        .history-title { font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 900; letter-spacing: -0.04em; color: var(--text); }
-        .history-title span { color: var(--accent); }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 960px) {
-          nav { padding: 0 20px; }
-          .nav-links { display: none; }
-          .hamburger { display: flex; }
-          .hero { padding: 96px 20px 100px; min-height: 100svh; }
-          .hero-status { right: 20px; bottom: 80px; }
-          .section { padding: 80px 20px; }
-          .stats-bar { grid-template-columns: repeat(2, 1fr); }
-          .stat-item { padding: 28px 20px; border-right-color: transparent; }
-          .stat-item:nth-child(odd) { border-right: 1px solid var(--border); }
-          .services-layout { grid-template-columns: 1fr; gap: 0; }
-          .service-card { margin: 4px; }
-          .work-row { grid-template-columns: 48px 1fr auto; gap: 16px; padding: 20px 16px; }
-          .work-row-year { display: none; }
-          .work-status { font-size: 0.55rem; padding: 4px 8px; }
-          .work-row:hover { padding-left: 20px; }
-          .stack-layout { grid-template-columns: 1fr; gap: 40px; }
-          .stack-tags { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-          .team-grid { grid-template-columns: 1fr; }
-          .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-          footer { padding: 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
-          .footer-links { gap: 16px; }
-          .history-section { padding: 60px 20px; }
-          .contact-code { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        }
-        @media (max-width: 480px) {
-          .hero-title { font-size: clamp(2.6rem, 12vw, 4.5rem); letter-spacing: -0.04em; }
-          .section-title { font-size: clamp(1.8rem, 7vw, 2.8rem); }
-          .hero-actions { flex-direction: column; align-items: stretch; width: 100%; }
-          .btn-primary, .btn-ghost { width: 100%; justify-content: center; padding: 18px 24px; }
-          .service-card { padding: 28px 20px; border-radius: 16px; }
-          .service-metric-val { font-size: 1.5rem; }
-          .dev-card { padding: 28px 20px; }
-          .contact-code { padding: 24px 16px; font-size: 0.7rem; }
-          .contact-link { font-size: 0.95rem; padding: 18px 0; }
-          .contact-desc { font-size: 0.95rem; }
-          .stat-item { padding: 24px 16px; }
-          .stat-value { font-size: clamp(1.6rem, 7vw, 2.4rem); }
-          .work-row { padding: 16px 12px; }
-          .work-row-title { font-size: 1.1rem; }
-          .work-tag { font-size: 0.5rem; }
-          .section-devs { padding: 80px 20px; }
-          .stack-tag { padding: 18px 16px; }
-          .nav-btn { padding: 8px 10px; font-size: 0.6rem; }
-          .cmd-overlay { padding: 60px 12px 12px; }
-        }
-        /* Hide cursor on touch devices */
-        @media (hover: none), (pointer: coarse) {
-          .cursor { display: none; }
-        }
-        /* On mobile, backdrop-filter is very GPU-expensive — replace with solid bg */
-        @media (hover: none) and (pointer: coarse) {
-          .glass-panel {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background: var(--surface) !important;
-          }
-          .glass-card {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background: var(--surface2) !important;
-          }
-          .mobile-menu {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-          }
-          .cmd-overlay {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background: rgba(5,5,7,0.96) !important;
-          }
-          /* Disable CSS transitions on transform/box-shadow that cause repaints */
-          .service-card, .work-row, .stack-tag, .dev-card-extracted {
-            transition: opacity 0.2s ease !important;
-          }
-          /* Promote key animated elements to composite layer */
-          .hero-title {
-            will-change: opacity, transform;
-          }
-        }
-        /* Improve tap targets */
-        @media (hover: none) {
-          .work-row:hover { padding-left: 12px; }
-          .work-row:hover .work-expand { opacity: 0; }
-          .nav-link::after { display: none; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-        }
-      `}</style>
 
       {/* CURSOR — hidden on touch devices via CSS */}
       <motion.div className="cursor" style={{ x: springX, y: springY }} />
@@ -930,7 +339,10 @@ export default function Home() {
         </a>
         <div className="nav-links">
           {nav.map((n) => (
-            <a key={n.l} href={n.h} className="nav-link">{n.l}</a>
+            <a
+              key={n.l} href={n.h}
+              className={`nav-link${n.h === `#${activeSection}` ? " active" : ""}`}
+            >{n.l}</a>
           ))}
           <span className="nav-badge">/ CMD</span>
         </div>
@@ -994,21 +406,43 @@ export default function Home() {
                   onKeyDown={(e) => {
                     if (e.key === "Escape") setCmdOpen(false);
                     if (e.key === "Enter" && cmdVal.trim()) {
-                      const m = nav.find((n) => n.l.toLowerCase().includes(cmdVal.trim().toLowerCase()));
-                      if (m) { window.location.href = m.h; setCmdOpen(false); setCmdVal(""); }
+                      const q = cmdVal.trim().toLowerCase();
+                      const m = nav.find((n) => n.l.toLowerCase().includes(q));
+                      if (m) { window.location.href = m.h; setCmdOpen(false); setCmdVal(""); return; }
+                      const a = cmdActions.find((a) => a.l.toLowerCase().includes(q));
+                      if (a) { a.run(); setCmdOpen(false); setCmdVal(""); }
                     }
                   }}
-                  placeholder="Navigate to..." className="cmd-input"
+                  placeholder="Navigate or run a command..." className="cmd-input"
                 />
                 <span className="cmd-esc">ESC</span>
               </div>
-              <div className="cmd-label">Sections</div>
-              {nav.filter((n) => n.l.toLowerCase().includes(cmdVal.toLowerCase())).map((n) => (
-                <a key={n.l} href={n.h} onClick={() => setCmdOpen(false)} className="cmd-item">
-                  <span className="cmd-arrow">&gt;</span>
-                  <span>{n.l}</span>
-                </a>
-              ))}
+              {nav.filter((n) => n.l.toLowerCase().includes(cmdVal.toLowerCase())).length > 0 && (
+                <>
+                  <div className="cmd-label">Sections</div>
+                  {nav.filter((n) => n.l.toLowerCase().includes(cmdVal.toLowerCase())).map((n) => (
+                    <a key={n.l} href={n.h} onClick={() => setCmdOpen(false)} className="cmd-item">
+                      <span className="cmd-arrow">&gt;</span>
+                      <span>{n.l}</span>
+                    </a>
+                  ))}
+                </>
+              )}
+              {cmdActions.filter((a) => a.l.toLowerCase().includes(cmdVal.toLowerCase())).length > 0 && (
+                <>
+                  <div className="cmd-label">Actions</div>
+                  {cmdActions.filter((a) => a.l.toLowerCase().includes(cmdVal.toLowerCase())).map((a) => (
+                    <button
+                      key={a.l}
+                      onClick={() => { a.run(); setCmdOpen(false); setCmdVal(""); }}
+                      className="cmd-item cmd-item-btn"
+                    >
+                      <span className="cmd-arrow">{a.icon}</span>
+                      <span>{a.l}</span>
+                    </button>
+                  ))}
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -1080,6 +514,18 @@ export default function Home() {
         ))}
       </motion.div>
 
+      {/* ── TECH TICKER ── */}
+      <div className="tech-marquee">
+        <div className="tech-marquee-track">
+          {[...techStack, ...techStack].map((t, i) => (
+            <span key={`${t.name}-${i}`} className="tech-marquee-item">
+              <span className="tech-marquee-dot" />
+              {t.name}
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* ── SERVICES ── */}
       <section id="services" className="section">
         <div className="section-inner">
@@ -1117,6 +563,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── PROCESS ── */}
+      <section id="process" className="section" style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <div className="section-inner">
+          <div className="section-eyebrow">
+            <div className="section-line" />
+            <span className="section-tag">How We Work</span>
+            <span className="section-num">§02</span>
+          </div>
+          <h2 className="section-title">A process built for <em>momentum</em></h2>
+          <div className="process-grid">
+            {process.map((p, i) => (
+              <motion.div
+                key={p.num} className="process-card"
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ type: "spring", damping: 22, stiffness: 120, delay: i * 0.08 }}
+              >
+                <div className="process-num">{p.num}</div>
+                <div className="process-title">{p.title}</div>
+                <div className="process-desc">{p.desc}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── WORKS ── */}
       <section id="works" className="section" style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
         <div className="section-inner">
@@ -1125,7 +596,7 @@ export default function Home() {
               <div className="section-eyebrow">
                 <div className="section-line" />
                 <span className="section-tag">Portfolio</span>
-                <span className="section-num">§02</span>
+                <span className="section-num">§03</span>
               </div>
               <h2 className="section-title">Things we&apos;ve <em>shipped</em></h2>
             </div>
@@ -1168,7 +639,7 @@ export default function Home() {
           <div className="section-eyebrow">
             <div className="section-line" />
             <span className="section-tag">Tech Stack</span>
-            <span className="section-num">§03</span>
+            <span className="section-num">§04</span>
           </div>
           <div className="stack-layout">
             <div>
@@ -1200,102 +671,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
+      <section id="faq" className="section" style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <div className="section-inner">
+          <div className="section-eyebrow">
+            <div className="section-line" />
+            <span className="section-tag">Questions</span>
+            <span className="section-num">§05</span>
+          </div>
+          <h2 className="section-title">Frequently <em>asked</em></h2>
+          <div className="faq-list">
+            {faqs.map((f, i) => (
+              <div key={f.q} className="faq-item">
+                <button
+                  className="faq-question"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i}
+                >
+                  <span>{f.q}</span>
+                  <span className={`faq-icon${openFaq === i ? " open" : ""}`}>+</span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {openFaq === i && (
+                    <motion.div
+                      className="faq-answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <div className="faq-answer-inner">{f.a}</div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── TEAM ── */}
-      <style>{`
-        /* ── THEME TOKENS (Modify these as needed for your new project) ── */
-        #developers {
-          --surface:  #0d0d10;
-          --border:   rgba(255,255,255,0.06);
-          --border2:  rgba(255,255,255,0.12);
-          --text:     #f0f0f2;
-          --muted:    #6b6b7a;
-          --faint:    #2a2a32;
-          --accent:   #e84545;
-          --green:    #22c55e;
-          --glow:     rgba(232,69,69,0.15);
-          
-          /* Fallback fonts if CSS variables are not set in the parent */
-          --font-display: 'Outfit', sans-serif;
-          --font-mono:    'JetBrains Mono', monospace;
-        }
-
-        /* ── SECTION CORE ── */
-        .section-devs { padding: 140px 56px; position: relative; z-index: 2; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .section-inner-devs { max-width: 1200px; margin: 0 auto; }
-        .section-eyebrow {
-          display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
-        }
-        .section-tag {
-          font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent);
-          letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
-        }
-        .section-line { height: 1px; width: 40px; background: var(--accent); }
-        .section-num { font-family: var(--font-mono); font-size: 0.6rem; color: var(--faint); letter-spacing: 0.1em; }
-        .section-title-devs {
-          font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 5rem);
-          font-weight: 900; letter-spacing: -0.04em; color: var(--text);
-          line-height: 1; margin-bottom: 80px; max-width: 16ch;
-        }
-        .section-title-devs em { font-style: normal; color: var(--accent); }
-
-        /* ── STATUS INDICATOR ── */
-        .status-live { width: 6px; height: 6px; border-radius: 50%; background: var(--green); background: #14532d; animation: pulse 2s ease-in-out infinite; display: inline-block; flex-shrink: 0; }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
-
-        /* ── TEAM ── */
-        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-        .dev-card-extracted {
-          padding: 48px; position: relative; overflow: hidden;
-          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
-          border-radius: 24px;
-        }
-        .dev-card-extracted::after {
-          content: attr(data-index);
-          position: absolute; bottom: -20px; right: -10px;
-          font-family: var(--font-display); font-size: 8rem; font-weight: 900;
-          color: var(--faint); pointer-events: none; line-height: 1; letter-spacing: -0.05em;
-          transition: color 0.3s;
-        }
-        .dev-card-extracted:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 32px 80px rgba(0,0,0,0.4); }
-        .dev-card-extracted:hover::after { color: rgba(232,69,69,0.1); }
-        .dev-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
-        .dev-tag-extracted { font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; }
-        .dev-online { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 900; color: #14532d; }
-        .dev-avatar-extracted {
-          width: 72px; height: 72px; object-fit: cover; display: block;
-          margin-bottom: 24px; border: 2px solid var(--border2); position: relative; z-index: 1;
-          clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
-          transition: border-color 0.3s;
-        }
-        .dev-card-extracted:hover .dev-avatar-extracted { border-color: var(--accent); }
-        .dev-name-extracted { font-size: 1.6rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; margin-bottom: 6px; position: relative; z-index: 1; }
-        .dev-role-extracted { font-size: 0.85rem; color: var(--muted); margin-bottom: 32px; line-height: 1.6; position: relative; z-index: 1; }
-        .dev-links-extracted { display: flex; gap: 10px; position: relative; z-index: 1; flex-wrap: wrap; }
-        .dev-link-extracted {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 10px 16px; text-decoration: none;
-          transition: all 0.2s; display: flex; align-items: center; gap: 6px;
-          min-height: 44px; cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
-        .dev-link-extracted:hover { border-color: var(--accent); color: var(--accent); background: var(--glow); }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 960px) {
-          .section-devs { padding: 100px 24px; }
-          .team-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 480px) {
-          .section-title-devs { font-size: clamp(2rem, 8vw, 3rem); }
-          .dev-card-extracted { padding: 32px 24px; }
-        }
-      `}</style>
-
       <section id="developers" className="section-devs">
         <div className="section-inner-devs">
           <div className="section-eyebrow">
             <div className="section-line" />
             <span className="section-tag">The Team</span>
-            <span className="section-num">§04</span>
+            <span className="section-num">§06</span>
           </div>
           <h2 className="section-title-devs">Meet the <em>engineers</em></h2>
           <div className="team-grid">
@@ -1310,7 +731,7 @@ export default function Home() {
                   <span className="dev-tag-extracted">{d.tag}</span>
                   <span className="dev-online"><span className="status-live" />Available</span>
                 </div>
-                <Image src={d.image} alt={`Photo of ${d.name}`} width={72} height={72} className="dev-avatar-extracted" priority />
+                <Image src={d.image} alt={`Photo of ${d.name}`} width={72} height={72} className="dev-avatar-extracted" loading="lazy" />
                 <div className="dev-name-extracted">{d.name}</div>
                 <div className="dev-role-extracted">{d.role}</div>
                 <div className="dev-links-extracted">
@@ -1329,7 +750,7 @@ export default function Home() {
           <div className="section-eyebrow">
             <div className="section-line" />
             <span className="section-tag">Get in Touch</span>
-            <span className="section-num">§05</span>
+            <span className="section-num">§07</span>
           </div>
           <h2 className="section-title">Let&apos;s build something <em>great</em></h2>
           <div className="contact-layout">
@@ -1391,6 +812,22 @@ export default function Home() {
           <span className="footer-link">{currentTime}</span>
         </div>
       </footer>
+
+      {/* ── TOAST ── */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            className="toast glass-panel"
+            initial={{ opacity: 0, y: 20, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 20, x: "-50%" }}
+            transition={{ type: "spring", damping: 24, stiffness: 200 }}
+          >
+            <span className="toast-dot" />
+            <span>{toast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
