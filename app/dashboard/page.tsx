@@ -33,6 +33,16 @@ export default function DashboardPage() {
     backgroundStyle: "bg-grid", // default
     themeColor: "blue",
     glassyEffect: true,
+    cursorSpotlight: false,
+    tiltEffect: false,
+    particlesEffect: false,
+    gradientBorder: false,
+    holographicFoil: false,
+    cyberGlitch: false,
+    levitationFloat: false,
+    neonPulse: false,
+    sonarPulse: false,
+    scanlineEffect: false,
     customLinks: [] as { id: string, title: string, url: string }[],
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -81,6 +91,16 @@ export default function DashboardPage() {
             backgroundStyle: data.backgroundStyle || "bg-grid",
             themeColor: data.themeColor || "blue",
             glassyEffect: data.glassyEffect !== undefined ? data.glassyEffect : true,
+            cursorSpotlight: data.cursorSpotlight || false,
+            tiltEffect: data.tiltEffect || false,
+            particlesEffect: data.particlesEffect || false,
+            gradientBorder: data.gradientBorder || false,
+            holographicFoil: data.holographicFoil || false,
+            cyberGlitch: data.cyberGlitch || false,
+            levitationFloat: data.levitationFloat || false,
+            neonPulse: data.neonPulse || false,
+            sonarPulse: data.sonarPulse || false,
+            scanlineEffect: data.scanlineEffect || false,
             customLinks: data.customLinks || [],
           });
           if (data.photoUrl) setImagePreview(data.photoUrl);
@@ -216,6 +236,16 @@ export default function DashboardPage() {
         backgroundStyle: formData.backgroundStyle,
         themeColor: formData.themeColor,
         glassyEffect: formData.glassyEffect,
+        cursorSpotlight: formData.cursorSpotlight,
+        tiltEffect: formData.tiltEffect,
+        particlesEffect: formData.particlesEffect,
+        gradientBorder: formData.gradientBorder,
+        holographicFoil: formData.holographicFoil,
+        cyberGlitch: formData.cyberGlitch,
+        levitationFloat: formData.levitationFloat,
+        neonPulse: formData.neonPulse,
+        sonarPulse: formData.sonarPulse,
+        scanlineEffect: formData.scanlineEffect,
         customLinks: formData.customLinks,
         updatedAt: new Date().toISOString(),
       }, { merge: true });
@@ -596,6 +626,116 @@ export default function DashboardPage() {
                     onChange={handleChange}
                   />
                   <label htmlFor="glassyEffect">Enable Glassy Effect (Translucent frosted buttons)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="cursorSpotlight"
+                    id="cursorSpotlight"
+                    checked={formData.cursorSpotlight}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="cursorSpotlight">Cursor Spotlight (Glow follows the visitor's mouse)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="tiltEffect"
+                    id="tiltEffect"
+                    checked={formData.tiltEffect}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="tiltEffect">3D Tilt (Card tilts toward the cursor)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="particlesEffect"
+                    id="particlesEffect"
+                    checked={formData.particlesEffect}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="particlesEffect">Ambient Particles (Floating light specks in the card)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="gradientBorder"
+                    id="gradientBorder"
+                    checked={formData.gradientBorder}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="gradientBorder">Animated Gradient Border (Spinning accent-color ring)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="holographicFoil"
+                    id="holographicFoil"
+                    checked={formData.holographicFoil}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="holographicFoil">✨ Holographic Foil Sheen (Iridescent rainbow prism sweep)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="cyberGlitch"
+                    id="cyberGlitch"
+                    checked={formData.cyberGlitch}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="cyberGlitch">⚡ Cyberpunk Text Glitch (Digital RGB channel split on text)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="levitationFloat"
+                    id="levitationFloat"
+                    checked={formData.levitationFloat}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="levitationFloat">🛸 3D Zero-Gravity Float (Smooth continuous levitation bobbing)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="neonPulse"
+                    id="neonPulse"
+                    checked={formData.neonPulse}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="neonPulse">🔮 Neon Outer Aura Pulse (Pulsing multi-layer ambient glow)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="sonarPulse"
+                    id="sonarPulse"
+                    checked={formData.sonarPulse}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="sonarPulse">📡 Avatar Sonar Ripples (Radar wave pulse radiating behind photo)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="scanlineEffect"
+                    id="scanlineEffect"
+                    checked={formData.scanlineEffect}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="scanlineEffect">📺 CRT Matrix Scanlines (Futuristic retro display lines overlay)</label>
                 </div>
               </div>
 

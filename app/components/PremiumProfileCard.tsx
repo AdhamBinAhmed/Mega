@@ -17,6 +17,16 @@ interface Profile {
   gmail?: string;
   themeColor?: string;
   glassyEffect?: boolean;
+  cursorSpotlight?: boolean;
+  tiltEffect?: boolean;
+  particlesEffect?: boolean;
+  gradientBorder?: boolean;
+  holographicFoil?: boolean;
+  cyberGlitch?: boolean;
+  levitationFloat?: boolean;
+  neonPulse?: boolean;
+  sonarPulse?: boolean;
+  scanlineEffect?: boolean;
   customLinks?: { id: string, title: string, url: string }[];
   [key: string]: any;
 }
@@ -48,6 +58,8 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [spotPos, setSpotPos] = useState({ x: 50, y: 50 });
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
 
   useEffect(() => {
     if (typeof window !== "undefined") setCurrentUrl(window.location.href);
@@ -59,6 +71,28 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!profile.cursorSpotlight && !profile.tiltEffect) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    if (profile.cursorSpotlight) setSpotPos({ x, y });
+    if (profile.tiltEffect) setTilt({ rx: ((y - 50) / 50) * -6, ry: ((x - 50) / 50) * 6 });
+  };
+
+  const handleCardMouseLeave = () => {
+    setSpotPos({ x: 50, y: 50 });
+    setTilt({ rx: 0, ry: 0 });
+  };
+
+  const particles = Array.from({ length: 14 }, (_, i) => ({
+    left: (i * 37) % 100,
+    top: (i * 53) % 100,
+    size: 2 + (i % 3),
+    delay: (i % 7) * 0.8,
+    duration: 6 + (i % 5) * 1.4,
+  }));
 
   const t = THEMES[profile.themeColor || "blue"] || THEMES.blue;
 
@@ -90,6 +124,44 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           width: 100%; max-width: 500px;
           margin: 0 auto; padding: 24px 16px 80px;
           font-family: 'Outfit', sans-serif;
+          perspective: 1200px;
+        }
+
+        /* ── ANIMATED GRADIENT BORDER ── */
+        .ppc-gb-wrap { position: relative; border-radius: 32px; padding: 2px; overflow: hidden; }
+        .ppc-gb-wrap::before {
+          content: ""; position: absolute; inset: -60%; z-index: 0;
+          background: conic-gradient(from 0deg, transparent, var(--theme-a), var(--theme-b), transparent 55%);
+          animation: gbSpin 5s linear infinite;
+        }
+        .ppc-gb-wrap .ppc-card { position: relative; z-index: 1; }
+        @keyframes gbSpin { to { transform: rotate(360deg); } }
+
+        /* ── CURSOR SPOTLIGHT ── */
+        .ppc-spotlight {
+          position: absolute; inset: 0; z-index: 4; pointer-events: none; border-radius: inherit;
+          background: radial-gradient(circle 240px at var(--spot-x) var(--spot-y), rgba(var(--theme-glow),0.16), transparent 70%);
+          transition: opacity 0.25s ease;
+        }
+
+        /* ── AMBIENT PARTICLES ── */
+        .ppc-particles { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
+        .ppc-particle {
+          position: absolute; border-radius: 50%;
+          background: var(--theme-a);
+          box-shadow: 0 0 6px 1px var(--theme-a);
+          opacity: 0;
+          animation: particleFloat linear infinite;
+        }
+        @keyframes particleFloat {
+          0%   { transform: translateY(0); opacity: 0; }
+          10%  { opacity: 0.55; }
+          90%  { opacity: 0.35; }
+          100% { transform: translateY(-140px); opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ppc-gb-wrap::before, .ppc-particle { animation: none; }
         }
 
         /* ── OUTER BLUR BOX ── */
@@ -99,6 +171,8 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           backdrop-filter: blur(48px) saturate(160%) brightness(0.88);
           -webkit-backdrop-filter: blur(48px) saturate(160%) brightness(0.88);
           border: 1px solid rgba(255,255,255,0.07);
+          transform-style: preserve-3d;
+          transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
           box-shadow:
             0 2px 0 0 rgba(255,255,255,0.07) inset,
             0 -1px 0 0 rgba(0,0,0,0.5) inset,
@@ -177,6 +251,124 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em;
           text-transform: uppercase; color: var(--theme-a); margin-bottom: 8px;
           position: relative; z-index: 1; opacity: 0.85;
+        }
+
+        /* ── CYBER GLITCH TEXT ── */
+        .ppc-glitch {
+          position: relative; display: inline-block;
+        }
+        .ppc-glitch::before, .ppc-glitch::after {
+          content: attr(data-text);
+          position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+          clip: rect(0, 0, 0, 0); opacity: 0.8;
+          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .ppc-glitch::before {
+          left: -2px; text-shadow: 2px 0 #ff0055;
+          animation: glitchAnim1 3s infinite linear alternate-reverse;
+        }
+        .ppc-glitch::after {
+          left: 2px; text-shadow: -2px 0 #00ffff;
+          animation: glitchAnim2 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitchAnim1 {
+          0% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.3deg); }
+          20% { clip: rect(40px, 9999px, 60px, 0); transform: skew(-0.5deg); }
+          40% { clip: rect(15px, 9999px, 50px, 0); transform: skew(0.4deg); }
+          60% { clip: rect(50px, 9999px, 20px, 0); transform: skew(-0.2deg); }
+          80% { clip: rect(2px, 9999px, 70px, 0); transform: skew(0.6deg); }
+          100% { clip: rect(35px, 9999px, 10px, 0); transform: skew(-0.3deg); }
+        }
+        @keyframes glitchAnim2 {
+          0% { clip: rect(25px, 9999px, 15px, 0); transform: skew(-0.4deg); }
+          25% { clip: rect(60px, 9999px, 35px, 0); transform: skew(0.2deg); }
+          50% { clip: rect(5px, 9999px, 80px, 0); transform: skew(-0.6deg); }
+          75% { clip: rect(45px, 9999px, 20px, 0); transform: skew(0.5deg); }
+          100% { clip: rect(18px, 9999px, 55px, 0); transform: skew(-0.1deg); }
+        }
+
+        /* ── HOLOGRAPHIC FOIL ── */
+        .ppc-holo-foil {
+          position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; overflow: hidden;
+          background: linear-gradient(
+            115deg,
+            transparent 15%,
+            rgba(255, 0, 128, 0.14) 30%,
+            rgba(0, 230, 255, 0.18) 45%,
+            rgba(255, 235, 0, 0.16) 60%,
+            rgba(0, 255, 128, 0.14) 75%,
+            transparent 90%
+          );
+          background-size: 200% 200%;
+          animation: holoFoilSweep 6s ease-in-out infinite alternate;
+          mix-blend-mode: color-dodge;
+          opacity: 0.85;
+        }
+        @keyframes holoFoilSweep {
+          0% { background-position: 0% 0%; }
+          100% { background-position: 100% 100%; }
+        }
+
+        /* ── LEVITATION FLOAT ── */
+        .ppc-levitate {
+          animation: levitateAnim 4.8s ease-in-out infinite alternate;
+        }
+        @keyframes levitateAnim {
+          0% { transform: translateY(-8px) rotateX(1.5deg); }
+          100% { transform: translateY(8px) rotateX(-1.5deg); }
+        }
+
+        /* ── NEON AURA PULSE ── */
+        .ppc-card.ppc-neon-pulse {
+          animation: neonPulseAnim 3.5s ease-in-out infinite alternate;
+        }
+        @keyframes neonPulseAnim {
+          0% {
+            box-shadow:
+              0 2px 0 0 rgba(255,255,255,0.07) inset,
+              0 -1px 0 0 rgba(0,0,0,0.5) inset,
+              0 0 35px rgba(var(--theme-glow), 0.35),
+              0 0 70px rgba(var(--theme-glow), 0.18),
+              0 48px 96px -24px rgba(0,0,0,0.75);
+          }
+          100% {
+            box-shadow:
+              0 2px 0 0 rgba(255,255,255,0.12) inset,
+              0 -1px 0 0 rgba(0,0,0,0.5) inset,
+              0 0 65px rgba(var(--theme-glow), 0.65),
+              0 0 130px rgba(var(--theme-glow), 0.35),
+              0 48px 96px -24px rgba(0,0,0,0.75);
+          }
+        }
+
+        /* ── AVATAR SONAR RIPPLES ── */
+        .ppc-av-sonar {
+          position: absolute; inset: -20px; border-radius: 50%; z-index: 0; pointer-events: none;
+        }
+        .ppc-av-sonar-ring {
+          position: absolute; inset: 0; border-radius: 50%;
+          border: 1.5px solid var(--theme-a);
+          animation: sonarExpand 3s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+          opacity: 0;
+        }
+        .ppc-av-sonar-ring:nth-child(2) { animation-delay: 1s; }
+        .ppc-av-sonar-ring:nth-child(3) { animation-delay: 2s; }
+        @keyframes sonarExpand {
+          0% { transform: scale(0.75); opacity: 0.8; }
+          100% { transform: scale(1.7); opacity: 0; }
+        }
+
+        /* ── CRT SCANLINES ── */
+        .ppc-scanlines {
+          position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; overflow: hidden;
+          background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.25),
+            rgba(0, 0, 0, 0.25) 1px,
+            transparent 1px,
+            transparent 3px
+          );
+          opacity: 0.6;
         }
         .ppc-badge {
           display: inline-flex; align-items: center; gap: 6px;
@@ -408,8 +600,40 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="ppc-card">
+          <div className={profile.gradientBorder ? "ppc-gb-wrap" : undefined}>
+          <div
+            className={`ppc-card ${profile.levitationFloat ? "ppc-levitate" : ""} ${profile.neonPulse ? "ppc-neon-pulse" : ""}`}
+            onMouseMove={handleCardMouseMove}
+            onMouseLeave={handleCardMouseLeave}
+            style={profile.tiltEffect && !profile.levitationFloat ? ({ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` } as React.CSSProperties) : undefined}
+          >
             <div className="ppc-card-glow" />
+            {profile.holographicFoil && <div className="ppc-holo-foil" />}
+            {profile.scanlineEffect && <div className="ppc-scanlines" />}
+            {profile.cursorSpotlight && (
+              <div
+                className="ppc-spotlight"
+                style={{ "--spot-x": `${spotPos.x}%`, "--spot-y": `${spotPos.y}%` } as React.CSSProperties}
+              />
+            )}
+            {profile.particlesEffect && (
+              <div className="ppc-particles">
+                {particles.map((p, i) => (
+                  <span
+                    key={i}
+                    className="ppc-particle"
+                    style={{
+                      left: `${p.left}%`,
+                      top: `${p.top}%`,
+                      width: p.size,
+                      height: p.size,
+                      animationDelay: `${p.delay}s`,
+                      animationDuration: `${p.duration}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* QR BUTTON — actual QR grid icon */}
             <button className="ppc-qr-btn" onClick={() => setIsQrOpen(true)} title="Show QR Code">
@@ -436,6 +660,13 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
 
               {/* AVATAR */}
               <motion.div variants={item} className="ppc-av-wrap">
+                {profile.sonarPulse && (
+                  <div className="ppc-av-sonar">
+                    <div className="ppc-av-sonar-ring" />
+                    <div className="ppc-av-sonar-ring" />
+                    <div className="ppc-av-sonar-ring" />
+                  </div>
+                )}
                 <div className="ppc-av-ring-blur" />
                 <div className="ppc-av-ring" />
                 <div className="ppc-av-bg" />
@@ -448,8 +679,14 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
 
               {/* NAME / ROLE */}
               <motion.div variants={item} style={{ textAlign: "center" }}>
-                <h1 className="ppc-name">{profile.name}</h1>
-                {profile.role && <p className="ppc-role">{profile.role}</p>}
+                <h1 className={`ppc-name ${profile.cyberGlitch ? "ppc-glitch" : ""}`} data-text={profile.name}>
+                  {profile.name}
+                </h1>
+                {profile.role && (
+                  <p className={`ppc-role ${profile.cyberGlitch ? "ppc-glitch" : ""}`} data-text={profile.role}>
+                    {profile.role}
+                  </p>
+                )}
                 <div className="ppc-badge"><span className="ppc-badge-dot" />available for work</div>
               </motion.div>
 
@@ -498,6 +735,7 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
               </motion.div>
 
             </motion.div>
+          </div>
           </div>
         </motion.div>
       </div>
