@@ -1,24 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import dynamic from "next/dynamic";
-
-const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 const values = [
   {
     icon: "❤",
     title: "Humanity",
-    body: "Every life carries dignity. We build with empathy and stand with those who endure.",
+    body: "Every life carries dignity. We build with empathy and stand with those who endure hardship.",
     color: "#CE1126",
   },
   {
     icon: "⚖",
     title: "Justice",
-    body: "We believe in equity and truth — that freedom and human rights belong to everyone.",
-    color: "#ffffff",
+    body: "We believe in equity and truth — that freedom and human rights belong to every single person.",
+    color: "#e8e8ea",
   },
   {
     icon: "✷",
@@ -28,200 +24,336 @@ const values = [
   },
 ];
 
-const easeOut = [0.16, 1, 0.3, 1] as const;
-
 export default function PalestinePage() {
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const rootRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
 
   useEffect(() => {
-    setMounted(true);
+    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
+    const initial = saved || "dark";
+    setTheme(initial);
+    document.documentElement.setAttribute("data-theme", initial);
   }, []);
 
-  if (!mounted) return <div className="min-h-screen bg-[#020202]" />;
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => (t === "dark" ? "light" : "dark"));
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#020202] font-sans text-white">
-      {/* Interactive 3D Background */}
-      <Scene3D />
+    <div className="pal-root" data-theme={theme} ref={rootRef}>
+      <style>{`
+        .pal-root, .pal-root[data-theme="dark"] {
+          --bg:#050507; --surface:#0d0d10; --surface2:#131318;
+          --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
+          --text:#f0f0f2; --muted:#6b6b7a;
+          --red:#CE1126; --white:#e8e8ea; --green:#22c55e; --pgreen:#007A3D;
+          --accent:#e84545; --accent2:#ff7043; --accent3:#ffd166;
+          --ghost:rgba(255,255,255,0.03);
+          --ease-out:cubic-bezier(0.16,1,0.3,1);
+          --font-display:var(--font-outfit,'Outfit'),sans-serif;
+          --font-mono:var(--font-jetbrains,'JetBrains Mono'),monospace;
+          --font-logo:var(--font-logo,'Orbitron'),sans-serif;
+        }
+        .pal-root[data-theme="light"] {
+          --bg:#faf8f5; --surface:#ffffff; --surface2:#f0ede8;
+          --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.14);
+          --text:#111111; --muted:#7a7570;
+          --red:#CE1126; --white:#111111; --pgreen:#007A3D;
+          --accent:#c8392b; --accent2:#e8571a; --accent3:#c08b20;
+          --ghost:rgba(0,0,0,0.03);
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        .pal-root{min-height:100vh;background:var(--bg);color:var(--text);
+          font-family:var(--font-display);-webkit-font-smoothing:antialiased;
+          overflow-x:hidden;transition:background .3s,color .3s;position:relative;}
 
-      {/* Atmospheric Overlays */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-[#020202]" />
-      <div className="pointer-events-none absolute inset-0 z-10 shadow-[inset_0_0_160px_rgba(0,0,0,0.9)]" />
-      <div
-        className="pointer-events-none absolute inset-0 z-10 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-          backgroundSize: "200px 200px",
-        }}
-      />
+        /* BG */
+        .pal-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+          background:
+            radial-gradient(ellipse 55% 45% at 15% 12%,rgba(206,17,38,0.10),transparent 70%),
+            radial-gradient(ellipse 50% 55% at 85% 55%,rgba(0,122,61,0.09),transparent 70%),
+            radial-gradient(ellipse 45% 45% at 50% 108%,rgba(255,255,255,0.04),transparent 70%);}
+        .pal-root[data-theme="light"] .pal-glow{
+          background:
+            radial-gradient(ellipse 55% 45% at 15% 12%,rgba(206,17,38,0.07),transparent 70%),
+            radial-gradient(ellipse 50% 55% at 85% 55%,rgba(0,122,61,0.06),transparent 70%);}
+        .pal-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+          background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+          background-size:64px 64px;
+          -webkit-mask-image:radial-gradient(ellipse 90% 55% at 50% 0%,#000,transparent 75%);
+          mask-image:radial-gradient(ellipse 90% 55% at 50% 0%,#000,transparent 75%);}
 
-      {/* Top Bar */}
-      <header className="pointer-events-auto absolute top-0 left-0 z-50 flex w-full items-center justify-between p-7 md:p-9">
-        <Link href="/" className="group flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-lg backdrop-blur-md transition-all group-hover:border-white/25 group-hover:bg-white/15">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-          </div>
-          <span className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-white/45 transition-colors group-hover:text-white">
-            Return Home
-          </span>
-        </Link>
+        .pal-scroll-bar{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;transform-origin:left;
+          background:linear-gradient(90deg,var(--red),var(--white),var(--pgreen));pointer-events:none;}
 
-        <div className="hidden items-center gap-2.5 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/40 sm:flex">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#CE1126]" />
-          In Solidarity
+        /* NAV */
+        .pal-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 56px;height:64px;
+          display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
+          background:rgba(5,5,7,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s;}
+        .pal-root[data-theme="light"] .pal-nav{background:rgba(250,248,245,0.72);}
+        .pal-logo{font-family:var(--font-logo);font-size:1.1rem;font-weight:700;color:var(--text);
+          text-decoration:none;letter-spacing:.12em;display:flex;align-items:center;gap:8px;}
+        .pal-logo-accent{color:var(--accent);}
+        .pal-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
+        .pal-nav-mid{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:.22em;
+          text-transform:uppercase;display:flex;align-items:center;gap:9px;}
+        .pal-nav-mid::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);
+          box-shadow:0 0 8px var(--red);animation:pulse 2s ease-in-out infinite;}
+        .pal-nav-right{display:flex;align-items:center;gap:14px;}
+        .pal-back,.pal-theme-btn{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);
+          border:1px solid var(--border2);padding:8px 16px;background:none;letter-spacing:.08em;
+          text-transform:uppercase;text-decoration:none;transition:all .2s;display:flex;align-items:center;gap:8px;
+          cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:40px;}
+        .pal-back:hover,.pal-theme-btn:hover{color:var(--text);border-color:var(--accent);}
+
+        /* CONTENT */
+        .pal-content{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:0 56px;}
+
+        /* HERO */
+        .pal-hero{padding:150px 0 40px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+        .pal-eyebrow{font-family:var(--font-mono);font-size:.66rem;color:var(--muted);
+          letter-spacing:.3em;text-transform:uppercase;margin-bottom:34px;display:flex;align-items:center;gap:14px;}
+        .pal-eyebrow::before,.pal-eyebrow::after{content:'';width:34px;height:1px;background:var(--muted);}
+
+        /* FLAG */
+        .pal-flag-wrap{margin-bottom:44px;perspective:1000px;}
+        .pal-flag{position:relative;width:min(78vw,420px);aspect-ratio:5/3;border-radius:22px;overflow:hidden;
+          border:1px solid var(--border2);box-shadow:0 50px 100px rgba(0,0,0,.55);transform-style:preserve-3d;}
+        .pal-flag-stripes{position:absolute;inset:0;display:flex;flex-direction:column;}
+        .pal-flag-stripes>span{flex:1;}
+        .pal-shine{position:absolute;inset:0;pointer-events:none;
+          background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 45%,transparent 60%,rgba(255,255,255,.06));}
+        .pal-shine-top{position:absolute;inset:0 0 50% 0;transform:skewY(-6deg);pointer-events:none;
+          background:linear-gradient(to bottom,rgba(255,255,255,.16),transparent);}
+        .pal-flag-inset{position:absolute;inset:0;border-radius:22px;pointer-events:none;
+          box-shadow:inset 0 0 40px rgba(255,255,255,.12);}
+        .pal-sweep{position:absolute;inset:0;width:34%;transform:skewX(-20deg);pointer-events:none;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);}
+
+        .pal-headline{font-size:clamp(3rem,9vw,6.5rem);font-weight:800;letter-spacing:-.045em;line-height:.92;margin-bottom:28px;}
+        .pal-headline .l1{background:linear-gradient(180deg,var(--text),color-mix(in srgb,var(--text) 45%,transparent));
+          -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+        .pal-headline .l2{background:linear-gradient(90deg,var(--red),var(--text),var(--pgreen));
+          -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+        .pal-manifesto{font-size:1.15rem;color:var(--muted);line-height:1.75;max-width:620px;margin-bottom:20px;}
+
+        /* SECTION */
+        .pal-sec-head{margin:110px 0 44px;text-align:center;display:flex;flex-direction:column;align-items:center;}
+        .pal-sec-label{font-family:var(--font-mono);font-size:.66rem;color:var(--muted);letter-spacing:.24em;
+          text-transform:uppercase;margin-bottom:18px;}
+        .pal-sec-title{font-size:clamp(1.9rem,4.5vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;}
+
+        /* VALUE CARDS */
+        .pal-values{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+        .pal-card{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:20px;
+          background:var(--surface);padding:38px 32px;text-align:left;
+          transition:border-color .35s var(--ease-out),background .35s,transform .35s var(--ease-out);}
+        .pal-card:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-6px);}
+        .pal-card-glow{position:absolute;width:200px;height:200px;border-radius:50%;filter:blur(60px);
+          opacity:.16;top:-60px;right:-60px;pointer-events:none;transition:opacity .35s;}
+        .pal-card:hover .pal-card-glow{opacity:.32;}
+        .pal-card-icon{width:48px;height:48px;border-radius:14px;border:1px solid var(--border2);
+          background:var(--ghost);display:flex;align-items:center;justify-content:center;font-size:1.35rem;margin-bottom:22px;}
+        .pal-card-title{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;margin-bottom:12px;}
+        .pal-card-body{font-size:.9rem;color:var(--muted);line-height:1.72;margin-bottom:22px;}
+        .pal-card-num{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);letter-spacing:.2em;}
+
+        /* CTA */
+        .pal-cta{margin:110px 0 40px;border:1px solid var(--border);border-radius:26px;overflow:hidden;
+          background:linear-gradient(135deg,var(--surface),var(--surface2));padding:80px 56px;text-align:center;position:relative;}
+        .pal-cta-flagline{position:absolute;top:0;left:0;right:0;height:4px;
+          background:linear-gradient(90deg,var(--red) 0 40%,var(--text) 40% 60%,var(--pgreen) 60% 100%);}
+        .pal-cta::after{content:'';position:absolute;inset:0;pointer-events:none;
+          background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(206,17,38,.12),transparent 70%);}
+        .pal-cta-title{font-size:clamp(1.7rem,4vw,2.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:16px;position:relative;}
+        .pal-cta-sub{color:var(--muted);font-size:1.02rem;max-width:500px;margin:0 auto 36px;position:relative;line-height:1.7;}
+        .pal-hashtag{position:relative;display:inline-block;}
+        .pal-hashtag-glow{position:absolute;inset:0;border-radius:999px;filter:blur(28px);opacity:.4;
+          background:linear-gradient(90deg,var(--red),var(--text),var(--pgreen));transition:opacity .6s,filter .6s;}
+        .pal-hashtag:hover .pal-hashtag-glow{opacity:.9;filter:blur(40px);}
+        .pal-hashtag-inner{position:relative;overflow:hidden;border-radius:999px;border:1px solid var(--border2);
+          background:color-mix(in srgb,var(--bg) 65%,transparent);backdrop-filter:blur(12px);padding:20px 44px;}
+        .pal-hashtag-text{position:relative;font-size:clamp(1.1rem,3vw,1.7rem);font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+          background:linear-gradient(90deg,var(--red),var(--text),var(--pgreen));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+        .pal-hashtag-sweep{position:absolute;inset:0;transform:translateX(-100%);pointer-events:none;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transition:transform 1s;}
+        .pal-hashtag:hover .pal-hashtag-sweep{transform:translateX(100%);}
+
+        /* FOOTER */
+        .pal-footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32px 56px;max-width:1000px;margin:0 auto;
+          display:flex;align-items:center;justify-content:space-between;gap:16px;}
+        .pal-footer-copy{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
+        .pal-footer-links{display:flex;gap:24px;}
+        .pal-footer-link{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);text-decoration:none;
+          letter-spacing:.08em;text-transform:uppercase;transition:color .2s;}
+        .pal-footer-link:hover{color:var(--text);}
+
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.85);}}
+
+        @media(max-width:900px){
+          .pal-nav{padding:0 20px;}
+          .pal-nav-mid{display:none;}
+          .pal-content{padding:0 20px;}
+          .pal-values{grid-template-columns:1fr;}
+          .pal-cta{padding:56px 26px;}
+          .pal-footer{padding:24px 20px;flex-direction:column;align-items:flex-start;}
+        }
+        @media(max-width:480px){
+          .pal-back span:last-child{display:none;}
+          .pal-hashtag-inner{padding:16px 28px;}
+        }
+        @media(hover:none) and (pointer:coarse){
+          .pal-nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg);}
+        }
+        ::selection{background:var(--red);color:#fff;}
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border2);}
+      `}</style>
+
+      <div className="pal-glow" />
+      <div className="pal-grid" />
+      <motion.div className="pal-scroll-bar" style={{ scaleX: progress }} />
+
+      {/* NAV */}
+      <nav className="pal-nav">
+        <a href="/" className="pal-logo">
+          <span className="pal-logo-dot" />
+          MEGA<span className="pal-logo-accent">Devs</span>
+        </a>
+        <span className="pal-nav-mid">In Solidarity</span>
+        <div className="pal-nav-right">
+          <button className="pal-theme-btn" onClick={toggleTheme}>{theme === "dark" ? "☀" : "◑"}</button>
+          <a href="/" className="pal-back"><span>←</span><span>Back</span></a>
         </div>
-      </header>
+      </nav>
 
-      {/* MAIN */}
-      <main className="relative z-20 mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-6 py-28 text-center">
-        {/* Waving Glass Flag */}
-        <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.92 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.3, ease: easeOut }}
-          className="mb-14"
-        >
+      <div className="pal-content">
+        {/* HERO */}
+        <section className="pal-hero">
           <motion.div
-            animate={{ rotateX: [0, 4, 0, -3, 0], rotateY: [0, -3, 0, 3, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformStyle: "preserve-3d", perspective: 1000 }}
-            className="group relative h-44 w-72 overflow-hidden rounded-3xl border border-white/15 shadow-[0_50px_100px_rgba(0,0,0,0.85)] sm:h-56 sm:w-[24rem] md:h-64 md:w-[27rem]"
+            className="pal-eyebrow"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Flag stripes: black / white / green */}
-            <div className="absolute inset-0 flex flex-col">
-              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.3, ease: easeOut }} style={{ originX: 0 }} className="flex-1 bg-black" />
-              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.45, ease: easeOut }} style={{ originX: 0 }} className="flex-1 bg-white" />
-              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.6, ease: easeOut }} style={{ originX: 0 }} className="flex-1 bg-[#007A3D]" />
-            </div>
-            {/* Red hoist triangle */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 1.2, delay: 0.85, ease: easeOut }}
-              style={{ clipPath: "polygon(0 0, 100% 50%, 0 100%)", originX: 0 }}
-              className="absolute inset-y-0 left-0 w-2/5 bg-[#CE1126]"
-            />
-            {/* Glass reflections */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/15 via-transparent to-white/5" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 -skew-y-6 bg-gradient-to-b from-white/15 to-transparent" />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl shadow-[inset_0_0_40px_rgba(255,255,255,0.12)]" />
-            {/* Shine sweep */}
-            <motion.div
-              initial={{ x: "-120%" }}
-              animate={{ x: "120%" }}
-              transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 2.5, ease: "easeInOut" }}
-              className="pointer-events-none absolute inset-y-0 w-1/3 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent"
-            />
+            Free Palestine
           </motion.div>
-        </motion.div>
 
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.9, ease: easeOut }}
-          className="mb-6 flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.35em] text-white/40"
-        >
-          <span className="h-px w-8 bg-white/30" />
-          Free Palestine
-          <span className="h-px w-8 bg-white/30" />
-        </motion.div>
+          {/* FLAG */}
+          <motion.div
+            className="pal-flag-wrap"
+            initial={{ opacity: 0, y: 40, scale: 0.92 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              className="pal-flag"
+              animate={{ rotateX: [0, 4, 0, -3, 0], rotateY: [0, -3, 0, 3, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="pal-flag-stripes">
+                <motion.span initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }} style={{ originX: 0, background: "#000" }} />
+                <motion.span initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.45, ease: [0.16, 1, 0.3, 1] }} style={{ originX: 0, background: "#fff" }} />
+                <motion.span initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }} style={{ originX: 0, background: "#007A3D" }} />
+              </div>
+              <motion.div
+                initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.2, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                style={{ position: "absolute", inset: 0, width: "40%", background: "#CE1126", clipPath: "polygon(0 0, 100% 50%, 0 100%)", transformOrigin: "left" }}
+              />
+              <div className="pal-shine" />
+              <div className="pal-shine-top" />
+              <div className="pal-flag-inset" />
+              <motion.div
+                className="pal-sweep"
+                initial={{ x: "-140%" }} animate={{ x: "180%" }}
+                transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 2.4, ease: "easeInOut" }}
+              />
+            </motion.div>
+          </motion.div>
 
-        {/* Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 1.0, ease: easeOut }}
-          className="mb-7 text-6xl font-black leading-[0.92] tracking-tighter md:text-8xl lg:text-[7.5rem]"
-        >
-          <span className="bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent drop-shadow-2xl">
-            Resilience
-          </span>
-          <br />
-          <span className="bg-gradient-to-r from-[#CE1126] via-white to-[#007A3D] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]">
-            &amp; Solidarity
-          </span>
-        </motion.h1>
+          {/* HEADLINE */}
+          <motion.h1
+            className="pal-headline"
+            initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="l1">Resilience</span><br />
+            <span className="l2">&amp; Solidarity</span>
+          </motion.h1>
 
-        {/* Manifesto */}
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2, ease: easeOut }}
-          className="mb-16 max-w-2xl text-lg font-light leading-relaxed text-white/55 drop-shadow-md md:text-xl"
-        >
-          We stand with the people of Palestine. Beyond the code we write, we believe technology
-          should serve humanity — and that every voice deserves to be heard, every story remembered,
-          and every future built on justice and peace.
-        </motion.p>
+          <motion.p
+            className="pal-manifesto"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          >
+            We stand with the people of Palestine. Beyond the code we write, we believe technology
+            should serve humanity — that every voice deserves to be heard, every story remembered,
+            and every future built on justice and peace.
+          </motion.p>
+        </section>
 
-        {/* Value cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.35, ease: easeOut }}
-          className="mb-16 grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3"
-        >
+        {/* VALUES */}
+        <div className="pal-sec-head">
+          <div className="pal-sec-label">What We Stand For</div>
+          <h2 className="pal-sec-title">Three things we<br />will never compromise.</h2>
+        </div>
+
+        <div className="pal-values">
           {values.map((v, i) => (
             <motion.div
               key={v.title}
-              whileHover={{ y: -6 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-left backdrop-blur-xl transition-colors hover:border-white/25"
+              className="pal-card"
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}
             >
-              <div
-                className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-40"
-                style={{ background: v.color }}
-              />
-              <span
-                className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xl"
-                style={{ color: v.color, textShadow: `0 0 18px ${v.color}` }}
-              >
-                {v.icon}
-              </span>
-              <h3 className="mb-2 text-lg font-bold tracking-tight">{v.title}</h3>
-              <p className="text-sm leading-relaxed text-white/50">{v.body}</p>
-              <span className="mt-4 block font-mono text-[0.55rem] uppercase tracking-[0.2em] text-white/25">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+              <div className="pal-card-glow" style={{ background: v.color }} />
+              <div className="pal-card-icon" style={{ color: v.color, textShadow: `0 0 18px ${v.color}66` }}>{v.icon}</div>
+              <div className="pal-card-title">{v.title}</div>
+              <p className="pal-card-body">{v.body}</p>
+              <span className="pal-card-num">{String(i + 1).padStart(2, "0")} / 03</span>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {/* CTA */}
-        <motion.a
-          href="https://twitter.com/search?q=%23build_with_palestine"
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.5, ease: easeOut }}
-          whileHover={{ scale: 1.04, y: -4 }}
-          whileTap={{ scale: 0.97 }}
-          className="group relative inline-block"
+        <motion.div
+          className="pal-cta"
+          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}
         >
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#CE1126] via-white to-[#007A3D] opacity-40 blur-2xl transition-all duration-700 group-hover:opacity-100 group-hover:blur-3xl" />
-          <div className="relative overflow-hidden rounded-full border border-white/20 bg-[#050507]/60 px-10 py-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] backdrop-blur-2xl md:px-12 md:py-6">
-            <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-            <span className="relative bg-gradient-to-r from-[#CE1126] via-white to-[#007A3D] bg-clip-text text-xl font-extrabold uppercase tracking-[0.15em] text-transparent drop-shadow-lg md:text-2xl">
-              #build_with_palestine
+          <div className="pal-cta-flagline" />
+          <h2 className="pal-cta-title">Raise your voice.<br />Build with purpose.</h2>
+          <p className="pal-cta-sub">Join the movement and share your solidarity. Every voice counts.</p>
+          <motion.a
+            href="https://twitter.com/search?q=%23build_with_palestine"
+            target="_blank" rel="noopener noreferrer"
+            className="pal-hashtag"
+            whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}
+          >
+            <span className="pal-hashtag-glow" />
+            <span className="pal-hashtag-inner">
+              <span className="pal-hashtag-sweep" />
+              <span className="pal-hashtag-text">#build_with_palestine</span>
             </span>
-          </div>
-        </motion.a>
+          </motion.a>
+        </motion.div>
+      </div>
 
-        {/* Footer note */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.7 }}
-          className="mt-16 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-white/25"
-        >
-          Mega Devs · Standing for humanity
-        </motion.p>
-      </main>
+      {/* FOOTER */}
+      <footer className="pal-footer">
+        <span className="pal-footer-copy">© {new Date().getFullYear()} Mega Devs · Standing for humanity</span>
+        <div className="pal-footer-links">
+          <a href="/" className="pal-footer-link">Home</a>
+          <a href="/works" className="pal-footer-link">Work</a>
+          <a href="/history" className="pal-footer-link">Our Story</a>
+        </div>
+      </footer>
     </div>
   );
 }
