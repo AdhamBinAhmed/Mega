@@ -183,6 +183,7 @@ const nav = [
   { l: "Services", h: "#services" },
   { l: "Process", h: "#process" },
   { l: "Works", h: "/works" },
+  { l: "Our Story", h: "/history" },
   { l: "Stack", h: "#stack" },
   { l: "FAQ", h: "#faq" },
   { l: "Team", h: "#developers" },

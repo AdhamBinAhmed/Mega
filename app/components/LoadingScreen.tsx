@@ -12,26 +12,41 @@ export default function LoadingScreen() {
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
 
-    // Progress counter logic
-    const duration = 1200;
-    const intervalTime = 20; // update every 20ms
-    const totalSteps = duration / intervalTime;
-    let step = 0;
+    let finished = false;
 
+    // Fake-progress that eases toward 90% while the page is still loading,
+    // so the bar keeps moving even on slow connections.
     const interval = setInterval(() => {
-      step++;
-      const currentProgress = Math.min(Math.round((step / totalSteps) * 100), 100);
-      setProgress(currentProgress);
-    }, intervalTime);
+      setProgress((prev) => {
+        if (prev >= 90) return prev;
+        // slow down as we approach 90%
+        const remaining = 90 - prev;
+        return Math.min(90, prev + Math.max(0.5, remaining * 0.04));
+      });
+    }, 30);
 
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      document.body.style.overflow = "";
-    }, duration);
+    // Called once the page is genuinely fully loaded (all resources).
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearInterval(interval);
+      setProgress(100);
+      // Let the bar visually reach 100% before fading the screen out.
+      setTimeout(() => {
+        setIsLoading(false);
+        document.body.style.overflow = "";
+      }, 400);
+    };
+
+    if (document.readyState === "complete") {
+      finish();
+    } else {
+      window.addEventListener("load", finish);
+    }
 
     return () => {
       clearInterval(interval);
-      clearTimeout(timer);
+      window.removeEventListener("load", finish);
       document.body.style.overflow = "";
     };
   }, []);

@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function HistoryPage() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeYear, setActiveYear] = useState("2023");
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
 
   useEffect(() => {
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -19,63 +23,82 @@ export default function HistoryPage() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme(t => t === "dark" ? "light" : "dark");
+  const toggleTheme = () => setTheme(t => (t === "dark" ? "light" : "dark"));
 
   const timeline = [
     {
       year: "2023",
-      title: "The Foundation",
-      body: "The journey began with the establishment of Mega ROM, founded and led by Adham Ahmed. During this initial phase, the company focused on specialized software development, supported by its first dedicated technical team.",
+      tag: "Inception",
+      title: "Establishing the Foundation",
+      body: "Mega ROM was founded under the leadership of Adham Ahmed, beginning as a specialized software development studio. Supported by a dedicated core engineering team, the company established the technical standards and disciplined delivery model that continue to define its work today.",
       accent: "var(--accent)",
+      stat: "Founding Team",
     },
     {
       year: "2024",
+      tag: "Rebrand & Growth",
       title: "Strategic Rebranding & Expansion",
-      body: "In a move to broaden its technical scope, the company rebranded to MegaOS. The leadership structure evolved with Seif joining as Co-Founder. As operations grew, the company began forming multiple specialized teams to handle increasing project demands.",
+      body: "To broaden its technical scope, the company rebranded as MegaOS and strengthened its leadership with the appointment of Seif as Co-Founder. As demand grew, operations expanded into multiple specialized teams, each structured to deliver against increasingly complex project requirements.",
       accent: "var(--accent2)",
+      stat: "Co-Founder Appointed",
     },
     {
       year: "2025",
-      title: "A Scalable Vision",
-      body: "This year marked a turning point as the vision expanded toward a more comprehensive corporate structure. To support this growth, several new teams were established, each focusing on different facets of innovation and system optimization.",
+      tag: "Scaling Operations",
+      title: "Building a Scalable Structure",
+      body: "A pivotal year marked the transition toward a comprehensive corporate structure. New teams were established across engineering, innovation, and systems optimization — laying the operational foundation required to scale reliably and sustain long-term growth.",
       accent: "var(--accent3)",
+      stat: "Multi-Team Operations",
     },
     {
       year: "2026",
-      title: "The Era of Mega Devs",
-      body: "The evolution culminated in 2026 with the official launch of Mega Devs as the parent organization. Today, Mega Devs acts as the primary governing body, overseeing MegaOS and managing a robust network of multiple professional teams across its expanding technology ecosystem.",
+      tag: "Maturity",
+      title: "The Formation of Mega Devs",
+      body: "The company's evolution culminated in the launch of Mega Devs as the parent organization. Today, Mega Devs serves as the governing body overseeing MegaOS and coordinating a network of specialized professional teams across a growing technology ecosystem.",
       accent: "var(--accent)",
+      stat: "Parent Organization",
     },
+  ];
+
+  const stats = [
+    { k: "2023", v: "Year Established" },
+    { k: "4", v: "Years of Growth" },
+    { k: "3×", v: "Strategic Rebrands" },
+    { k: "Multi", v: "Specialized Teams" },
   ];
 
   const pillars = [
     {
-      title: "Global Tech Leadership",
-      body: "We aspire to establish Mega Devs as a global benchmark in the technology sector, expanding our influence far beyond regional borders to provide cutting-edge solutions for international markets.",
+      title: "Global Technology Leadership",
+      body: "We aim to establish Mega Devs as a recognized benchmark in the technology sector — extending our capabilities beyond regional markets to deliver enterprise-grade solutions to clients worldwide.",
       icon: "◎",
+      span: "wide",
     },
     {
       title: "Innovation & AI Integration",
-      body: "Our goal is to be at the forefront of the next technological revolution — integrating advanced AI and machine learning into the core of MegaOS, creating smarter, more intuitive ecosystems for users worldwide.",
+      body: "We are committed to advancing the next generation of software by embedding artificial intelligence and machine learning into the core of the MegaOS platform.",
       icon: "⬡",
+      span: "tall",
     },
     {
-      title: "Diverse Ecosystem Expansion",
-      body: "We envision Mega Devs growing into a multi-disciplinary tech hub. By fostering dozens of specialized teams, we aim to launch a suite of diverse digital products that redefine how people interact with technology.",
+      title: "Ecosystem Expansion",
+      body: "We are building Mega Devs into a multi-disciplinary technology group, developing a portfolio of products designed to redefine how people interact with technology.",
       icon: "⊞",
+      span: "normal",
     },
     {
-      title: "Empowering the Next Generation",
-      body: "Beyond code, we aim to build a community. In the coming decade, Mega Devs will focus on nurturing talent and creating a sustainable environment where innovation thrives.",
+      title: "Developing Future Talent",
+      body: "Beyond delivery, we invest in people — cultivating talent and sustaining an environment where engineering excellence and innovation can thrive.",
       icon: "◈",
+      span: "normal",
     },
   ];
 
   return (
-    <div className="history-root" data-theme={theme}>
+    <div className="history-root" data-theme={theme} ref={rootRef}>
       <style>{`
         /* ── TOKENS (mirror main site exactly) ── */
-        .history-root, .history-root [data-theme="dark"] {
+        .history-root, .history-root[data-theme="dark"] {
           --bg:       #050507;
           --surface:  #0d0d10;
           --surface2: #131318;
@@ -87,6 +110,7 @@ export default function HistoryPage() {
           --accent:   #e84545;
           --accent2:  #ff7043;
           --accent3:  #ffd166;
+          --ghost:    rgba(255,255,255,0.03);
           --ease-out: cubic-bezier(0.16,1,0.3,1);
           --font-display: var(--font-outfit,'Outfit'),sans-serif;
           --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
@@ -104,6 +128,7 @@ export default function HistoryPage() {
           --accent:   #c8392b;
           --accent2:  #e8571a;
           --accent3:  #c08b20;
+          --ghost:    rgba(0,0,0,0.03);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -120,181 +145,259 @@ export default function HistoryPage() {
           position: relative;
         }
 
-        /* ── BG GLOW (matches main site) ── */
+        /* ── BG GLOW ── */
         .h-bg-glow {
           position: fixed; inset: 0; z-index: 0; pointer-events: none;
           background:
-            radial-gradient(ellipse 60% 50% at 20% 30%, rgba(232,69,69,0.07) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 80% 70%, rgba(255,112,67,0.05) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 40% at 50% 10%, rgba(255,209,102,0.04) 0%, transparent 70%);
+            radial-gradient(ellipse 60% 50% at 20% 20%, rgba(232,69,69,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 60% at 85% 65%, rgba(255,112,67,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 40% 40% at 50% 105%, rgba(255,209,102,0.05) 0%, transparent 70%);
         }
         .history-root[data-theme="light"] .h-bg-glow {
           background:
-            radial-gradient(ellipse 60% 50% at 20% 30%, rgba(200,57,43,0.06) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 80% 70%, rgba(232,87,26,0.04) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 40% at 50% 10%, rgba(192,139,32,0.04) 0%, transparent 70%);
+            radial-gradient(ellipse 60% 50% at 20% 20%, rgba(200,57,43,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 60% at 85% 65%, rgba(232,87,26,0.05) 0%, transparent 70%),
+            radial-gradient(ellipse 40% 40% at 50% 105%, rgba(192,139,32,0.05) 0%, transparent 70%);
+        }
+        .h-grid-overlay {
+          position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4;
+          background-image:
+            linear-gradient(var(--border) 1px, transparent 1px),
+            linear-gradient(90deg, var(--border) 1px, transparent 1px);
+          background-size: 64px 64px;
+          mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 80%);
+          -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 80%);
         }
 
-        /* ── NAV (mirrors main site nav exactly) ── */
+        /* ── SCROLL PROGRESS ── */
+        .h-scroll-bar {
+          position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200;
+          background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+          pointer-events: none; transform-origin: left;
+        }
+
+        /* ── NAV ── */
         .h-nav {
           position: fixed; top: 0; left: 0; right: 0; z-index: 100;
           padding: 0 56px; height: 64px;
           display: flex; align-items: center; justify-content: space-between;
           border-bottom: 1px solid var(--border);
-          background: rgba(5,5,7,0.85);
+          background: rgba(5,5,7,0.7);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           transition: background 0.3s;
         }
-        .history-root[data-theme="light"] .h-nav {
-          background: rgba(250,248,245,0.85);
-        }
+        .history-root[data-theme="light"] .h-nav { background: rgba(250,248,245,0.72); }
         .h-logo {
           font-family: var(--font-logo); font-size: 1.1rem; font-weight: 700;
           color: var(--text); text-decoration: none; letter-spacing: 0.12em;
-          display: flex; align-items: center; gap: 6px; cursor: pointer;
+          display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
         .h-logo-accent { color: var(--accent); }
         .h-logo-dot {
           width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
           animation: pulse 2s ease-in-out infinite;
         }
-        .h-nav-right { display: flex; align-items: center; gap: 20px; }
-        .h-back {
+        .h-nav-right { display: flex; align-items: center; gap: 14px; }
+        .h-back, .h-theme-btn {
           font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 8px 16px; text-decoration: none;
-          letter-spacing: 0.08em; text-transform: uppercase;
+          border: 1px solid var(--border2); padding: 8px 16px; background: none;
+          letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
           transition: all 0.2s; display: flex; align-items: center; gap: 8px;
-          cursor: pointer; -webkit-tap-highlight-color: transparent;
-          min-height: 44px;
+          cursor: pointer; -webkit-tap-highlight-color: transparent; min-height: 40px;
         }
-        .h-back:hover { color: var(--text); border-color: var(--accent); }
-        .h-theme-btn {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          border: 1px solid var(--border2); padding: 8px 12px;
-          background: none; letter-spacing: 0.08em; text-transform: uppercase;
-          transition: all 0.2s; cursor: pointer; min-height: 44px;
-          -webkit-tap-highlight-color: transparent;
-        }
-        .h-theme-btn:hover { color: var(--text); border-color: var(--border2); }
+        .h-back:hover, .h-theme-btn:hover { color: var(--text); border-color: var(--accent); }
 
-        /* ── SCROLL BAR ── */
-        .h-scroll-bar {
-          position: fixed; top: 0; left: 0; height: 2px; z-index: 200;
-          background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
-          pointer-events: none; transform-origin: left;
-          transform: scaleX(0);
-          animation: h-scroll-progress linear both;
-          animation-timeline: scroll(root block);
+        /* ── SIDE YEAR RAIL ── */
+        .h-rail {
+          position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
+          z-index: 90; display: flex; flex-direction: column; gap: 18px;
         }
-        @keyframes h-scroll-progress { to { transform: scaleX(1); } }
-
-        /* ── MAIN CONTENT ── */
-        .h-content {
-          position: relative; z-index: 2;
-          padding: 120px 56px 100px;
-          max-width: 900px;
-          margin: 0 auto;
+        .h-rail-item {
+          display: flex; align-items: center; gap: 10px; cursor: pointer;
+          background: none; border: none; padding: 0; color: var(--muted);
+          font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+          transition: color 0.25s;
+        }
+        .h-rail-dot {
+          width: 8px; height: 8px; border-radius: 50%;
+          border: 1px solid var(--border2); transition: all 0.25s var(--ease-out);
+        }
+        .h-rail-item.active { color: var(--text); }
+        .h-rail-item.active .h-rail-dot {
+          background: var(--accent); border-color: var(--accent);
+          box-shadow: 0 0 0 4px rgba(232,69,69,0.15); transform: scale(1.2);
+        }
+        .h-rail-label { opacity: 0; transform: translateX(-6px); transition: all 0.25s; }
+        .h-rail-item:hover .h-rail-label, .h-rail-item.active .h-rail-label {
+          opacity: 1; transform: translateX(0);
         }
 
-        /* ── HERO HEADLINE ── */
+        /* ── CONTENT ── */
+        .h-content { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; padding: 0 56px; }
+
+        /* ── HERO ── */
+        .h-hero { padding: 150px 0 60px; position: relative; }
         .h-eyebrow {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 20px;
-          display: flex; align-items: center; gap: 12px;
+          font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);
+          letter-spacing: 0.24em; text-transform: uppercase; margin-bottom: 28px;
+          display: flex; align-items: center; gap: 14px;
         }
-        .h-eyebrow::before {
-          content: ''; width: 32px; height: 1px; background: var(--muted);
-        }
+        .h-eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--accent); }
         .h-headline {
-          font-size: clamp(2.8rem, 7vw, 6rem); font-weight: 800;
-          letter-spacing: -0.04em; line-height: 1;
-          margin-bottom: 24px; color: var(--text);
+          font-size: clamp(3rem, 9vw, 7rem); font-weight: 800;
+          letter-spacing: -0.045em; line-height: 0.92; margin-bottom: 32px;
         }
-        .h-headline em {
-          font-style: normal; color: var(--accent);
+        .h-headline em { font-style: normal; position: relative; display: inline-block; }
+        .h-headline em::after {
+          content: ''; position: absolute; left: 0; right: 0; bottom: 0.06em; height: 0.14em;
+          background: linear-gradient(90deg, var(--accent), var(--accent2));
+          border-radius: 2px; z-index: -1; opacity: 0.9;
         }
         .h-subhead {
-          font-size: 1.1rem; color: var(--muted); line-height: 1.7;
-          max-width: 540px; margin-bottom: 80px;
+          font-size: 1.15rem; color: var(--muted); line-height: 1.7;
+          max-width: 560px; margin-bottom: 56px;
+        }
+
+        /* ── STATS STRIP ── */
+        .h-stats {
+          display: grid; grid-template-columns: repeat(4, 1fr);
+          border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+          background: var(--surface);
+        }
+        .h-stat { padding: 28px 24px; border-right: 1px solid var(--border); position: relative; }
+        .h-stat:last-child { border-right: none; }
+        .h-stat-k {
+          font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em;
+          line-height: 1; margin-bottom: 8px;
+          background: linear-gradient(135deg, var(--text), var(--muted));
+          -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .h-stat-v {
+          font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted);
+          letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        /* ── SECTION HEADS ── */
+        .h-sec-head { margin: 130px 0 60px; }
+        .h-sec-label {
+          font-family: var(--font-mono); font-size: 0.66rem; color: var(--muted);
+          letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 18px;
+          display: flex; align-items: center; gap: 12px;
+        }
+        .h-sec-label::before { content: ''; width: 32px; height: 1px; background: var(--muted); }
+        .h-sec-title {
+          font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800;
+          letter-spacing: -0.04em; line-height: 1.02;
         }
 
         /* ── TIMELINE ── */
-        .h-timeline { position: relative; margin-bottom: 100px; }
-        .h-timeline-line {
-          position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
-          background: linear-gradient(to bottom, transparent, var(--border2) 10%, var(--border2) 90%, transparent);
-        }
+        .h-timeline { position: relative; }
         .h-titem {
-          padding: 0 0 56px 48px;
-          position: relative;
+          position: relative; display: grid; grid-template-columns: 140px 1fr;
+          gap: 40px; padding-bottom: 8px; margin-bottom: 24px;
         }
-        .h-titem-dot {
-          position: absolute; left: -5px; top: 6px;
-          width: 11px; height: 11px; border-radius: 50%;
-          border: 2px solid var(--bg);
-          box-shadow: 0 0 0 1px var(--border2);
-          transition: transform 0.3s var(--ease-out);
+        .h-titem-left { position: relative; }
+        .h-titem-year {
+          font-family: var(--font-logo); font-size: 1.5rem; font-weight: 700;
+          letter-spacing: 0.04em; position: sticky; top: 100px;
         }
-        .h-titem:hover .h-titem-dot { transform: scale(1.4); }
-        .h-tyear {
-          font-family: var(--font-mono); font-size: 0.65rem;
-          letter-spacing: 0.15em; text-transform: uppercase;
-          margin-bottom: 12px;
+        .h-titem-tag {
+          font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted);
+          letter-spacing: 0.16em; text-transform: uppercase; margin-top: 6px;
+          position: sticky; top: 132px;
+        }
+        .h-titem-card {
+          position: relative; border: 1px solid var(--border); border-radius: 18px;
+          background: var(--surface); padding: 40px 40px 40px 44px; overflow: hidden;
+          transition: border-color 0.35s var(--ease-out), transform 0.35s var(--ease-out), background 0.35s;
+        }
+        .h-titem-card::before {
+          content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+          background: var(--card-accent); opacity: 0.85;
+        }
+        .h-titem-card:hover { border-color: var(--border2); transform: translateY(-4px); background: var(--surface2); }
+        .h-ghost-year {
+          position: absolute; right: 24px; top: -14px;
+          font-family: var(--font-logo); font-weight: 700;
+          font-size: clamp(5rem, 10vw, 8rem); line-height: 1;
+          color: var(--ghost); letter-spacing: -0.02em; pointer-events: none; user-select: none;
         }
         .h-ttitle {
-          font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800;
-          letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.1;
+          font-size: clamp(1.4rem, 3vw, 2.1rem); font-weight: 800;
+          letter-spacing: -0.03em; margin-bottom: 18px; line-height: 1.08;
+          position: relative; z-index: 1; max-width: 80%;
         }
         .h-tbody {
-          font-size: 1rem; color: var(--muted); line-height: 1.75;
-          max-width: 620px;
+          font-size: 1rem; color: var(--muted); line-height: 1.78;
+          max-width: 620px; position: relative; z-index: 1;
+        }
+        .h-tchip {
+          display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
+          font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+          text-transform: uppercase; color: var(--card-accent);
+          border: 1px solid var(--border2); border-radius: 999px; padding: 7px 14px;
+          position: relative; z-index: 1;
+        }
+        .h-tchip::before {
+          content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--card-accent);
         }
 
-        /* ── VISION SECTION ── */
-        .h-vision-label {
-          font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
-          letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 20px;
-          display: flex; align-items: center; gap: 12px;
+        /* ── VISION BENTO ── */
+        .h-bento {
+          display: grid; grid-template-columns: repeat(3, 1fr);
+          grid-auto-rows: minmax(200px, auto); gap: 16px;
         }
-        .h-vision-label::before { content: ''; width: 32px; height: 1px; background: var(--muted); }
-        .h-vision-title {
-          font-size: clamp(2rem, 5vw, 4rem); font-weight: 800;
-          letter-spacing: -0.04em; line-height: 1; margin-bottom: 16px;
-        }
-        .h-vision-sub {
-          font-size: 1rem; color: var(--muted); line-height: 1.7;
-          max-width: 520px; margin-bottom: 56px;
-        }
-        .h-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
         .h-pillar {
-          background: var(--surface);
-          border: 1px solid var(--border);
-          padding: 40px 36px;
-          transition: border-color 0.3s, background 0.3s;
-          cursor: default;
+          background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+          padding: 36px; transition: border-color 0.3s, background 0.3s, transform 0.3s var(--ease-out);
+          position: relative; overflow: hidden; display: flex; flex-direction: column;
         }
-        .h-pillar:hover { border-color: var(--border2); background: var(--surface2); }
+        .h-pillar:hover { border-color: var(--border2); background: var(--surface2); transform: translateY(-4px); }
+        .h-pillar.wide { grid-column: span 2; }
+        .h-pillar.tall { grid-row: span 2; }
+        .h-pillar-glow {
+          position: absolute; width: 220px; height: 220px; border-radius: 50%;
+          filter: blur(60px); opacity: 0.14; top: -60px; right: -60px; pointer-events: none;
+        }
         .h-pillar-icon {
-          font-size: 1.6rem; margin-bottom: 20px;
-          display: block; line-height: 1;
+          font-size: 1.9rem; margin-bottom: 22px; display: block; line-height: 1;
         }
         .h-pillar-title {
-          font-size: 1.05rem; font-weight: 800;
-          letter-spacing: -0.02em; margin-bottom: 12px;
-          line-height: 1.2;
+          font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+          margin-bottom: 14px; line-height: 1.2;
         }
-        .h-pillar-body {
-          font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+        .h-pillar-body { font-size: 0.9rem; color: var(--muted); line-height: 1.72; }
+
+        /* ── CTA ── */
+        .h-cta {
+          margin: 130px 0 40px; border: 1px solid var(--border); border-radius: 24px;
+          background: linear-gradient(135deg, var(--surface), var(--surface2));
+          padding: 72px 56px; text-align: center; position: relative; overflow: hidden;
         }
+        .h-cta::before {
+          content: ''; position: absolute; inset: 0; pointer-events: none;
+          background: radial-gradient(ellipse 60% 100% at 50% 0%, rgba(232,69,69,0.12), transparent 70%);
+        }
+        .h-cta-title {
+          font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.04em;
+          line-height: 1.05; margin-bottom: 18px; position: relative;
+        }
+        .h-cta-sub { color: var(--muted); font-size: 1.02rem; max-width: 460px; margin: 0 auto 32px; position: relative; }
+        .h-cta-btn {
+          display: inline-flex; align-items: center; gap: 10px; position: relative;
+          background: var(--accent); color: #fff; text-decoration: none;
+          font-weight: 700; font-size: 0.95rem; padding: 15px 32px; border-radius: 999px;
+          transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+          box-shadow: 0 8px 30px rgba(232,69,69,0.3);
+        }
+        .h-cta-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(232,69,69,0.4); }
 
         /* ── FOOTER ── */
         .h-footer {
-          position: relative; z-index: 2;
-          border-top: 1px solid var(--border);
-          padding: 32px 56px;
-          display: flex; align-items: center; justify-content: space-between;
-          gap: 16px;
+          position: relative; z-index: 2; border-top: 1px solid var(--border);
+          padding: 32px 56px; max-width: 1080px; margin: 0 auto;
+          display: flex; align-items: center; justify-content: space-between; gap: 16px;
         }
         .h-footer-copy {
           font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted);
@@ -304,39 +407,41 @@ export default function HistoryPage() {
         .h-footer-link {
           font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted);
           text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase;
-          transition: color 0.2s; cursor: pointer;
+          transition: color 0.2s;
         }
         .h-footer-link:hover { color: var(--text); }
 
-        /* ── ANIMATIONS ── */
         @keyframes pulse {
           0%,100% { opacity: 1; transform: scale(1); }
           50%      { opacity: 0.5; transform: scale(0.85); }
         }
 
         /* ── RESPONSIVE ── */
-        @media (max-width: 900px) {
+        @media (max-width: 1160px) { .h-rail { display: none; } }
+        @media (max-width: 860px) {
           .h-nav { padding: 0 20px; }
-          .h-content { padding: 100px 20px 80px; }
-          .h-pillars { grid-template-columns: 1fr; }
+          .h-content { padding: 0 20px; }
           .h-footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
-          .h-pillar { padding: 32px 24px; }
+          .h-stats { grid-template-columns: repeat(2, 1fr); }
+          .h-stat:nth-child(2) { border-right: none; }
+          .h-stat:nth-child(1), .h-stat:nth-child(2) { border-bottom: 1px solid var(--border); }
+          .h-titem { grid-template-columns: 1fr; gap: 14px; }
+          .h-titem-year, .h-titem-tag { position: static; }
+          .h-titem-year { font-size: 1.2rem; }
+          .h-titem-card { padding: 30px 26px; }
+          .h-ttitle { max-width: 100%; }
+          .h-bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
+          .h-pillar.wide, .h-pillar.tall { grid-column: auto; grid-row: auto; }
+          .h-cta { padding: 52px 28px; }
         }
         @media (max-width: 480px) {
-          .h-headline { letter-spacing: -0.03em; }
-          .h-titem { padding: 0 0 40px 32px; }
-          .h-ttitle { font-size: 1.3rem; }
-          .h-back span { display: none; }
-          .h-nav-right { gap: 10px; }
+          .h-stats { grid-template-columns: 1fr; }
+          .h-stat { border-right: none; border-bottom: 1px solid var(--border); }
+          .h-stat:last-child { border-bottom: none; }
+          .h-back span:last-child { display: none; }
         }
-
-        /* Disable backdrop-filter on touch */
         @media (hover: none) and (pointer: coarse) {
-          .h-nav {
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            background: var(--bg);
-          }
+          .h-nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg); }
         }
 
         ::selection { background: var(--accent); color: #fff; }
@@ -347,7 +452,8 @@ export default function HistoryPage() {
 
       {/* BG */}
       <div className="h-bg-glow" />
-      <div className="h-scroll-bar" />
+      <div className="h-grid-overlay" />
+      <motion.div className="h-scroll-bar" style={{ scaleX: progress }} />
 
       {/* NAV */}
       <nav className="h-nav">
@@ -366,77 +472,130 @@ export default function HistoryPage() {
         </div>
       </nav>
 
-      {/* CONTENT */}
-      <div className="h-content">
+      {/* SIDE RAIL */}
+      <div className="h-rail">
+        {timeline.map((t) => (
+          <button
+            key={t.year}
+            className={`h-rail-item${activeYear === t.year ? " active" : ""}`}
+            onClick={() => {
+              document.getElementById(`year-${t.year}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }}
+          >
+            <span className="h-rail-dot" />
+            <span className="h-rail-label">{t.year}</span>
+          </button>
+        ))}
+      </div>
 
+      <div className="h-content">
         {/* HERO */}
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", damping: 24, stiffness: 120 }}
-        >
-          <div className="h-eyebrow">Our Story</div>
-          <h1 className="h-headline">
-            The Evolution of<br /><em>Mega Devs</em>
-          </h1>
-          <p className="h-subhead">
-            From a focused software studio to a multi-team technology organization — four years of building, rebranding, and scaling.
-          </p>
-        </motion.div>
+        <section className="h-hero">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", damping: 24, stiffness: 120 }}
+          >
+            <div className="h-eyebrow">Our Story</div>
+            <h1 className="h-headline">
+              The Evolution<br />of <em>Mega Devs</em>
+            </h1>
+            <p className="h-subhead">
+              From a specialized software studio to a multi-team technology organization —
+              a four-year journey defined by disciplined engineering, strategic growth, and
+              a commitment to building at scale.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="h-stats"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", damping: 26, stiffness: 130, delay: 0.15 }}
+          >
+            {stats.map((s) => (
+              <div className="h-stat" key={s.v}>
+                <div className="h-stat-k">{s.k}</div>
+                <div className="h-stat-v">{s.v}</div>
+              </div>
+            ))}
+          </motion.div>
+        </section>
 
         {/* TIMELINE */}
+        <div className="h-sec-head">
+          <div className="h-sec-label">Company Timeline</div>
+          <h2 className="h-sec-title">Four defining milestones.</h2>
+        </div>
+
         <div className="h-timeline">
-          <div className="h-timeline-line" />
           {timeline.map((item, i) => (
             <motion.div
               key={item.year}
+              id={`year-${item.year}`}
               className="h-titem"
-              initial={{ opacity: 0, y: 24 }}
+              style={{ ["--card-accent" as string]: item.accent }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.07 }}
+              viewport={{ once: true, margin: "-45% 0px -45% 0px" }}
+              onViewportEnter={() => setActiveYear(item.year)}
+              transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.05 }}
             >
-              <div className="h-titem-dot" style={{ background: item.accent }} />
-              <div className="h-tyear" style={{ color: item.accent }}>{item.year}</div>
-              <div className="h-ttitle">{item.title}</div>
-              <p className="h-tbody">{item.body}</p>
+              <div className="h-titem-left">
+                <div className="h-titem-year" style={{ color: item.accent }}>{item.year}</div>
+                <div className="h-titem-tag">{item.tag}</div>
+              </div>
+              <div className="h-titem-card">
+                <span className="h-ghost-year">{item.year}</span>
+                <h3 className="h-ttitle">{item.title}</h3>
+                <p className="h-tbody">{item.body}</p>
+                <span className="h-tchip">{item.stat}</span>
+              </div>
             </motion.div>
           ))}
         </div>
 
         {/* VISION */}
+        <div className="h-sec-head">
+          <div className="h-sec-label">Looking Ahead · 2026 – 2036</div>
+          <h2 className="h-sec-title">Our vision for<br />the decade ahead.</h2>
+        </div>
+
+        <div className="h-bento">
+          {pillars.map((p, i) => (
+            <motion.div
+              key={p.title}
+              className={`h-pillar ${p.span}`}
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}
+            >
+              <div
+                className="h-pillar-glow"
+                style={{ background: i % 2 === 0 ? "var(--accent)" : "var(--accent3)" }}
+              />
+              <span className="h-pillar-icon" style={{ color: i % 2 === 0 ? "var(--accent)" : "var(--accent3)" }}>
+                {p.icon}
+              </span>
+              <div className="h-pillar-title">{p.title}</div>
+              <p className="h-pillar-body">{p.body}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA */}
         <motion.div
+          className="h-cta"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", damping: 24, stiffness: 130 }}
         >
-          <div className="h-vision-label">2026 – 2036</div>
-          <h2 className="h-vision-title">Our Vision:<br />The Next Decade</h2>
-          <p className="h-vision-sub">
-            Our roadmap is built on four pillars that will define the next chapter of Mega Devs.
-          </p>
-
-          <div className="h-pillars">
-            {pillars.map((p, i) => (
-              <motion.div
-                key={p.title}
-                className="h-pillar"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}
-              >
-                <span className="h-pillar-icon" style={{ color: i % 2 === 0 ? "var(--accent)" : "var(--accent3)" }}>
-                  {p.icon}
-                </span>
-                <div className="h-pillar-title">{p.title}</div>
-                <p className="h-pillar-body">{p.body}</p>
-              </motion.div>
-            ))}
-          </div>
+          <h2 className="h-cta-title">The next chapter<br />is already underway.</h2>
+          <p className="h-cta-sub">Interested in building with us? We'd welcome the opportunity to discuss your project.</p>
+          <a href="/#contact" className="h-cta-btn">Start a Project →</a>
         </motion.div>
-
       </div>
 
       {/* FOOTER */}
@@ -444,7 +603,7 @@ export default function HistoryPage() {
         <span className="h-footer-copy">© 2026 Mega Devs. All rights reserved.</span>
         <div className="h-footer-links">
           <a href="/" className="h-footer-link">Home</a>
-          <a href="/#work" className="h-footer-link">Work</a>
+          <a href="/works" className="h-footer-link">Work</a>
           <a href="/#contact" className="h-footer-link">Contact</a>
         </div>
       </footer>
