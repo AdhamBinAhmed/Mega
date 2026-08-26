@@ -27,6 +27,9 @@ interface Profile {
   neonPulse?: boolean;
   sonarPulse?: boolean;
   scanlineEffect?: boolean;
+  shineSweep?: boolean;
+  borderBeam?: boolean;
+  starfield?: boolean;
   customLinks?: { id: string, title: string, url: string }[];
   [key: string]: any;
 }
@@ -358,6 +361,58 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
           100% { transform: scale(1.7); opacity: 0; }
         }
 
+        /* ── GLINT SHINE SWEEP ── */
+        @property --beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        .ppc-shine-sweep {
+          position: absolute; inset: 0; z-index: 3; pointer-events: none;
+          border-radius: inherit; overflow: hidden;
+        }
+        .ppc-shine-sweep::before {
+          content: ""; position: absolute; top: -20%; left: -70%; width: 45%; height: 140%;
+          transform: skewX(-22deg);
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+          animation: ppcShineSweep 5.5s ease-in-out infinite;
+        }
+        @keyframes ppcShineSweep {
+          0% { left: -70%; }
+          55%, 100% { left: 150%; }
+        }
+
+        /* ── BORDER LIGHT BEAM ── */
+        .ppc-beam {
+          position: absolute; inset: 0; z-index: 3; pointer-events: none;
+          border-radius: inherit; padding: 2px;
+          background: conic-gradient(from var(--beam-angle),
+            transparent 0deg, transparent 295deg,
+            var(--theme-a) 330deg, var(--theme-b) 350deg, transparent 360deg);
+          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor; mask-composite: exclude;
+          animation: ppcBeamSpin 4s linear infinite;
+        }
+        @keyframes ppcBeamSpin { to { --beam-angle: 360deg; } }
+
+        /* ── TWINKLING STARFIELD ── */
+        .ppc-starfield {
+          position: absolute; inset: 0; z-index: 0; pointer-events: none;
+          border-radius: inherit; overflow: hidden;
+          background-image:
+            radial-gradient(1.5px 1.5px at 18% 22%, #fff, transparent),
+            radial-gradient(1px 1px at 62% 18%, rgba(255,255,255,0.85), transparent),
+            radial-gradient(1.5px 1.5px at 82% 55%, var(--theme-a), transparent),
+            radial-gradient(1px 1px at 33% 72%, #fff, transparent),
+            radial-gradient(1px 1px at 74% 82%, var(--theme-b), transparent),
+            radial-gradient(1.5px 1.5px at 48% 45%, rgba(255,255,255,0.7), transparent),
+            radial-gradient(1px 1px at 90% 30%, #fff, transparent),
+            radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,0.7), transparent);
+          background-repeat: no-repeat;
+          animation: ppcTwinkle 3.6s ease-in-out infinite alternate;
+        }
+        @keyframes ppcTwinkle { 0% { opacity: 0.35; } 100% { opacity: 1; } }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ppc-shine-sweep::before, .ppc-beam, .ppc-starfield { animation: none; }
+        }
+
         /* ── CRT SCANLINES ── */
         .ppc-scanlines {
           position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; overflow: hidden;
@@ -608,8 +663,11 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
             style={profile.tiltEffect && !profile.levitationFloat ? ({ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` } as React.CSSProperties) : undefined}
           >
             <div className="ppc-card-glow" />
+            {profile.starfield && <div className="ppc-starfield" />}
             {profile.holographicFoil && <div className="ppc-holo-foil" />}
             {profile.scanlineEffect && <div className="ppc-scanlines" />}
+            {profile.shineSweep && <div className="ppc-shine-sweep" />}
+            {profile.borderBeam && <div className="ppc-beam" />}
             {profile.cursorSpotlight && (
               <div
                 className="ppc-spotlight"

@@ -175,13 +175,23 @@ html { scroll-behavior: smooth; }
 
 /* ── DASHBOARD LAYOUT ── */
 .dashboard-layout {
-  display: grid; grid-template-columns: 1fr 420px; gap: 40px; align-items: start;
+  display: grid; grid-template-columns: 1fr 420px; gap: 40px; align-items: stretch;
 }
 .form-col { display: flex; flex-direction: column; gap: 20px; }
 
-/* ── FORM SECTIONS ── */
-.form-section { padding: 32px; border-radius: 20px; display: flex; flex-direction: column; gap: 20px; }
-.form-section-head { display: flex; align-items: flex-start; gap: 16px; }
+/* ── FORM SECTIONS (collapsible accordion) ── */
+.form-section { padding: 0; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
+.form-section-head {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  padding: 24px 28px; background: none; border: none; cursor: pointer;
+  text-align: left; font-family: inherit; color: inherit; transition: background 0.2s;
+}
+.form-section-head:hover { background: rgba(255,255,255,0.02); }
+.create-root[data-theme="light"] .form-section-head:hover { background: rgba(0,0,0,0.02); }
+.form-section-head > div { flex: 1; }
+.form-section-body {
+  padding: 4px 28px 28px; display: flex; flex-direction: column; gap: 20px;
+}
 .form-section-num {
   font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--accent);
   border: 1px solid var(--border2); border-radius: 8px; width: 30px; height: 30px;
@@ -189,6 +199,11 @@ html { scroll-behavior: smooth; }
 }
 .form-section-title { font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
 .form-section-desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+.form-section-chevron {
+  margin-left: auto; flex-shrink: 0; color: var(--muted); font-size: 0.9rem;
+  transition: transform 0.34s cubic-bezier(0.16,1,0.3,1), color 0.2s;
+}
+.form-section.open .form-section-chevron { transform: rotate(180deg); color: var(--accent); }
 
 .form { display: flex; flex-direction: column; gap: 20px; }
 .form-group { display: flex; flex-direction: column; gap: 8px; }
@@ -310,6 +325,8 @@ html { scroll-behavior: smooth; }
   .grid-2-col { grid-template-columns: 1fr; gap: 16px; }
   .dash-header { align-items: stretch; }
   .status-card { min-width: 0; }
-  .form-section { padding: 22px; border-radius: 16px; }
+  .form-section { border-radius: 16px; }
+  .form-section-head { padding: 20px; }
+  .form-section-body { padding: 2px 20px 22px; }
   .save-bar { flex-direction: column; align-items: stretch; text-align: center; bottom: 12px; }
 }

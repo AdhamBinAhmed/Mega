@@ -37,6 +37,9 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
       {bgStyle === "bg-topo" && <div className="bg-topo" />}
       {bgStyle === "bg-bokeh" && <div className="bg-bokeh" />}
       {bgStyle === "bg-liquid" && <div className="bg-liquid" />}
+      {bgStyle === "bg-nebula" && <div className="bg-nebula" />}
+      {bgStyle === "bg-plasma" && <div className="bg-plasma" />}
+      {bgStyle === "bg-circuit" && <div className="bg-circuit" />}
       {bgStyle === "custom" && profile.customBgUrl && (
         <div style={{
           position: "absolute",

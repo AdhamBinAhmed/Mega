@@ -11,6 +11,19 @@ import PremiumProfileCard from "../components/PremiumProfileCard";
 import "./dashboard.css";
 import "../[subdomain]/subdomain-bg.css";
 
+function CollapseBody({ open, children }: { open: boolean; children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={false}
+      animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
+      transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
+      style={{ overflow: "hidden" }}
+    >
+      <div className="form-section-body">{children}</div>
+    </motion.div>
+  );
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -43,6 +56,9 @@ export default function DashboardPage() {
     neonPulse: false,
     sonarPulse: false,
     scanlineEffect: false,
+    shineSweep: false,
+    borderBeam: false,
+    starfield: false,
     customLinks: [] as { id: string, title: string, url: string }[],
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -55,6 +71,11 @@ export default function DashboardPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    "01": true, "02": false, "03": false, "04": false, "05": false,
+  });
+  const toggleSection = (n: string) =>
+    setOpenSections((s) => ({ ...s, [n]: !s[n] }));
 
   useEffect(() => {
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -101,6 +122,9 @@ export default function DashboardPage() {
             neonPulse: data.neonPulse || false,
             sonarPulse: data.sonarPulse || false,
             scanlineEffect: data.scanlineEffect || false,
+            shineSweep: data.shineSweep || false,
+            borderBeam: data.borderBeam || false,
+            starfield: data.starfield || false,
             customLinks: data.customLinks || [],
           });
           if (data.photoUrl) setImagePreview(data.photoUrl);
@@ -246,6 +270,10 @@ export default function DashboardPage() {
         neonPulse: formData.neonPulse,
         sonarPulse: formData.sonarPulse,
         scanlineEffect: formData.scanlineEffect,
+        shineSweep: formData.shineSweep,
+        borderBeam: formData.borderBeam,
+        starfield: formData.starfield,
+        gmail: formData.gmail,
         customLinks: formData.customLinks,
         updatedAt: new Date().toISOString(),
       }, { merge: true });
@@ -386,14 +414,16 @@ export default function DashboardPage() {
             {/* ── FORM ── */}
             <form id="profile-form" className="form form-col" onSubmit={handleSubmit}>
 
-              <div className="form-section glass-card">
-                <div className="form-section-head">
+              <div className={`form-section glass-card ${openSections["01"] ? "open" : ""}`}>
+                <button type="button" className="form-section-head" onClick={() => toggleSection("01")}>
                   <span className="form-section-num">01</span>
                   <div>
                     <div className="form-section-title">Basics</div>
                     <div className="form-section-desc">Your identity on the network</div>
                   </div>
-                </div>
+                  <span className="form-section-chevron">▾</span>
+                </button>
+                <CollapseBody open={openSections["01"]}>
 
                 <div className="form-group">
                   <label className="label">Custom Subdomain</label>
@@ -431,16 +461,19 @@ export default function DashboardPage() {
                     placeholder="your.email@gmail.com" value={formData.gmail} onChange={handleChange}
                   />
                 </div>
+                </CollapseBody>
               </div>
 
-              <div className="form-section glass-card">
-                <div className="form-section-head">
+              <div className={`form-section glass-card ${openSections["02"] ? "open" : ""}`}>
+                <button type="button" className="form-section-head" onClick={() => toggleSection("02")}>
                   <span className="form-section-num">02</span>
                   <div>
                     <div className="form-section-title">Profile Photo</div>
                     <div className="form-section-desc">Shown on your avatar ring</div>
                   </div>
-                </div>
+                  <span className="form-section-chevron">▾</span>
+                </button>
+                <CollapseBody open={openSections["02"]}>
 
                 <div
                   className={`dropzone ${isDragging ? "dragging" : ""}`}
@@ -468,16 +501,19 @@ export default function DashboardPage() {
                     onChange={handleFileChange}
                   />
                 </div>
+                </CollapseBody>
               </div>
 
-              <div className="form-section glass-card">
-                <div className="form-section-head">
+              <div className={`form-section glass-card ${openSections["03"] ? "open" : ""}`}>
+                <button type="button" className="form-section-head" onClick={() => toggleSection("03")}>
                   <span className="form-section-num">03</span>
                   <div>
                     <div className="form-section-title">Social Links</div>
                     <div className="form-section-desc">Where people can reach you</div>
                   </div>
-                </div>
+                  <span className="form-section-chevron">▾</span>
+                </button>
+                <CollapseBody open={openSections["03"]}>
 
                 <div className="grid-2-col">
                   <div className="form-group">
@@ -529,16 +565,19 @@ export default function DashboardPage() {
                     />
                   </div>
                 </div>
+                </CollapseBody>
               </div>
 
-              <div className="form-section glass-card">
-                <div className="form-section-head">
+              <div className={`form-section glass-card ${openSections["04"] ? "open" : ""}`}>
+                <button type="button" className="form-section-head" onClick={() => toggleSection("04")}>
                   <span className="form-section-num">04</span>
                   <div>
                     <div className="form-section-title">Appearance</div>
                     <div className="form-section-desc">Background, accent color & effects</div>
                   </div>
-                </div>
+                  <span className="form-section-chevron">▾</span>
+                </button>
+                <CollapseBody open={openSections["04"]}>
 
                 <div className="grid-2-col">
                   <div className="form-group">
@@ -556,6 +595,9 @@ export default function DashboardPage() {
                       <option value="bg-topo">Topographic Lines (New)</option>
                       <option value="bg-bokeh">Floating Bokeh (New)</option>
                       <option value="bg-liquid">Liquid Chrome (New)</option>
+                      <option value="bg-nebula">Cosmic Nebula (New)</option>
+                      <option value="bg-plasma">Plasma Field (New)</option>
+                      <option value="bg-circuit">Circuit Board (New)</option>
                       <option value="noise">Static Noise</option>
                       <option value="plain">Plain Dark</option>
                       <option value="custom">Custom Image</option>
@@ -737,16 +779,52 @@ export default function DashboardPage() {
                   />
                   <label htmlFor="scanlineEffect">📺 CRT Matrix Scanlines (Futuristic retro display lines overlay)</label>
                 </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="shineSweep"
+                    id="shineSweep"
+                    checked={formData.shineSweep}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="shineSweep">💫 Glint Shine Sweep (Diagonal light glides across the card)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="borderBeam"
+                    id="borderBeam"
+                    checked={formData.borderBeam}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="borderBeam">🌟 Border Light Beam (Glowing accent beam orbits the edge)</label>
+                </div>
+
+                <div className="toggle-row">
+                  <input
+                    type="checkbox"
+                    name="starfield"
+                    id="starfield"
+                    checked={formData.starfield}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="starfield">⭐ Twinkling Starfield (Animated stars shimmer behind content)</label>
+                </div>
+                </CollapseBody>
               </div>
 
-              <div className="form-section glass-card">
-                <div className="form-section-head">
+              <div className={`form-section glass-card ${openSections["05"] ? "open" : ""}`}>
+                <button type="button" className="form-section-head" onClick={() => toggleSection("05")}>
                   <span className="form-section-num">05</span>
                   <div>
                     <div className="form-section-title">Custom Links</div>
                     <div className="form-section-desc">Add anything — LinkedIn, portfolio, anything else</div>
                   </div>
-                </div>
+                  <span className="form-section-chevron">▾</span>
+                </button>
+                <CollapseBody open={openSections["05"]}>
 
                 {formData.customLinks.map((link, index) => (
                   <div key={link.id} className="link-row">
@@ -782,6 +860,7 @@ export default function DashboardPage() {
                 >
                   + Add Custom Link
                 </button>
+                </CollapseBody>
               </div>
             </form>
 
@@ -810,6 +889,9 @@ export default function DashboardPage() {
                   {formData.backgroundStyle === "bg-topo" && <div className="bg-topo" />}
                   {formData.backgroundStyle === "bg-bokeh" && <div className="bg-bokeh" />}
                   {formData.backgroundStyle === "bg-liquid" && <div className="bg-liquid" />}
+                  {formData.backgroundStyle === "bg-nebula" && <div className="bg-nebula" />}
+                  {formData.backgroundStyle === "bg-plasma" && <div className="bg-plasma" />}
+                  {formData.backgroundStyle === "bg-circuit" && <div className="bg-circuit" />}
                   {formData.backgroundStyle === "custom" && bgImagePreview && (
                     <div style={{
                       position: "absolute", inset: 0, pointerEvents: "none",
