@@ -316,6 +316,7 @@ export default function Home() {
     },
     { l: "Scroll to Top", icon: "↑", run: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
     { l: "Open GitHub", icon: "⌥", run: () => window.open("https://github.com/AdhamBinAhmed", "_blank") },
+    { l: "Stand with Palestine", icon: "🇵🇸", run: () => { window.location.href = "/palestine"; } },
   ];
 
   return (

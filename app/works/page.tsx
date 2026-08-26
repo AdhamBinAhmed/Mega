@@ -9,7 +9,7 @@ const works = [
     title: "MEGA ROM",
     category: "Android ROM",
     year: "2023",
-    desc: "Custom Android ROM built from AOSP with performance patches, a debloated system image, and minimal UI. Deployed on Xiaomi & Samsung.",
+    desc: "A custom Android distribution built on AOSP, featuring targeted performance optimizations, a streamlined system image, and a refined minimal interface. Deployed across Xiaomi and Samsung devices.",
     tags: ["Android", "C++", "Kernel", "AOSP"],
     status: "Live",
     link: "https://megaroms.ggff.net/",
@@ -17,9 +17,9 @@ const works = [
   {
     num: "02",
     title: "Kira Store",
-    category: "Web App",
+    category: "Web Application",
     year: "2024",
-    desc: "Full-stack e-commerce platform with real-time inventory, Arabic/English i18n, payment gateway integration, and a custom admin dashboard.",
+    desc: "A full-stack e-commerce platform featuring real-time inventory management, bilingual Arabic and English support, integrated payment processing, and a purpose-built administrative dashboard.",
     tags: ["Next.js", "PostgreSQL", "Redis", "Stripe"],
     status: "Live",
     link: "https://kiradecoration.vercel.app/",
@@ -29,7 +29,7 @@ const works = [
     title: "SentinelAI",
     category: "AI System",
     year: "2024",
-    desc: "ML-powered threat detection trained on real network traffic. Sub-10ms inference, 94%+ accuracy, running in production across two enterprise clients.",
+    desc: "A machine learning threat-detection system trained on live network traffic, delivering sub-10ms inference at over 94% accuracy. Currently operating in production for two enterprise clients.",
     tags: ["Python", "PyTorch", "FastAPI", "Docker"],
     status: "Private",
     link: "#",
@@ -37,9 +37,9 @@ const works = [
   {
     num: "04",
     title: "DevPanel",
-    category: "Backend",
+    category: "Infrastructure",
     year: "2024",
-    desc: "Internal server management dashboard with live metrics, SSH tunneling, log streaming, and smart alerting. 847+ days without downtime.",
+    desc: "An internal server-management platform providing live performance metrics, secure SSH tunneling, real-time log streaming, and intelligent alerting — maintaining over 847 days of continuous uptime.",
     tags: ["Node.js", "WebSockets", "Linux", "Nginx"],
     status: "Private",
     link: "#",
@@ -376,12 +376,14 @@ export default function WorksPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", damping: 24, stiffness: 120 }}
         >
-          <div className="w-eyebrow">Portfolio</div>
+          <div className="w-eyebrow">Selected Work</div>
           <h1 className="w-headline">
-            Things we&apos;ve<br /><em>shipped</em>
+            Work we&apos;re<br /><em>proud of</em>
           </h1>
           <p className="w-subhead">
-            A selection of projects ranging from high-performance web applications and custom Android ROMs to intelligent AI systems.
+            A selection of projects spanning high-performance web applications, custom Android
+            platforms, and production-grade AI systems — each built to a standard of engineering
+            excellence.
           </p>
         </motion.div>
 
@@ -423,7 +425,7 @@ export default function WorksPage() {
         <span className="w-footer-copy">© {new Date().getFullYear()} Mega Devs. All rights reserved.</span>
         <div className="w-footer-links">
           <a href="/" className="w-footer-link">Home</a>
-          <a href="/history" className="w-footer-link">History</a>
+          <a href="/history" className="w-footer-link">Our Story</a>
           <a href="/#contact" className="w-footer-link">Contact</a>
         </div>
       </footer>
