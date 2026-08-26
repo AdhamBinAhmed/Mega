@@ -13,7 +13,7 @@
   --green:    #22c55e;
   --font-display: var(--font-outfit,'Outfit'),sans-serif;
   --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
-  --font-logo:    var(--font-logo,'Orbitron'),sans-serif;
+  --font-logo:    var(--font-logo,'Sora'),sans-serif;
 }
 .create-root[data-theme="light"] {
   --bg:       #faf8f5;
@@ -104,9 +104,9 @@ html { scroll-behavior: smooth; }
 .create-root[data-theme="light"] .nav { background: rgba(250,248,245,0.85); }
 
 .logo {
-  font-family: var(--font-logo); font-size: 1.1rem; font-weight: 700;
-  color: var(--text); text-decoration: none; letter-spacing: 0.12em;
-  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-logo); font-size: 1.15rem; font-weight: 800;
+  color: var(--text); text-decoration: none; letter-spacing: -0.01em;
+  display: flex; align-items: center; gap: 8px;
 }
 .logo-accent { color: var(--accent); }
 .logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }

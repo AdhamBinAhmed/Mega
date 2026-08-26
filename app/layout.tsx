@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk, JetBrains_Mono, Orbitron } from "next/font/google";
+import { Outfit, Space_Grotesk, JetBrains_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
 
@@ -18,9 +18,9 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
-const orbitron = Orbitron({
+const sora = Sora({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["600", "700", "800"],
   variable: "--font-logo",
 });
 
@@ -62,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${orbitron.variable}`}>
+      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable}`}>
         <LoadingScreen />
         {children}
       </body>

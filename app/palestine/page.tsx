@@ -57,7 +57,7 @@ export default function PalestinePage() {
           --ease-out:cubic-bezier(0.16,1,0.3,1);
           --font-display:var(--font-outfit,'Outfit'),sans-serif;
           --font-mono:var(--font-jetbrains,'JetBrains Mono'),monospace;
-          --font-logo:var(--font-logo,'Orbitron'),sans-serif;
+          --font-logo:var(--font-logo,'Sora'),sans-serif;
         }
         .pal-root[data-theme="light"] {
           --bg:#faf8f5; --surface:#ffffff; --surface2:#f0ede8;
@@ -97,8 +97,8 @@ export default function PalestinePage() {
           display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
           background:rgba(5,5,7,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s;}
         .pal-root[data-theme="light"] .pal-nav{background:rgba(250,248,245,0.72);}
-        .pal-logo{font-family:var(--font-logo);font-size:1.1rem;font-weight:700;color:var(--text);
-          text-decoration:none;letter-spacing:.12em;display:flex;align-items:center;gap:8px;}
+        .pal-logo{font-family:var(--font-logo);font-size:1.15rem;font-weight:800;color:var(--text);
+          text-decoration:none;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
         .pal-logo-accent{color:var(--accent);}
         .pal-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
         .pal-nav-mid{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:.22em;
@@ -224,8 +224,8 @@ export default function PalestinePage() {
       {/* NAV */}
       <nav className="pal-nav">
         <a href="/" className="pal-logo">
-          <span className="pal-logo-dot" />
           MEGA<span className="pal-logo-accent">Devs</span>
+          <span className="pal-logo-dot" />
         </a>
         <span className="pal-nav-mid">In Solidarity</span>
         <div className="pal-nav-right">

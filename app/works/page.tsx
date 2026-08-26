@@ -228,7 +228,7 @@ export default function WorksPage() {
           --ease-out:cubic-bezier(0.16,1,0.3,1);
           --font-display:var(--font-outfit,'Outfit'),sans-serif;
           --font-mono:var(--font-jetbrains,'JetBrains Mono'),monospace;
-          --font-logo:var(--font-logo,'Orbitron'),sans-serif;
+          --font-logo:var(--font-logo,'Sora'),sans-serif;
         }
         .works-root[data-theme="light"] {
           --bg:#faf8f5; --surface:#ffffff; --surface2:#f0ede8;
@@ -266,8 +266,8 @@ export default function WorksPage() {
           display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
           background:rgba(5,5,7,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s;}
         .works-root[data-theme="light"] .w-nav{background:rgba(250,248,245,0.72);}
-        .w-logo{font-family:var(--font-logo);font-size:1.1rem;font-weight:700;color:var(--text);
-          text-decoration:none;letter-spacing:.12em;display:flex;align-items:center;gap:8px;}
+        .w-logo{font-family:var(--font-logo);font-size:1.15rem;font-weight:800;color:var(--text);
+          text-decoration:none;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
         .w-logo-accent{color:var(--accent);}
         .w-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
         .w-nav-right{display:flex;align-items:center;gap:14px;}
@@ -472,8 +472,8 @@ export default function WorksPage() {
       {/* NAV */}
       <nav className="w-nav">
         <a href="/" className="w-logo">
-          <span className="w-logo-dot" />
           MEGA<span className="w-logo-accent">Devs</span>
+          <span className="w-logo-dot" />
         </a>
         <div className="w-nav-right">
           <button className="w-theme-btn" onClick={toggleTheme}>{theme === "dark" ? "☀" : "◑"}</button>

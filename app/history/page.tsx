@@ -114,7 +114,7 @@ export default function HistoryPage() {
           --ease-out: cubic-bezier(0.16,1,0.3,1);
           --font-display: var(--font-outfit,'Outfit'),sans-serif;
           --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
-          --font-logo:    var(--font-logo,'Orbitron'),sans-serif;
+          --font-logo:    var(--font-logo,'Sora'),sans-serif;
         }
         .history-root[data-theme="light"] {
           --bg:       #faf8f5;
@@ -189,8 +189,8 @@ export default function HistoryPage() {
         }
         .history-root[data-theme="light"] .h-nav { background: rgba(250,248,245,0.72); }
         .h-logo {
-          font-family: var(--font-logo); font-size: 1.1rem; font-weight: 700;
-          color: var(--text); text-decoration: none; letter-spacing: 0.12em;
+          font-family: var(--font-logo); font-size: 1.15rem; font-weight: 800;
+          color: var(--text); text-decoration: none; letter-spacing: -0.01em;
           display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
         .h-logo-accent { color: var(--accent); }
@@ -458,8 +458,8 @@ export default function HistoryPage() {
       {/* NAV */}
       <nav className="h-nav">
         <a href="/" className="h-logo">
-          <span className="h-logo-dot" />
           MEGA<span className="h-logo-accent">Devs</span>
+          <span className="h-logo-dot" />
         </a>
         <div className="h-nav-right">
           <button className="h-theme-btn" onClick={toggleTheme}>

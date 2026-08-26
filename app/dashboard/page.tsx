@@ -324,7 +324,7 @@ export default function DashboardPage() {
       {/* NAV */}
       <nav className="nav">
         <a href="/" className="logo">
-          <span className="logo-dot" /> MEGA<span className="logo-accent">Devs</span>
+          MEGA<span className="logo-accent">Devs</span> <span className="logo-dot" />
         </a>
         <div className="nav-right">
           {isLive && (
