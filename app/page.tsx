@@ -336,7 +336,8 @@ export default function Home() {
       {/* ── NAV ── */}
       <nav className="glass-panel">
         <a href="#" className="logo">
-          MEGA<span className="logo-accent">Devs</span>
+          <img src="/light_mode_img.jpg" alt="MEGADevs" className="logo-img logo-img-light" />
+          <img src="/dark_mode_img.jpg" alt="MEGADevs" className="logo-img logo-img-dark" />
           <span className="logo-dot" />
         </a>
         <div className="nav-links">
