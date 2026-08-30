@@ -179,7 +179,7 @@ nav {
   display: flex; align-items: center; gap: 8px; cursor: pointer;
 }
 .logo-accent { color: var(--accent); }
-.logo-img { height: 28px; width: auto; display: block; }
+.logo-img { height: 44px; width: auto; display: block; }
 .logo-img-light { display: none; }
 .logo-img-dark { display: block; }
 [data-theme="light"] .logo-img-light { display: block; }
