@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 type Work = {
@@ -197,29 +197,14 @@ function WindowVisual({ work }: { work: Work }) {
 }
 
 export default function WorksPage() {
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
   const rootRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    const initial = saved || "dark";
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme(t => (t === "dark" ? "light" : "dark"));
-
   return (
-    <div className="works-root" data-theme={theme} ref={rootRef}>
+    <div className="works-root" ref={rootRef}>
       <style>{`
-        .works-root, .works-root[data-theme="dark"] {
+        .works-root {
           --bg:#050507; --surface:#0d0d10; --surface2:#131318;
           --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
           --text:#f0f0f2; --muted:#6b6b7a; --green:#22c55e;
@@ -230,7 +215,7 @@ export default function WorksPage() {
           --font-mono:var(--font-jetbrains,'JetBrains Mono'),monospace;
           --font-logo:var(--font-logo,'Sora'),sans-serif;
         }
-        .works-root[data-theme="light"] {
+        [data-theme="light"] .works-root {
           --bg:#faf8f5; --surface:#ffffff; --surface2:#f0ede8;
           --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.14);
           --text:#111111; --muted:#7a7570; --green:#14532d;
@@ -265,7 +250,7 @@ export default function WorksPage() {
         .w-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 56px;height:64px;
           display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
           background:rgba(5,5,7,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s;}
-        .works-root[data-theme="light"] .w-nav{background:rgba(250,248,245,0.72);}
+        [data-theme="light"] .works-root .w-nav{background:rgba(250,248,245,0.72);}
         .w-logo{font-family:var(--font-logo);font-size:1.15rem;font-weight:800;color:var(--text);
           text-decoration:none;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
         .w-logo-accent{color:var(--accent);}
@@ -468,18 +453,6 @@ export default function WorksPage() {
       <div className="w-bg-glow" />
       <div className="w-bg-grid" />
       <motion.div className="w-scroll-bar" style={{ scaleX: progress }} />
-
-      {/* NAV */}
-      <nav className="w-nav">
-        <a href="/" className="w-logo">
-          MEGA<span className="w-logo-accent">Devs</span>
-          <span className="w-logo-dot" />
-        </a>
-        <div className="w-nav-right">
-          <button className="w-theme-btn" onClick={toggleTheme}>{theme === "dark" ? "☀" : "◑"}</button>
-          <a href="/" className="w-back"><span>←</span><span>Back</span></a>
-        </div>
-      </nav>
 
       <div className="w-content">
         {/* HERO */}

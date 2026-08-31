@@ -1,29 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function HistoryPage() {
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [activeYear, setActiveYear] = useState("2023");
   const rootRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
-
-  useEffect(() => {
-    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    const initial = saved || "dark";
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme(t => (t === "dark" ? "light" : "dark"));
 
   const timeline = [
     {
@@ -95,10 +80,10 @@ export default function HistoryPage() {
   ];
 
   return (
-    <div className="history-root" data-theme={theme} ref={rootRef}>
+    <div className="history-root" ref={rootRef}>
       <style>{`
         /* ── TOKENS (mirror main site exactly) ── */
-        .history-root, .history-root[data-theme="dark"] {
+        .history-root {
           --bg:       #050507;
           --surface:  #0d0d10;
           --surface2: #131318;
@@ -116,7 +101,7 @@ export default function HistoryPage() {
           --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
           --font-logo:    var(--font-logo,'Sora'),sans-serif;
         }
-        .history-root[data-theme="light"] {
+        [data-theme="light"] .history-root {
           --bg:       #faf8f5;
           --surface:  #ffffff;
           --surface2: #f0ede8;
@@ -153,7 +138,7 @@ export default function HistoryPage() {
             radial-gradient(ellipse 50% 60% at 85% 65%, rgba(255,112,67,0.06) 0%, transparent 70%),
             radial-gradient(ellipse 40% 40% at 50% 105%, rgba(255,209,102,0.05) 0%, transparent 70%);
         }
-        .history-root[data-theme="light"] .h-bg-glow {
+        [data-theme="light"] .history-root .h-bg-glow {
           background:
             radial-gradient(ellipse 60% 50% at 20% 20%, rgba(200,57,43,0.06) 0%, transparent 70%),
             radial-gradient(ellipse 50% 60% at 85% 65%, rgba(232,87,26,0.05) 0%, transparent 70%),
@@ -187,7 +172,7 @@ export default function HistoryPage() {
           -webkit-backdrop-filter: blur(20px);
           transition: background 0.3s;
         }
-        .history-root[data-theme="light"] .h-nav { background: rgba(250,248,245,0.72); }
+        [data-theme="light"] .history-root .h-nav { background: rgba(250,248,245,0.72); }
         .h-logo {
           font-family: var(--font-logo); font-size: 1.15rem; font-weight: 800;
           color: var(--text); text-decoration: none; letter-spacing: -0.01em;
@@ -454,23 +439,6 @@ export default function HistoryPage() {
       <div className="h-bg-glow" />
       <div className="h-grid-overlay" />
       <motion.div className="h-scroll-bar" style={{ scaleX: progress }} />
-
-      {/* NAV */}
-      <nav className="h-nav">
-        <a href="/" className="h-logo">
-          MEGA<span className="h-logo-accent">Devs</span>
-          <span className="h-logo-dot" />
-        </a>
-        <div className="h-nav-right">
-          <button className="h-theme-btn" onClick={toggleTheme}>
-            {theme === "dark" ? "☀" : "◑"}
-          </button>
-          <a href="/" className="h-back">
-            <span>←</span>
-            <span>Back</span>
-          </a>
-        </div>
-      </nav>
 
       {/* SIDE RAIL */}
       <div className="h-rail">

@@ -29,7 +29,6 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [formData, setFormData] = useState({
     subdomain: "",
     name: "",
@@ -78,11 +77,6 @@ export default function DashboardPage() {
     setOpenSections((s) => ({ ...s, [n]: !s[n] }));
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    const initial = saved || "dark";
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         router.push("/login");
@@ -139,8 +133,6 @@ export default function DashboardPage() {
 
     return () => unsubscribe();
   }, [router]);
-
-  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
@@ -344,33 +336,22 @@ export default function DashboardPage() {
   const previewProfile = { ...formData, photoUrl: imagePreview || formData.photoUrl };
 
   return (
-    <div className="create-root" data-theme={theme}>
+    <div className="create-root">
       {/* BG LAYERS */}
       <div className="bg-grid" />
       <div className="bg-glow" />
 
-      {/* NAV */}
-      <nav className="nav">
-        <a href="/" className="logo">
-          MEGA<span className="logo-accent">Devs</span> <span className="logo-dot" />
-        </a>
-        <div className="nav-right">
-          {isLive && (
-            <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">
-              ↗ View Live Site
-            </a>
-          )}
-          <button className="theme-btn" onClick={() => signOut(auth)}>Sign Out</button>
-          <button className="theme-btn" onClick={toggleTheme}>
-            {theme === "dark" ? "☀" : "◑"}
-          </button>
-          <a href="/" className="back-btn">← Back</a>
-        </div>
-      </nav>
-
       {/* CONTENT */}
       <div className="content">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+
+          {/* DASH ACTIONS */}
+          <div className="dash-actions">
+            {isLive && (
+              <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">↗ View Live Site</a>
+            )}
+            <button className="theme-btn" onClick={() => signOut(auth)}>Sign Out</button>
+          </div>
 
           {/* DASH HEADER */}
           <div className="dash-header">

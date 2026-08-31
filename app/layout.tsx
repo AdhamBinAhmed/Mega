@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Space_Grotesk, JetBrains_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
+import Navbar from "./components/Navbar";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable}`}>
         <LoadingScreen />
+        <Navbar />
         {children}
       </body>
     </html>
