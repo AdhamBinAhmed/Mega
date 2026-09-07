@@ -62,7 +62,16 @@ export default function ProProfile({ profile }: { profile: Profile }) {
 
           <footer className="mt-20 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[var(--border)] pt-8 text-sm text-[var(--dim)]">
             <span>
-              © {new Date().getFullYear()} {identity.name}. All rights reserved.
+              © {new Date().getFullYear()}{" "}
+              <a
+                href="https://megadevs.site"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+              >
+                Mega Devs
+              </a>
+              . All rights reserved.
             </span>
             <span className="font-mono text-[0.7rem] tracking-[0.2em] uppercase">
               Powered by{" "}
