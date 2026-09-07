@@ -8,6 +8,7 @@ import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 import PremiumProfileCard from "../components/PremiumProfileCard";
+import ProProfile from "../components/ProProfile";
 import "./dashboard.css";
 import "../[subdomain]/subdomain-bg.css";
 
@@ -44,6 +45,7 @@ export default function DashboardPage() {
     gmail: "",
     backgroundStyle: "bg-grid", // default
     themeColor: "blue",
+    proDesign: false,
     glassyEffect: true,
     cursorSpotlight: false,
     tiltEffect: false,
@@ -105,6 +107,7 @@ export default function DashboardPage() {
             gmail: data.gmail || "",
             backgroundStyle: data.backgroundStyle || "bg-grid",
             themeColor: data.themeColor || "blue",
+            proDesign: data.proDesign || false,
             glassyEffect: data.glassyEffect !== undefined ? data.glassyEffect : true,
             cursorSpotlight: data.cursorSpotlight || false,
             tiltEffect: data.tiltEffect || false,
@@ -251,6 +254,7 @@ export default function DashboardPage() {
         whatsapp: formData.whatsapp,
         backgroundStyle: formData.backgroundStyle,
         themeColor: formData.themeColor,
+        proDesign: formData.proDesign,
         glassyEffect: formData.glassyEffect,
         cursorSpotlight: formData.cursorSpotlight,
         tiltEffect: formData.tiltEffect,
@@ -560,7 +564,32 @@ export default function DashboardPage() {
                 </button>
                 <CollapseBody open={openSections["04"]}>
 
-                <div className="grid-2-col">
+                <div
+                  className="toggle-row"
+                  style={{
+                    background: formData.proDesign ? "rgba(167,139,250,0.12)" : "rgba(255,255,255,0.03)",
+                    border: `1px solid ${formData.proDesign ? "rgba(167,139,250,0.5)" : "rgba(255,255,255,0.08)"}`,
+                    borderRadius: "14px",
+                    padding: "14px 16px",
+                    marginBottom: "18px",
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    name="proDesign"
+                    id="proDesign"
+                    checked={formData.proDesign}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="proDesign" style={{ display: "block" }}>
+                    <strong>⚡ Pro Design</strong> — replace your whole page with the cinematic portfolio
+                    layout (aurora background, parallax hero & tilt link grid). Overrides the background &
+                    effect settings below.
+                  </label>
+                </div>
+
+                <div className="grid-2-col" style={formData.proDesign ? { opacity: 0.4, pointerEvents: "none" } : undefined}>
                   <div className="form-group">
                     <label className="label">Background Style</label>
                     <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
@@ -856,6 +885,18 @@ export default function DashboardPage() {
                   <div className="browser-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
                 </div>
                 <div className="preview-frame" data-theme="dark">
+                  {formData.proDesign ? (
+                    previewProfile.name ? (
+                      <div style={{ transform: "scale(0.5)", transformOrigin: "top left", width: "200%", height: "200%" }}>
+                        <ProProfile profile={previewProfile} />
+                      </div>
+                    ) : (
+                      <div style={{ position: "relative", zIndex: 1, padding: "80px 24px", textAlign: "center", color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                        Fill in your name to see a live preview
+                      </div>
+                    )
+                  ) : (
+                  <>
                   {formData.backgroundStyle === "bg-grid" && <div className="bg-grid" />}
                   {(formData.backgroundStyle === "bg-grid" || formData.backgroundStyle === "bg-glow") && <div className="bg-glow" />}
                   {formData.backgroundStyle === "noise" && <div className="noise" />}
@@ -886,6 +927,8 @@ export default function DashboardPage() {
                     <div style={{ position: "relative", zIndex: 1, padding: "80px 24px", textAlign: "center", color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
                       Fill in your name to see a live preview
                     </div>
+                  )}
+                  </>
                   )}
                 </div>
               </div>

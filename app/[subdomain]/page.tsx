@@ -3,6 +3,7 @@ import { db } from "../../lib/firebase";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import PremiumProfileCard from "../components/PremiumProfileCard";
+import ProProfile from "../components/ProProfile";
 import "./subdomain-bg.css";
 
 export const revalidate = 60; // optionally revalidate every 60 seconds
@@ -17,6 +18,12 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
   }
 
   const profile = docSnap.data() as any;
+
+  // Pro Design: full takeover with the cinematic portfolio layout.
+  if (profile.proDesign) {
+    return <ProProfile profile={profile} />;
+  }
+
   const theme = "dark"; // Defaulting profiles to dark theme for consistency
   const bgStyle = profile.backgroundStyle || "bg-grid";
 
