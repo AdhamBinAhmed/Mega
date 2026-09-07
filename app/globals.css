@@ -17,10 +17,14 @@
 }
 
 /* === PREMIUM GLASSMORPHISM + 60FPS MOTION === */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Kept in @layer base so Tailwind utilities (margin/padding/etc.) still win —
+   otherwise this unlayered reset would override mx-auto, px-*, p-* everywhere. */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 html { scroll-behavior: smooth; }

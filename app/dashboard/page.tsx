@@ -381,6 +381,55 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* ── PRO DESIGN BANNER (always visible) ── */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "16px",
+              flexWrap: "wrap",
+              margin: "20px 0",
+              padding: "18px 22px",
+              borderRadius: "18px",
+              background: formData.proDesign
+                ? "linear-gradient(120deg, rgba(167,139,250,0.18), rgba(94,234,212,0.10))"
+                : "rgba(255,255,255,0.04)",
+              border: `1px solid ${formData.proDesign ? "rgba(167,139,250,0.55)" : "rgba(255,255,255,0.1)"}`,
+              transition: "all 0.3s ease",
+            }}
+          >
+            <div style={{ maxWidth: "560px" }}>
+              <div style={{ fontSize: "1.05rem", fontWeight: 700, marginBottom: "4px" }}>
+                ⚡ Pro Design {formData.proDesign ? "· ON" : ""}
+              </div>
+              <div style={{ fontSize: "0.85rem", opacity: 0.8, lineHeight: 1.5 }}>
+                Replace your whole page with the cinematic portfolio layout — aurora background,
+                parallax hero & tilt link grid. Uses your name, role, photo & links.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFormData((f) => ({ ...f, proDesign: !f.proDesign }))}
+              style={{
+                flexShrink: 0,
+                cursor: "pointer",
+                padding: "12px 24px",
+                borderRadius: "999px",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+                border: "none",
+                color: formData.proDesign ? "#0a0714" : "#fff",
+                background: formData.proDesign
+                  ? "linear-gradient(120deg, #a78bfa, #5eead4)"
+                  : "rgba(255,255,255,0.1)",
+                transition: "all 0.3s ease",
+              }}
+            >
+              {formData.proDesign ? "✓ Enabled — Turn Off" : "Enable Pro Design"}
+            </button>
+          </div>
+
           {success && (
             <div className="success-box">
               <h3>Profile Saved!</h3>
@@ -563,31 +612,6 @@ export default function DashboardPage() {
                   <span className="form-section-chevron">▾</span>
                 </button>
                 <CollapseBody open={openSections["04"]}>
-
-                <div
-                  className="toggle-row"
-                  style={{
-                    background: formData.proDesign ? "rgba(167,139,250,0.12)" : "rgba(255,255,255,0.03)",
-                    border: `1px solid ${formData.proDesign ? "rgba(167,139,250,0.5)" : "rgba(255,255,255,0.08)"}`,
-                    borderRadius: "14px",
-                    padding: "14px 16px",
-                    marginBottom: "18px",
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    name="proDesign"
-                    id="proDesign"
-                    checked={formData.proDesign}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="proDesign" style={{ display: "block" }}>
-                    <strong>⚡ Pro Design</strong> — replace your whole page with the cinematic portfolio
-                    layout (aurora background, parallax hero & tilt link grid). Overrides the background &
-                    effect settings below.
-                  </label>
-                </div>
 
                 <div className="grid-2-col" style={formData.proDesign ? { opacity: 0.4, pointerEvents: "none" } : undefined}>
                   <div className="form-group">
