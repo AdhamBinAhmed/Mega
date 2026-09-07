@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk, JetBrains_Mono, Sora } from "next/font/google";
+import { Outfit, Space_Grotesk, JetBrains_Mono, Sora, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
@@ -23,6 +23,17 @@ const sora = Sora({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
   variable: "--font-logo",
+});
+
+// Fonts used by the Pro Design (about-me) layout — faithful match.
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -63,7 +74,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable}`}>
+      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable} ${geistSans.variable} ${geistMono.variable}`}>
         <LoadingScreen />
         <Navbar />
         {children}

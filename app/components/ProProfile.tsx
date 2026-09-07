@@ -272,6 +272,50 @@ function Ambient() {
 }
 
 /* ============================================================
+   Nav (ported from about-me Nav)
+   ============================================================ */
+function Nav({ profile }: { profile: Profile }) {
+  const github = (profile.github || "").trim();
+  return (
+    <motion.nav
+      initial={{ opacity: 0, y: -14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed top-4 inset-x-0 z-50 flex justify-center px-4"
+    >
+      <div className="flex items-center gap-4 sm:gap-6 h-12 pl-3 pr-4 rounded-full border border-[var(--border)] bg-[var(--bg-2)]/60 backdrop-blur-xl shadow-[0_10px_40px_-12px_rgba(0,0,0,0.7)]">
+        {/* monogram */}
+        <a href="#" className="flex items-center gap-2 group">
+          <span className="grid place-items-center w-8 h-8 rounded-full text-xs font-display font-bold bg-gradient-to-br from-[var(--violet)] to-[var(--cyan)] text-[#0a0714]">
+            {initials(profile.name)}
+          </span>
+          {profile.name && (
+            <span className="hidden sm:block text-sm text-[var(--muted)] group-hover:text-[var(--text)] transition-colors">
+              {profile.name}
+            </span>
+          )}
+        </a>
+
+        {github && (
+          <>
+            <span className="w-px h-5 bg-[var(--border)]" />
+            <a
+              href={github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="grid place-items-center w-9 h-9 rounded-full text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5 transition-colors text-lg"
+            >
+              <I.github />
+            </a>
+          </>
+        )}
+      </div>
+    </motion.nav>
+  );
+}
+
+/* ============================================================
    Hero (ported from about-me Hero)
    ============================================================ */
 function Hero({ profile }: { profile: Profile }) {
@@ -446,6 +490,8 @@ export default function ProProfile({ profile }: { profile: Profile }) {
     <div className="pro-root" data-theme="dark">
       <Ambient />
 
+      <Nav profile={profile} />
+
       <main className="pro-content relative min-h-screen">
         <Hero profile={profile} />
 
@@ -460,7 +506,7 @@ export default function ProProfile({ profile }: { profile: Profile }) {
               </h2>
             </div>
             <p className="hidden sm:block max-w-xs text-sm text-[var(--muted)] text-right">
-              Powered by <span className="text-[var(--cyan)]">Mega Devs</span>. Always open to a good project or a chat.
+              Building things at <span className="text-[var(--cyan)]">Mega Devs</span>. Always open to a good project or a chat.
             </p>
           </div>
 

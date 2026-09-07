@@ -30,19 +30,18 @@
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
-/* about-me markup leans on the `font-display` / `font-mono` utilities that
-   its own Tailwind theme defined. Mega's theme doesn't, so provide them. */
+/* Faithful about-me typography: Geist Sans body, Sora display, Geist Mono. */
 .pro-root .font-display {
-  font-family: var(--font-logo), var(--font-outfit), sans-serif;
+  font-family: var(--font-logo), var(--font-geist-sans), sans-serif;
 }
 .pro-root .font-mono {
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 /* Full takeover: hide the global MEGA navbar while a pro page is mounted. */
