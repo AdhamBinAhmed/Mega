@@ -64,11 +64,17 @@ export default function ProProfile({ profile }: { profile: Profile }) {
             <span>
               © {new Date().getFullYear()} {identity.name}. All rights reserved.
             </span>
-            {identity.role && (
-              <span className="font-mono text-xs tracking-widest uppercase">
-                {identity.role}
-              </span>
-            )}
+            <span className="font-mono text-[0.7rem] tracking-[0.2em] uppercase">
+              Powered by{" "}
+              <a
+                href="https://megadevs.site"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+              >
+                Mega Devs
+              </a>
+            </span>
           </footer>
         </section>
       </main>
