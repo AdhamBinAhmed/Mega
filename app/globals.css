@@ -1,6 +1,7 @@
 @import "tailwindcss";
-@source "./";
-@source "./[subdomain]";
+/* Explicit recursive glob so every component (incl. app/components and the
+   bracketed app/[subdomain] route) is scanned for utility classes. */
+@source "./**/*.{ts,tsx,js,jsx,mdx}";
 
 @theme {
   --color-ink: #09090b;
