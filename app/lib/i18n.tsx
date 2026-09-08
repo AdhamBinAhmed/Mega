@@ -422,6 +422,14 @@ const AR: Record<string, string> = {
   "Small-Batch": "كميّات صغيرة",
   "Natural Product": "منتج طبيعي",
   "In Production": "في الإنتاج",
+
+  // ── Works: Kira Decoration project ──
+  "Brand & Portfolio": "علامة تجارية ومعرض أعمال",
+  "The brand and portfolio site for Kira Decoration — a Cairo-based interior design and event studio. A polished digital storefront that showcases delivered projects and connects clients directly across Instagram, WhatsApp, and more.":
+    "موقع العلامة التجارية ومعرض أعمال Kira Decoration — استوديو تصميم داخلي وتنظيم فعاليات في القاهرة. واجهة رقمية أنيقة تعرض المشاريع المُنجزة وتربط العملاء مباشرةً عبر إنستغرام وواتساب وغيرها.",
+  "Projects Delivered": "مشاريع مُنجزة",
+  "Established": "تأسّست",
+  "Social Channels": "قنوات تواصل",
 };
 
 /** Registry of translations by language. English is identity (key === value). */

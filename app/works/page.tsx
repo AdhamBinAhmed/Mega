@@ -110,6 +110,24 @@ const works: Work[] = [
     ],
     window: "browser",
   },
+  {
+    num: "06",
+    title: "Kira Decoration",
+    category: "Brand & Portfolio",
+    year: "2024",
+    desc: "The brand and portfolio site for Kira Decoration — a Cairo-based interior design and event studio. A polished digital storefront that showcases delivered projects and connects clients directly across Instagram, WhatsApp, and more.",
+    tags: ["Next.js", "Tailwind", "Framer Motion", "Vercel"],
+    status: "Live",
+    link: "https://infokira.megadevs.site",
+    accent: "#d98a6a",
+    accent2: "#f0b9a0",
+    metrics: [
+      { k: "77+", v: "Projects Delivered" },
+      { k: "2024", v: "Established" },
+      { k: "Multi", v: "Social Channels" },
+    ],
+    window: "browser",
+  },
 ];
 
 const stats = [
