@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useLang } from "../lib/i18n";
 
 type Work = {
   num: string;
@@ -197,6 +198,7 @@ function WindowVisual({ work }: { work: Work }) {
 }
 
 export default function WorksPage() {
+  const { t } = useLang();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
   const rootRef = useRef<HTMLDivElement>(null);
@@ -458,18 +460,17 @@ export default function WorksPage() {
         {/* HERO */}
         <section className="w-hero">
           <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", damping: 24, stiffness: 120 }}>
-            <div className="w-eyebrow">Selected Work</div>
-            <h1 className="w-headline">Work we&apos;re<br /><em>proud of</em></h1>
+            <div className="w-eyebrow">{t("Selected Work")}</div>
+            <h1 className="w-headline">{t("Work we're")}<br /><em>{t("proud of")}</em></h1>
             <p className="w-subhead">
-              A selection of projects spanning high-performance web applications, custom Android
-              platforms, and production-grade AI systems — each engineered to a standard we stand behind.
+              {t("A selection of projects spanning high-performance web applications, custom Android platforms, and production-grade AI systems — each engineered to a standard we stand behind.")}
             </p>
           </motion.div>
           <motion.div className="w-stats" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", damping: 26, stiffness: 130, delay: 0.15 }}>
             {stats.map((s) => (
               <div className="w-stat" key={s.v}>
                 <div className="w-stat-k">{s.k}</div>
-                <div className="w-stat-v">{s.v}</div>
+                <div className="w-stat-v">{t(s.v)}</div>
               </div>
             ))}
           </motion.div>
@@ -477,8 +478,8 @@ export default function WorksPage() {
 
         {/* SECTION HEAD */}
         <div className="w-sec-head">
-          <div className="w-sec-label">The Portfolio</div>
-          <div className="w-sec-count">{works.length} Projects</div>
+          <div className="w-sec-label">{t("The Portfolio")}</div>
+          <div className="w-sec-count">{works.length} {t("Projects")}</div>
         </div>
 
         {/* PROJECTS */}
@@ -499,31 +500,31 @@ export default function WorksPage() {
                 <div className="w-info">
                   <div className="w-info-top">
                     <span className="w-num">{w.num}</span>
-                    <span className="w-cat">{w.category}</span>
+                    <span className="w-cat">{t(w.category)}</span>
                     <span className="w-year">{w.year}</span>
                   </div>
                   <h2 className="w-ptitle">{w.title}</h2>
-                  <p className="w-pdesc">{w.desc}</p>
+                  <p className="w-pdesc">{t(w.desc)}</p>
                   <div className="w-pmetrics">
                     {w.metrics.map((m) => (
                       <div key={m.v}>
                         <div className="w-pmetric-k" style={{ color: w.accent }}>{m.k}</div>
-                        <div className="w-pmetric-v">{m.v}</div>
+                        <div className="w-pmetric-v">{t(m.v)}</div>
                       </div>
                     ))}
                   </div>
                   <div className="w-ptags">
-                    {w.tags.map((t) => <span key={t} className="w-ptag">{t}</span>)}
+                    {w.tags.map((tag) => <span key={tag} className="w-ptag">{tag}</span>)}
                   </div>
                   <div className="w-pfoot">
                     {isLive ? (
                       <a href={w.link} target="_blank" rel="noopener noreferrer" className="w-plink">
-                        Visit Project <span className="arw">→</span>
+                        {t("Visit Project")} <span className="arw">→</span>
                       </a>
                     ) : (
-                      <span className="w-plink disabled">Confidential <span className="arw">•</span></span>
+                      <span className="w-plink disabled">{t("Confidential")} <span className="arw">•</span></span>
                     )}
-                    <span className={`w-status ${w.status.toLowerCase()}`}>{w.status}</span>
+                    <span className={`w-status ${w.status.toLowerCase()}`}>{t(w.status)}</span>
                   </div>
                 </div>
               </motion.article>
@@ -533,19 +534,19 @@ export default function WorksPage() {
 
         {/* CTA */}
         <motion.div className="w-cta" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
-          <h2 className="w-cta-title">Have something<br />worth building?</h2>
-          <p className="w-cta-sub">We partner with teams to design and ship software that performs in production.</p>
-          <a href="/#contact" className="w-cta-btn">Start a Project →</a>
+          <h2 className="w-cta-title">{t("Have something")}<br />{t("worth building?")}</h2>
+          <p className="w-cta-sub">{t("We partner with teams to design and ship software that performs in production.")}</p>
+          <a href="/#contact" className="w-cta-btn">{t("Start a Project →")}</a>
         </motion.div>
       </div>
 
       {/* FOOTER */}
       <footer className="w-footer">
-        <span className="w-footer-copy">© {new Date().getFullYear()} Mega Devs. All rights reserved.</span>
+        <span className="w-footer-copy">© {new Date().getFullYear()} {t("Mega Devs. All rights reserved.")}</span>
         <div className="w-footer-links">
-          <a href="/" className="w-footer-link">Home</a>
-          <a href="/history" className="w-footer-link">Our Story</a>
-          <a href="/#contact" className="w-footer-link">Contact</a>
+          <a href="/" className="w-footer-link">{t("Home")}</a>
+          <a href="/history" className="w-footer-link">{t("Our Story")}</a>
+          <a href="/#contact" className="w-footer-link">{t("Contact")}</a>
         </div>
       </footer>
     </div>

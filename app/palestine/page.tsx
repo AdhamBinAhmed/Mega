@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useLang } from "../lib/i18n";
 
 const values = [
   {
@@ -25,6 +26,7 @@ const values = [
 ];
 
 export default function PalestinePage() {
+  const { t } = useLang();
   const rootRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
@@ -239,7 +241,7 @@ export default function PalestinePage() {
         <div className="pal-strap-track">
           {Array.from({ length: 2 }).map((_, k) => (
             <span key={k} className="pal-strap-item">
-              Free Palestine<span> </span>Stand for Humanity<span> </span>Justice · Dignity · Hope<span> </span>Technology in Service of People<span> </span>We Will Not Look Away
+              {t("Free Palestine")}<span> </span>{t("Stand for Humanity")}<span> </span>{t("Justice · Dignity · Hope")}<span> </span>{t("Technology in Service of People")}<span> </span>{t("We Will Not Look Away")}
             </span>
           ))}
         </div>
@@ -250,24 +252,24 @@ export default function PalestinePage() {
         <section className="pal-hero">
           <div className="pal-hero-top">
             <div className="pal-hero-issue">
-              <span className="pal-kicker">Free Palestine</span>
-              <span className="pal-meta">In Solidarity</span>
-              <span className="pal-meta">Cairo · Egypt</span>
+              <span className="pal-kicker">{t("Free Palestine")}</span>
+              <span className="pal-meta">{t("In Solidarity")}</span>
+              <span className="pal-meta">{t("Cairo · Egypt")}</span>
             </div>
-            <span className="pal-meta">Est. Always</span>
+            <span className="pal-meta">{t("Est. Always")}</span>
           </div>
 
           <div className="pal-hero-grid">
             <div>
               <motion.h1 className="pal-headline"
                 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-                <span>Resilience</span>
+                <span>{t("Resilience")}</span>
                 <span className="accent">&amp;</span>
-                <span className="outline">Solidarity</span>
+                <span className="outline">{t("Solidarity")}</span>
               </motion.h1>
               <motion.p className="pal-manifesto"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.3 }}>
-                We stand with the people of Palestine. Beyond the code we write, we believe technology should serve <strong>humanity</strong> — that every voice deserves to be heard, every story remembered, and every future built on justice and peace.
+                {t("We stand with the people of Palestine. Beyond the code we write, we believe technology should serve ")}<strong>{t("humanity")}</strong>{t(" — that every voice deserves to be heard, every story remembered, and every future built on justice and peace.")}
               </motion.p>
             </div>
 
@@ -290,7 +292,7 @@ export default function PalestinePage() {
                 <motion.div className="pal-sweep"
                   initial={{ x: "-140%" }} animate={{ x: "180%" }}
                   transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 2.4, ease: "easeInOut" }} />
-                <div className="pal-flag-caption"><span>State of Palestine</span><span>فلسطين</span></div>
+                <div className="pal-flag-caption"><span>{t("State of Palestine")}</span><span>فلسطين</span></div>
               </motion.div>
             </motion.div>
           </div>
@@ -302,8 +304,8 @@ export default function PalestinePage() {
             <div className="pal-sec-head">
               <div className="pal-sec-index">§01</div>
               <div className="pal-sec-head-r">
-                <div className="pal-sec-head-top"><span className="pal-kicker">What We Stand For</span><div className="pal-rule" /></div>
-                <h2 className="pal-sec-title">Three things we will never <em>compromise</em></h2>
+                <div className="pal-sec-head-top"><span className="pal-kicker">{t("What We Stand For")}</span><div className="pal-rule" /></div>
+                <h2 className="pal-sec-title">{t("Three things we will never ")}<em>{t("compromise")}</em></h2>
               </div>
             </div>
             <div className="pal-values">
@@ -313,8 +315,8 @@ export default function PalestinePage() {
                   transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}>
                   <div className="pal-card-idx">{v.index}</div>
                   <div className="pal-card-bar" />
-                  <div className="pal-card-title">{v.title}</div>
-                  <p className="pal-card-body">{v.body}</p>
+                  <div className="pal-card-title">{t(v.title)}</div>
+                  <p className="pal-card-body">{t(v.body)}</p>
                 </motion.div>
               ))}
             </div>
@@ -325,9 +327,9 @@ export default function PalestinePage() {
         <section className="pal-quote">
           <motion.p className="pal-quote-text"
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-            &ldquo;To exist is to resist. We build so that every <b>story is remembered</b>.&rdquo;
+            &ldquo;{t("To exist is to resist. We build so that every ")}<b>{t("story is remembered")}</b>.&rdquo;
           </motion.p>
-          <span className="pal-quote-by">— MEGA Devs · In Solidarity</span>
+          <span className="pal-quote-by">{t("— MEGA Devs · In Solidarity")}</span>
         </section>
 
         {/* CTA */}
@@ -336,15 +338,15 @@ export default function PalestinePage() {
             <div className="pal-sec-head">
               <div className="pal-sec-index">§02</div>
               <div className="pal-sec-head-r">
-                <div className="pal-sec-head-top"><span className="pal-kicker">Take Action</span><div className="pal-rule" /></div>
-                <h2 className="pal-sec-title">Raise your voice. Build with <em>purpose</em></h2>
+                <div className="pal-sec-head-top"><span className="pal-kicker">{t("Take Action")}</span><div className="pal-rule" /></div>
+                <h2 className="pal-sec-title">{t("Raise your voice. Build with ")}<em>{t("purpose")}</em></h2>
               </div>
             </div>
             <div className="pal-cta-flagline" />
             <div className="pal-cta" style={{ marginTop: 40 }}>
               <div>
-                <h3 className="pal-cta-title">Every voice counts</h3>
-                <p className="pal-cta-sub">Join the movement and share your solidarity. Amplify the stories that must not be forgotten.</p>
+                <h3 className="pal-cta-title">{t("Every voice counts")}</h3>
+                <p className="pal-cta-sub">{t("Join the movement and share your solidarity. Amplify the stories that must not be forgotten.")}</p>
               </div>
               <motion.a href="https://twitter.com/search?q=%23build_with_palestine" target="_blank" rel="noopener noreferrer"
                 className="pal-hashtag" whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
@@ -359,7 +361,7 @@ export default function PalestinePage() {
         <div className="pal-mq">
           <div className="pal-mq-track">
             {Array.from({ length: 2 }).map((_, k) => (
-              <span key={k} className="pal-mq-item">Free Palestine <b>✦</b> Stand for Humanity <b>✦</b></span>
+              <span key={k} className="pal-mq-item">{t("Free Palestine")} <b>✦</b> {t("Stand for Humanity")} <b>✦</b></span>
             ))}
           </div>
         </div>
@@ -371,21 +373,21 @@ export default function PalestinePage() {
           <div className="pal-colophon-word">MEGA<b>·</b>DEVS</div>
           <div className="pal-colophon-cols">
             <div className="pal-colophon-col">
-              <h4>Navigate</h4>
-              <a href="/">Home</a>
-              <a href="/works">Works</a>
-              <a href="/history">Our Story</a>
+              <h4>{t("Navigate")}</h4>
+              <a href="/">{t("Home")}</a>
+              <a href="/works">{t("Works")}</a>
+              <a href="/history">{t("Our Story")}</a>
             </div>
             <div className="pal-colophon-col">
-              <h4>Stand With</h4>
+              <h4>{t("Stand With")}</h4>
               <a href="https://twitter.com/search?q=%23build_with_palestine" target="_blank" rel="noopener noreferrer">#build_with_palestine</a>
-              <a href="/">Standing for humanity</a>
+              <a href="/">{t("Standing for humanity")}</a>
             </div>
           </div>
         </div>
         <div className="pal-colophon-bottom">
-          <span className="pal-colophon-copy">© {new Date().getFullYear()} MEGA Devs · Standing for humanity</span>
-          <span className="pal-colophon-copy">Justice · Dignity · Hope</span>
+          <span className="pal-colophon-copy">© {new Date().getFullYear()} {t("MEGA Devs · Standing for humanity")}</span>
+          <span className="pal-colophon-copy">{t("Justice · Dignity · Hope")}</span>
         </div>
       </footer>
     </div>

@@ -2,8 +2,10 @@
 
 import { useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useLang } from "../lib/i18n";
 
 export default function HistoryPage() {
+  const { t } = useLang();
   const [activeYear, setActiveYear] = useState("2023");
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -442,16 +444,16 @@ export default function HistoryPage() {
 
       {/* SIDE RAIL */}
       <div className="h-rail">
-        {timeline.map((t) => (
+        {timeline.map((y) => (
           <button
-            key={t.year}
-            className={`h-rail-item${activeYear === t.year ? " active" : ""}`}
+            key={y.year}
+            className={`h-rail-item${activeYear === y.year ? " active" : ""}`}
             onClick={() => {
-              document.getElementById(`year-${t.year}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+              document.getElementById(`year-${y.year}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
             }}
           >
             <span className="h-rail-dot" />
-            <span className="h-rail-label">{t.year}</span>
+            <span className="h-rail-label">{y.year}</span>
           </button>
         ))}
       </div>
@@ -464,14 +466,12 @@ export default function HistoryPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", damping: 24, stiffness: 120 }}
           >
-            <div className="h-eyebrow">Our Story</div>
+            <div className="h-eyebrow">{t("Our Story")}</div>
             <h1 className="h-headline">
-              The Evolution<br />of <em>Mega Devs</em>
+              {t("The Evolution")}<br />{t("of ")}<em>Mega Devs</em>
             </h1>
             <p className="h-subhead">
-              From a specialized software studio to a multi-team technology organization —
-              a four-year journey defined by disciplined engineering, strategic growth, and
-              a commitment to building at scale.
+              {t("From a specialized software studio to a multi-team technology organization — a four-year journey defined by disciplined engineering, strategic growth, and a commitment to building at scale.")}
             </p>
           </motion.div>
 
@@ -484,7 +484,7 @@ export default function HistoryPage() {
             {stats.map((s) => (
               <div className="h-stat" key={s.v}>
                 <div className="h-stat-k">{s.k}</div>
-                <div className="h-stat-v">{s.v}</div>
+                <div className="h-stat-v">{t(s.v)}</div>
               </div>
             ))}
           </motion.div>
@@ -492,8 +492,8 @@ export default function HistoryPage() {
 
         {/* TIMELINE */}
         <div className="h-sec-head">
-          <div className="h-sec-label">Company Timeline</div>
-          <h2 className="h-sec-title">Four defining milestones.</h2>
+          <div className="h-sec-label">{t("Company Timeline")}</div>
+          <h2 className="h-sec-title">{t("Four defining milestones.")}</h2>
         </div>
 
         <div className="h-timeline">
@@ -511,13 +511,13 @@ export default function HistoryPage() {
             >
               <div className="h-titem-left">
                 <div className="h-titem-year" style={{ color: item.accent }}>{item.year}</div>
-                <div className="h-titem-tag">{item.tag}</div>
+                <div className="h-titem-tag">{t(item.tag)}</div>
               </div>
               <div className="h-titem-card">
                 <span className="h-ghost-year">{item.year}</span>
-                <h3 className="h-ttitle">{item.title}</h3>
-                <p className="h-tbody">{item.body}</p>
-                <span className="h-tchip">{item.stat}</span>
+                <h3 className="h-ttitle">{t(item.title)}</h3>
+                <p className="h-tbody">{t(item.body)}</p>
+                <span className="h-tchip">{t(item.stat)}</span>
               </div>
             </motion.div>
           ))}
@@ -525,8 +525,8 @@ export default function HistoryPage() {
 
         {/* VISION */}
         <div className="h-sec-head">
-          <div className="h-sec-label">Looking Ahead · 2026 – 2036</div>
-          <h2 className="h-sec-title">Our vision for<br />the decade ahead.</h2>
+          <div className="h-sec-label">{t("Looking Ahead · 2026 – 2036")}</div>
+          <h2 className="h-sec-title">{t("Our vision for")}<br />{t("the decade ahead.")}</h2>
         </div>
 
         <div className="h-bento">
@@ -546,8 +546,8 @@ export default function HistoryPage() {
               <span className="h-pillar-icon" style={{ color: i % 2 === 0 ? "var(--accent)" : "var(--accent3)" }}>
                 {p.icon}
               </span>
-              <div className="h-pillar-title">{p.title}</div>
-              <p className="h-pillar-body">{p.body}</p>
+              <div className="h-pillar-title">{t(p.title)}</div>
+              <p className="h-pillar-body">{t(p.body)}</p>
             </motion.div>
           ))}
         </div>
@@ -560,19 +560,19 @@ export default function HistoryPage() {
           viewport={{ once: true }}
           transition={{ type: "spring", damping: 24, stiffness: 130 }}
         >
-          <h2 className="h-cta-title">The next chapter<br />is already underway.</h2>
-          <p className="h-cta-sub">Interested in building with us? We'd welcome the opportunity to discuss your project.</p>
-          <a href="/#contact" className="h-cta-btn">Start a Project →</a>
+          <h2 className="h-cta-title">{t("The next chapter")}<br />{t("is already underway.")}</h2>
+          <p className="h-cta-sub">{t("Interested in building with us? We'd welcome the opportunity to discuss your project.")}</p>
+          <a href="/#contact" className="h-cta-btn">{t("Start a Project →")}</a>
         </motion.div>
       </div>
 
       {/* FOOTER */}
       <footer className="h-footer">
-        <span className="h-footer-copy">© 2026 Mega Devs. All rights reserved.</span>
+        <span className="h-footer-copy">{t("© 2026 Mega Devs. All rights reserved.")}</span>
         <div className="h-footer-links">
-          <a href="/" className="h-footer-link">Home</a>
-          <a href="/works" className="h-footer-link">Work</a>
-          <a href="/#contact" className="h-footer-link">Contact</a>
+          <a href="/" className="h-footer-link">{t("Home")}</a>
+          <a href="/works" className="h-footer-link">{t("Work")}</a>
+          <a href="/#contact" className="h-footer-link">{t("Contact")}</a>
         </div>
       </footer>
     </div>

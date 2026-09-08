@@ -207,6 +207,143 @@ const AR: Record<string, string> = {
   "UTC+3": "توقيت +3",
   "MEGA Devs · Cairo, Egypt · All rights reserved": "MEGA Devs · القاهرة، مصر · جميع الحقوق محفوظة",
   "Designed & built in-house — press / for commands": "صُمّم وبُني داخلياً — اضغط / للأوامر",
+
+  // ── Works page ──
+  "Selected Work": "أعمال مختارة",
+  "Work we're": "أعمال نحن",
+  "proud of": "فخورون بها",
+  "A selection of projects spanning high-performance web applications, custom Android platforms, and production-grade AI systems — each engineered to a standard we stand behind.":
+    "مجموعة مختارة من المشاريع تشمل تطبيقات ويب عالية الأداء، ومنصّات أندرويد مخصّصة، وأنظمة ذكاء اصطناعي جاهزة للإنتاج — كلٌّ منها مصمّم وفق معيار نعتزّ به.",
+  "The Portfolio": "معرض الأعمال",
+  "Projects": "مشاريع",
+  "Android Platform": "منصّة أندرويد",
+  "Web Application": "تطبيق ويب",
+  "Infrastructure": "بنية تحتية",
+  "A custom Android distribution built on AOSP, featuring targeted performance optimizations, a streamlined system image, and a refined minimal interface. Deployed across Xiaomi and Samsung devices.":
+    "توزيعة أندرويد مخصّصة مبنيّة على AOSP، بتحسينات أداء موجّهة، وصورة نظام مبسّطة، وواجهة أنيقة بسيطة. منشورة على أجهزة شاومي وسامسونج.",
+  "A full-stack e-commerce platform featuring real-time inventory management, bilingual Arabic and English support, integrated payment processing, and a purpose-built administrative dashboard.":
+    "منصّة تجارة إلكترونية متكاملة بإدارة مخزون لحظية، ودعم لغتين عربية وإنجليزية، ومعالجة مدفوعات مدمجة، ولوحة تحكّم إدارية مخصّصة.",
+  "A machine learning threat-detection system trained on live network traffic, delivering sub-10ms inference at over 94% accuracy. Currently operating in production for two enterprise clients.":
+    "نظام كشف تهديدات بالتعلّم الآلي مدرَّب على حركة شبكة حيّة، يقدّم استدلالاً بأقل من 10 مللي ثانية بدقّة تفوق 94%. يعمل حالياً في الإنتاج لعميلين من المؤسسات.",
+  "An internal server-management platform providing live performance metrics, secure SSH tunneling, real-time log streaming, and intelligent alerting — maintaining over 847 days of continuous uptime.":
+    "منصّة داخلية لإدارة الخوادم توفّر مقاييس أداء لحظية، وأنفاق SSH آمنة، وبثّ سجلّات فوري، وتنبيهات ذكية — مع أكثر من 847 يوماً من التشغيل المتواصل.",
+  "OEM Families": "عائلات OEM",
+  "Built From Source": "مبني من المصدر",
+  "Boot Time": "زمن الإقلاع",
+  "Inventory": "المخزون",
+  "Payments": "المدفوعات",
+  "Accuracy": "الدقة",
+  "Inference": "الاستدلال",
+  "Enterprise Clients": "عملاء مؤسسات",
+  "Days Uptime": "أيام تشغيل",
+  "Log Streaming": "بثّ السجلّات",
+  "Alerting": "التنبيهات",
+  "Visit Project": "زيارة المشروع",
+  "Confidential": "سرّي",
+  "Flagship Projects": "مشاريع رئيسية",
+  "Building Since": "نبني منذ",
+  "Shipped to Production": "وصلت للإنتاج",
+  "Days Max Uptime": "أيام أقصى تشغيل",
+  "Have something": "هل لديك شيء",
+  "worth building?": "يستحقّ البناء؟",
+  "We partner with teams to design and ship software that performs in production.":
+    "نتعاون مع الفرق لتصميم وإطلاق برمجيات تعمل بكفاءة في الإنتاج.",
+  "Home": "الرئيسية",
+  "Mega Devs. All rights reserved.": "Mega Devs. جميع الحقوق محفوظة.",
+
+  // ── History page ──
+  "The Evolution": "مسيرة",
+  "of ": "تطوّر ",
+  "From a specialized software studio to a multi-team technology organization — a four-year journey defined by disciplined engineering, strategic growth, and a commitment to building at scale.":
+    "من استوديو برمجيات متخصّص إلى مؤسّسة تقنية متعدّدة الفرق — رحلة أربع سنوات صاغتها هندسة منضبطة، ونموّ استراتيجي، والتزام بالبناء على نطاق واسع.",
+  "Year Established": "سنة التأسيس",
+  "Years of Growth": "سنوات من النموّ",
+  "Strategic Rebrands": "إعادة تسمية استراتيجية",
+  "Specialized Teams": "فرق متخصّصة",
+  "Company Timeline": "الخطّ الزمني للشركة",
+  "Four defining milestones.": "أربع محطّات فاصلة.",
+  "Inception": "البداية",
+  "Rebrand & Growth": "إعادة التسمية والنموّ",
+  "Scaling Operations": "توسيع العمليات",
+  "Maturity": "النضج",
+  "Establishing the Foundation": "إرساء الأساس",
+  "Strategic Rebranding & Expansion": "إعادة تسمية استراتيجية وتوسّع",
+  "Building a Scalable Structure": "بناء هيكل قابل للتوسّع",
+  "The Formation of Mega Devs": "تأسيس Mega Devs",
+  "Mega ROM was founded under the leadership of Adham Ahmed, beginning as a specialized software development studio. Supported by a dedicated core engineering team, the company established the technical standards and disciplined delivery model that continue to define its work today.":
+    "تأسّست Mega ROM بقيادة أدهم أحمد، بادئةً كاستوديو متخصّص لتطوير البرمجيات. وبدعم من فريق هندسي أساسي متفانٍ، أرست الشركة المعايير التقنية ونموذج التسليم المنضبط الذي ما زال يميّز عملها حتى اليوم.",
+  "To broaden its technical scope, the company rebranded as MegaOS and strengthened its leadership with the appointment of Seif as Co-Founder. As demand grew, operations expanded into multiple specialized teams, each structured to deliver against increasingly complex project requirements.":
+    "لتوسيع نطاقها التقني، أعادت الشركة تسمية نفسها إلى MegaOS وعزّزت قيادتها بتعيين سيف شريكاً مؤسّساً. ومع نموّ الطلب، توسّعت العمليات إلى فرق متخصّصة متعدّدة، صُمّم كلٌّ منها لتلبية متطلّبات مشاريع متزايدة التعقيد.",
+  "A pivotal year marked the transition toward a comprehensive corporate structure. New teams were established across engineering, innovation, and systems optimization — laying the operational foundation required to scale reliably and sustain long-term growth.":
+    "عامٌ محوري شهد الانتقال نحو هيكل مؤسّسي شامل. أُنشئت فرق جديدة في الهندسة والابتكار وتحسين الأنظمة — لتُرسي الأساس التشغيلي اللازم للتوسّع بموثوقية واستدامة النموّ طويل الأمد.",
+  "The company's evolution culminated in the launch of Mega Devs as the parent organization. Today, Mega Devs serves as the governing body overseeing MegaOS and coordinating a network of specialized professional teams across a growing technology ecosystem.":
+    "تُوّج تطوّر الشركة بإطلاق Mega Devs كشركة أمّ. واليوم، تعمل Mega Devs كجهة حاكمة تشرف على MegaOS وتنسّق شبكة من الفرق المهنية المتخصّصة عبر منظومة تقنية متنامية.",
+  "Founding Team": "الفريق المؤسّس",
+  "Co-Founder Appointed": "تعيين شريك مؤسّس",
+  "Multi-Team Operations": "عمليات متعدّدة الفرق",
+  "Parent Organization": "الشركة الأمّ",
+  "Looking Ahead · 2026 – 2036": "نظرة للأمام · 2026 – 2036",
+  "Our vision for": "رؤيتنا",
+  "the decade ahead.": "للعقد القادم.",
+  "Global Technology Leadership": "ريادة تقنية عالمية",
+  "Innovation & AI Integration": "الابتكار ودمج الذكاء الاصطناعي",
+  "Ecosystem Expansion": "توسيع المنظومة",
+  "Developing Future Talent": "تطوير مواهب المستقبل",
+  "We aim to establish Mega Devs as a recognized benchmark in the technology sector — extending our capabilities beyond regional markets to deliver enterprise-grade solutions to clients worldwide.":
+    "نطمح إلى ترسيخ Mega Devs كمعيار معترف به في قطاع التقنية — بتوسيع قدراتنا إلى ما وراء الأسواق الإقليمية لتقديم حلول بمستوى المؤسسات لعملاء حول العالم.",
+  "We are committed to advancing the next generation of software by embedding artificial intelligence and machine learning into the core of the MegaOS platform.":
+    "نلتزم بالارتقاء بالجيل القادم من البرمجيات عبر دمج الذكاء الاصطناعي والتعلّم الآلي في صميم منصّة MegaOS.",
+  "We are building Mega Devs into a multi-disciplinary technology group, developing a portfolio of products designed to redefine how people interact with technology.":
+    "نبني Mega Devs لتكون مجموعة تقنية متعدّدة التخصّصات، ونطوّر حزمة منتجات مصمّمة لإعادة تعريف طريقة تفاعل الناس مع التقنية.",
+  "Beyond delivery, we invest in people — cultivating talent and sustaining an environment where engineering excellence and innovation can thrive.":
+    "إلى جانب التسليم، نستثمر في البشر — نرعى المواهب ونحافظ على بيئة يزدهر فيها التميّز الهندسي والابتكار.",
+  "The next chapter": "الفصل التالي",
+  "is already underway.": "قد بدأ بالفعل.",
+  "Interested in building with us? We'd welcome the opportunity to discuss your project.":
+    "مهتمّ بالبناء معنا؟ يسعدنا أن نناقش مشروعك.",
+  "© 2026 Mega Devs. All rights reserved.": "© 2026 Mega Devs. جميع الحقوق محفوظة.",
+  "Work": "الأعمال",
+
+  // ── Palestine page ──
+  "Free Palestine": "فلسطين حرّة",
+  "Stand for Humanity": "قِف مع الإنسانية",
+  "Justice · Dignity · Hope": "عدالة · كرامة · أمل",
+  "Technology in Service of People": "التقنية في خدمة الناس",
+  "We Will Not Look Away": "لن نغضّ الطرف",
+  "In Solidarity": "تضامناً",
+  "Est. Always": "إلى الأبد",
+  "Resilience": "صمود",
+  "Solidarity": "تضامن",
+  "We stand with the people of Palestine. Beyond the code we write, we believe technology should serve ":
+    "نقف مع شعب فلسطين. فوراء ما نكتبه من شيفرة، نؤمن أنّ التقنية يجب أن تخدم ",
+  "humanity": "الإنسانية",
+  " — that every voice deserves to be heard, every story remembered, and every future built on justice and peace.":
+    " — وأنّ كلّ صوت يستحقّ أن يُسمَع، وكلّ قصّة أن تُذكَر، وكلّ مستقبل أن يُبنى على العدل والسلام.",
+  "State of Palestine": "دولة فلسطين",
+  "What We Stand For": "ما ندافع عنه",
+  "Three things we will never ": "ثلاثة أشياء لن ",
+  "compromise": "نساوم عليها",
+  "Humanity": "الإنسانية",
+  "Justice": "العدالة",
+  "Hope": "الأمل",
+  "Every life carries dignity. We build with empathy and stand with those who endure hardship.":
+    "كلّ حياة تحمل كرامة. نبني بتعاطف ونقف مع من يعانون الشدائد.",
+  "We believe in equity and truth — that freedom and human rights belong to every single person.":
+    "نؤمن بالإنصاف والحقيقة — بأنّ الحريّة وحقوق الإنسان حقٌّ لكلّ إنسان.",
+  "Through resilience, community, and creation, a future rooted in peace remains within reach.":
+    "بالصمود والتكاتف والإبداع، يبقى مستقبلٌ متجذّر في السلام في متناول اليد.",
+  "To exist is to resist. We build so that every ": "أن توجد هو أن تقاوم. نبني كي تبقى كلّ ",
+  "story is remembered": "قصّة محفوظة",
+  "— MEGA Devs · In Solidarity": "— MEGA Devs · تضامناً",
+  "Take Action": "اتّخذ موقفاً",
+  "Raise your voice. Build with ": "ارفع صوتك. ابنِ من أجل ",
+  "purpose": "هدف",
+  "Every voice counts": "كلّ صوت يهمّ",
+  "Join the movement and share your solidarity. Amplify the stories that must not be forgotten.":
+    "انضمّ إلى الحراك وشارك تضامنك، واجعل صوت القصص التي يجب ألّا تُنسى أعلى.",
+  "Stand With": "قِف مع",
+  "Standing for humanity": "نقف مع الإنسانية",
+  "MEGA Devs · Standing for humanity": "MEGA Devs · نقف مع الإنسانية",
 };
 
 /** Registry of translations by language. English is identity (key === value). */
