@@ -112,9 +112,28 @@ export default function Navbar() {
             <button onClick={() => setCmdOpen(true)} className="mnav-index cmd-trigger" aria-label="Open section index">
               {t("Index")} <span className="mnav-key">/</span>
             </button>
-            <button onClick={toggleLang} className="mnav-icon mnav-lang" aria-label="Switch language" title={lang === "ar" ? "English" : "العربية"}>
-              {lang === "ar" ? "EN" : "ع"}
-            </button>
+            <motion.button
+              onClick={toggleLang}
+              className="mnav-icon mnav-lang"
+              aria-label="Switch language"
+              title={lang === "ar" ? "English" : "العربية"}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.85, rotate: -8 }}
+              style={{ perspective: 400, overflow: "hidden" }}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={lang}
+                  initial={{ rotateY: -90, opacity: 0, y: 4 }}
+                  animate={{ rotateY: 0, opacity: 1, y: 0 }}
+                  exit={{ rotateY: 90, opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ display: "inline-block" }}
+                >
+                  {lang === "ar" ? "EN" : "ع"}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
             <button onClick={toggleTheme} className="mnav-icon" aria-label="Toggle theme">{theme === "light" ? "☾" : "☀"}</button>
             <button className={`mnav-burger${menuOpen ? " open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
               <span /><span /><span />
