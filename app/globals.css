@@ -28,15 +28,16 @@
 }
 
 /* === Arabic / RTL support === */
-[lang="ar"] body,
-[lang="ar"] input,
-[lang="ar"] textarea,
-[lang="ar"] button,
-[lang="ar"] select {
-  font-family: var(--font-arabic), var(--font-outfit), system-ui, sans-serif;
+/* Arabic script must NOT inherit Latin typography: negative/extra letter-spacing
+   squeezes or spreads cursive letters until words overlap (worst on mobile), and
+   uppercase is a no-op. Force a real Arabic font + normal spacing everywhere. */
+[lang="ar"] * {
+  font-family: var(--font-arabic), var(--font-outfit), system-ui, sans-serif !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
 }
-/* Keep the language toggle glyph readable and let Arabic numerals stay LTR. */
-.mnav-lang { font-weight: 700; }
+/* Emoji/icon-only spans keep the default emoji rendering. */
+[lang="ar"] .mnav-lang { font-weight: 700; }
 [dir="rtl"] .mnav-key,
 [dir="rtl"] .mnav-cmd-prompt { direction: ltr; }
 

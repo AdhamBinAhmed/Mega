@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export type Lang = "en" | "ar";
 
@@ -461,6 +462,9 @@ const LangContext = createContext<Ctx | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
+  // Full-screen wipe played whenever the language changes. Holds the target
+  // language ("ar"/"en") while animating, then clears back to null.
+  const [wipe, setWipe] = useState<Lang | null>(null);
 
   // Load saved preference on mount (client only, avoids hydration mismatch).
   useEffect(() => {
@@ -478,7 +482,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [lang]);
 
   const setLang = useCallback((l: Lang) => {
-    setLangState(l);
+    setLangState((prev) => {
+      if (prev !== l) setWipe(l); // trigger the page transition only on a real change
+      return l;
+    });
     try { localStorage.setItem("lang", l); } catch {}
   }, []);
 
@@ -492,6 +499,47 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   return (
     <LangContext.Provider value={{ lang, dir: lang === "ar" ? "rtl" : "ltr", setLang, toggle, t }}>
       {children}
+      <AnimatePresence>
+        {wipe && (
+          <motion.div
+            key="lang-wipe"
+            // Arabic (RTL) sweeps right→left; English (LTR) sweeps left→right.
+            initial={{ x: wipe === "ar" ? "100%" : "-100%" }}
+            animate={{ x: "0%" }}
+            exit={{ x: wipe === "ar" ? "-100%" : "100%" }}
+            transition={{ duration: 0.42, ease: [0.7, 0, 0.3, 1] }}
+            onAnimationComplete={() => setWipe(null)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 100000,
+              pointerEvents: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "linear-gradient(120deg, #a78bfa, #5eead4)",
+            }}
+          >
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                fontFamily: wipe === "ar"
+                  ? "var(--font-arabic), sans-serif"
+                  : "var(--font-logo), var(--font-outfit), sans-serif",
+                fontSize: "clamp(1.8rem, 8vw, 3rem)",
+                fontWeight: 800,
+                color: "#0a0714",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {wipe === "ar" ? "العربية" : "English"}
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </LangContext.Provider>
   );
 }
