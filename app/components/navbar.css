@@ -96,6 +96,12 @@ html.theming .mnav-bar { backdrop-filter: none !important; -webkit-backdrop-filt
   background: var(--mnav-panel); border-left: 1px solid var(--mnav-rule2); box-shadow: -30px 0 80px var(--mnav-shadow);
   padding: 26px var(--mnav-gutter); display: flex; flex-direction: column;
 }
+/* Arabic (RTL): drawer opens from the left instead of the right. */
+[dir="rtl"] .mnav-drawer {
+  right: auto; left: 0;
+  border-left: none; border-right: 1px solid var(--mnav-rule2);
+  box-shadow: 30px 0 80px var(--mnav-shadow);
+}
 .mnav-drawer-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--mnav-rule); }
 .mnav-kicker { font-family: var(--mnav-mono); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--mnav-accent); }
 .mnav-drawer-list { display: flex; flex-direction: column; margin-top: 8px; overflow-y: auto; }

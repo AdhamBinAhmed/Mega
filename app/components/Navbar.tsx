@@ -147,7 +147,7 @@ export default function Navbar() {
         {menuOpen && (
           <>
             <motion.div className="mnav-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenuOpen(false)} />
-            <motion.div className="mnav-drawer" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}>
+            <motion.div className="mnav-drawer" initial={{ x: lang === "ar" ? "-100%" : "100%" }} animate={{ x: 0 }} exit={{ x: lang === "ar" ? "-100%" : "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}>
               <div className="mnav-drawer-head">
                 <span className="mnav-kicker">{t("Index")}</span>
                 <button className="mnav-burger open" onClick={() => setMenuOpen(false)} aria-label="Close menu"><span /><span /><span /></button>
