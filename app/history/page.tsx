@@ -45,6 +45,14 @@ export default function HistoryPage() {
       accent: "var(--accent)",
       stat: "Parent Organization",
     },
+    {
+      year: "2027",
+      tag: "Strategic Pause",
+      title: "Temporary Suspension of MegaOS",
+      body: "The MegaDevs management has decided to temporarily suspend MegaOS until 2028 due to its high resource consumption without a sufficient return.",
+      accent: "var(--accent2)",
+      stat: "MegaOS Paused",
+    },
   ];
 
   const stats = [
@@ -493,7 +501,7 @@ export default function HistoryPage() {
         {/* TIMELINE */}
         <div className="h-sec-head">
           <div className="h-sec-label">{t("Company Timeline")}</div>
-          <h2 className="h-sec-title">{t("Four defining milestones.")}</h2>
+          <h2 className="h-sec-title">{t("Five defining milestones.")}</h2>
         </div>
 
         <div className="h-timeline">

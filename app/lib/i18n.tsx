@@ -262,6 +262,12 @@ const AR: Record<string, string> = {
   "Specialized Teams": "فرق متخصّصة",
   "Company Timeline": "الخطّ الزمني للشركة",
   "Four defining milestones.": "أربع محطّات فاصلة.",
+  "Five defining milestones.": "خمس محطّات فاصلة.",
+  "Strategic Pause": "توقّف استراتيجي",
+  "Temporary Suspension of MegaOS": "تعليق مؤقّت لـ MegaOS",
+  "The MegaDevs management has decided to temporarily suspend MegaOS until 2028 due to its high resource consumption without a sufficient return.":
+    "قرّرت إدارة MegaDevs تعليق MegaOS مؤقّتاً حتى عام 2028 نظراً لاستهلاكه العالي للموارد دون عائد كافٍ.",
+  "MegaOS Paused": "إيقاف MegaOS",
   "Inception": "البداية",
   "Rebrand & Growth": "إعادة التسمية والنموّ",
   "Scaling Operations": "توسيع العمليات",
