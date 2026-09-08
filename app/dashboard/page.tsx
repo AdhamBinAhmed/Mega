@@ -9,6 +9,7 @@ import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 import PremiumProfileCard from "../components/PremiumProfileCard";
 import ProProfile from "../components/ProProfile";
+import { useLang } from "../lib/i18n";
 import "./dashboard.css";
 import "../[subdomain]/subdomain-bg.css";
 
@@ -26,6 +27,7 @@ function CollapseBody({ open, children }: { open: boolean; children: React.React
 }
 
 export default function DashboardPage() {
+  const { t } = useLang();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -175,7 +177,7 @@ export default function DashboardPage() {
     setSuccess(false);
 
     if (!formData.subdomain || !formData.name) {
-      setError("Subdomain and Name are required.");
+      setError(t("Subdomain and Name are required."));
       return;
     }
 
@@ -333,7 +335,7 @@ export default function DashboardPage() {
   };
 
   if (loadingAuth) {
-    return <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#050507", color: "white", fontFamily: "monospace" }}>Loading Secure Dashboard...</div>;
+    return <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#050507", color: "white", fontFamily: "monospace" }}>{t("Loading Secure Dashboard...")}</div>;
   }
 
   const isLive = isEditing && !!formData.subdomain;
@@ -352,9 +354,9 @@ export default function DashboardPage() {
           {/* DASH ACTIONS */}
           <div className="dash-actions">
             {isLive && (
-              <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">↗ View Live Site</a>
+              <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">{t("↗ View Live Site")}</a>
             )}
-            <button className="theme-btn" onClick={() => signOut(auth)}>Sign Out</button>
+            <button className="theme-btn" onClick={() => signOut(auth)}>{t("Sign Out")}</button>
           </div>
 
           {/* DASH HEADER */}
@@ -362,20 +364,20 @@ export default function DashboardPage() {
             <div>
               <div className="dash-eyebrow">
                 <span className="dash-eyebrow-dot" />
-                <span>{isEditing ? "Editing Profile" : "New Profile"}</span>
+                <span>{isEditing ? t("Editing Profile") : t("New Profile")}</span>
               </div>
-              <h1 className="title">{isEditing ? "Edit Your" : "Create Your"} <em>Profile</em></h1>
-              <p className="sub">{isEditing ? "Update your details below to keep your developer presence fresh." : "Launch your own personalized developer page on the Mega Devs network. Pick your custom subdomain and start shining."}</p>
+              <h1 className="title">{isEditing ? t("Edit Your") : t("Create Your")} <em>{t("Profile")}</em></h1>
+              <p className="sub">{isEditing ? t("Update your details below to keep your developer presence fresh.") : t("Launch your own personalized developer page on the Mega Devs network. Pick your custom subdomain and start shining.")}</p>
             </div>
 
             {isEditing && (
               <div className="status-card glass-card">
                 <span className={`status-pill ${isLive ? "live" : "draft"}`}>
-                  <span className="status-dot" /> {isLive ? "Live" : "Draft"}
+                  <span className="status-dot" /> {isLive ? t("Live") : t("Draft")}
                 </span>
                 <div className="status-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
                 <button type="button" className="copy-btn" onClick={handleCopyLink}>
-                  {copiedLink ? "Copied ✓" : "Copy Link"}
+                  {copiedLink ? t("Copied ✓") : t("Copy Link")}
                 </button>
               </div>
             )}
@@ -401,11 +403,10 @@ export default function DashboardPage() {
           >
             <div style={{ maxWidth: "560px" }}>
               <div style={{ fontSize: "1.05rem", fontWeight: 700, marginBottom: "4px" }}>
-                ⚡ Pro Design {formData.proDesign ? "· ON" : ""}
+                ⚡ {t("Pro Design")} {formData.proDesign ? t("· ON") : ""}
               </div>
               <div style={{ fontSize: "0.85rem", opacity: 0.8, lineHeight: 1.5 }}>
-                Replace your whole page with the cinematic portfolio layout — aurora background,
-                parallax hero & tilt link grid. Uses your name, role, photo & links.
+                {t("Replace your whole page with the cinematic portfolio layout — aurora background, parallax hero & tilt link grid. Uses your name, role, photo & links.")}
               </div>
             </div>
             <button
@@ -426,13 +427,13 @@ export default function DashboardPage() {
                 transition: "all 0.3s ease",
               }}
             >
-              {formData.proDesign ? "✓ Enabled — Turn Off" : "Enable Pro Design"}
+              {formData.proDesign ? t("✓ Enabled — Turn Off") : t("Enable Pro Design")}
             </button>
           </div>
 
           {success && (
             <div className="success-box">
-              <h3>Profile Saved!</h3>
+              <h3>{t("Profile Saved!")}</h3>
               <p style={{ marginTop: '8px' }}>
                 Your site is live at: <strong><a href={`http://${formData.subdomain.toLowerCase()}.megadevs.site`} style={{ color: 'inherit' }}>{formData.subdomain.toLowerCase()}.megadevs.site</a></strong>
               </p>
@@ -452,15 +453,15 @@ export default function DashboardPage() {
                 <button type="button" className="form-section-head" onClick={() => toggleSection("01")}>
                   <span className="form-section-num">01</span>
                   <div>
-                    <div className="form-section-title">Basics</div>
-                    <div className="form-section-desc">Your identity on the network</div>
+                    <div className="form-section-title">{t("Basics")}</div>
+                    <div className="form-section-desc">{t("Your identity on the network")}</div>
                   </div>
                   <span className="form-section-chevron">▾</span>
                 </button>
                 <CollapseBody open={openSections["01"]}>
 
                 <div className="form-group">
-                  <label className="label">Custom Subdomain</label>
+                  <label className="label">{t("Custom Subdomain")}</label>
                   <div className="subdomain-group">
                     <input
                       type="text" className="input" name="subdomain"
@@ -473,7 +474,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="form-group">
-                  <label className="label">Full Name</label>
+                  <label className="label">{t("Full Name")}</label>
                   <input
                     type="text" className="input" name="name"
                     placeholder="John Doe" value={formData.name} onChange={handleChange} required
@@ -481,7 +482,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="form-group">
-                  <label className="label">Role / Tagline</label>
+                  <label className="label">{t("Role / Tagline")}</label>
                   <input
                     type="text" className="input" name="role"
                     placeholder="Frontend Developer" value={formData.role} onChange={handleChange}
@@ -489,7 +490,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="form-group">
-                  <label className="label">Gmail Address</label>
+                  <label className="label">{t("Gmail Address")}</label>
                   <input
                     type="email" className="input" name="gmail"
                     placeholder="your.email@gmail.com" value={formData.gmail} onChange={handleChange}
@@ -502,8 +503,8 @@ export default function DashboardPage() {
                 <button type="button" className="form-section-head" onClick={() => toggleSection("02")}>
                   <span className="form-section-num">02</span>
                   <div>
-                    <div className="form-section-title">Profile Photo</div>
-                    <div className="form-section-desc">Shown on your avatar ring</div>
+                    <div className="form-section-title">{t("Profile Photo")}</div>
+                    <div className="form-section-desc">{t("Shown on your avatar ring")}</div>
                   </div>
                   <span className="form-section-chevron">▾</span>
                 </button>
@@ -519,12 +520,12 @@ export default function DashboardPage() {
                   {imagePreview ? (
                     <>
                       <img src={imagePreview} alt="Preview" className="dropzone-img" />
-                      <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change</span>
+                      <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>{t("Click or drop to change")}</span>
                     </>
                   ) : (
                     <>
                       <div style={{ fontSize: "2rem", marginBottom: "8px" }}>📸</div>
-                      <span style={{ fontSize: "0.9rem" }}>Drag & drop an image, or click to browse</span>
+                      <span style={{ fontSize: "0.9rem" }}>{t("Drag & drop an image, or click to browse")}</span>
                     </>
                   )}
                   <input
@@ -542,8 +543,8 @@ export default function DashboardPage() {
                 <button type="button" className="form-section-head" onClick={() => toggleSection("03")}>
                   <span className="form-section-num">03</span>
                   <div>
-                    <div className="form-section-title">Social Links</div>
-                    <div className="form-section-desc">Where people can reach you</div>
+                    <div className="form-section-title">{t("Social Links")}</div>
+                    <div className="form-section-desc">{t("Where people can reach you")}</div>
                   </div>
                   <span className="form-section-chevron">▾</span>
                 </button>
@@ -551,14 +552,14 @@ export default function DashboardPage() {
 
                 <div className="grid-2-col">
                   <div className="form-group">
-                    <label className="label">Telegram Link</label>
+                    <label className="label">{t("Telegram Link")}</label>
                     <input
                       type="url" className="input" name="telegram"
                       placeholder="https://t.me/username" value={formData.telegram} onChange={handleChange}
                     />
                   </div>
                   <div className="form-group">
-                    <label className="label">WhatsApp Link / Number</label>
+                    <label className="label">{t("WhatsApp Link / Number")}</label>
                     <input
                       type="text" className="input" name="whatsapp"
                       placeholder="https://wa.me/1234567890" value={formData.whatsapp} onChange={handleChange}
@@ -568,14 +569,14 @@ export default function DashboardPage() {
 
                 <div className="grid-2-col">
                   <div className="form-group">
-                    <label className="label">Instagram Link</label>
+                    <label className="label">{t("Instagram Link")}</label>
                     <input
                       type="url" className="input" name="instagram"
                       placeholder="https://instagram.com/username" value={formData.instagram} onChange={handleChange}
                     />
                   </div>
                   <div className="form-group">
-                    <label className="label">Facebook Link</label>
+                    <label className="label">{t("Facebook Link")}</label>
                     <input
                       type="url" className="input" name="facebook"
                       placeholder="https://facebook.com/username" value={formData.facebook} onChange={handleChange}
@@ -585,14 +586,14 @@ export default function DashboardPage() {
 
                 <div className="grid-2-col">
                   <div className="form-group">
-                    <label className="label">GitHub Link</label>
+                    <label className="label">{t("GitHub Link")}</label>
                     <input
                       type="url" className="input" name="github"
                       placeholder="https://github.com/username" value={formData.github} onChange={handleChange}
                     />
                   </div>
                   <div className="form-group">
-                    <label className="label">Phone Number</label>
+                    <label className="label">{t("Phone Number")}</label>
                     <input
                       type="tel" className="input" name="phone"
                       placeholder="+1 234 567 8900" value={formData.phone} onChange={handleChange}
@@ -606,8 +607,8 @@ export default function DashboardPage() {
                 <button type="button" className="form-section-head" onClick={() => toggleSection("04")}>
                   <span className="form-section-num">04</span>
                   <div>
-                    <div className="form-section-title">Appearance</div>
-                    <div className="form-section-desc">Background, accent color & effects</div>
+                    <div className="form-section-title">{t("Appearance")}</div>
+                    <div className="form-section-desc">{t("Background, accent color & effects")}</div>
                   </div>
                   <span className="form-section-chevron">▾</span>
                 </button>
@@ -615,7 +616,7 @@ export default function DashboardPage() {
 
                 <div className="grid-2-col" style={formData.proDesign ? { opacity: 0.4, pointerEvents: "none" } : undefined}>
                   <div className="form-group">
-                    <label className="label">Background Style</label>
+                    <label className="label">{t("Background Style")}</label>
                     <select className="select" name="backgroundStyle" value={formData.backgroundStyle} onChange={handleChange}>
                       <option value="bg-grid">Grid & Glow (Default)</option>
                       <option value="bg-aurora">Aurora Borealis</option>
@@ -639,7 +640,7 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="form-group">
-                    <label className="label">Accent Color Theme</label>
+                    <label className="label">{t("Accent Color Theme")}</label>
                     <select className="select" name="themeColor" value={formData.themeColor} onChange={handleChange}>
                       <option value="blue">Electric Blue</option>
                       <option value="purple">Deep Purple</option>
@@ -652,7 +653,7 @@ export default function DashboardPage() {
 
                   {formData.backgroundStyle === "custom" && (
                     <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                      <label className="label">Custom Background Image</label>
+                      <label className="label">{t("Custom Background Image")}</label>
                       <div
                         className={`dropzone ${isDraggingBg ? "dragging" : ""}`}
                         onDragOver={(e) => { e.preventDefault(); setIsDraggingBg(true); }}
@@ -669,12 +670,12 @@ export default function DashboardPage() {
                         {bgImagePreview ? (
                           <>
                             <img src={bgImagePreview} alt="BG Preview" className="dropzone-img" style={{ borderRadius: '12px', width: '100%', height: '160px', objectFit: 'cover' }} />
-                            <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>Click or drop to change background</span>
+                            <span style={{ fontSize: "0.85rem", color: "var(--text)" }}>{t("Click or drop to change background")}</span>
                           </>
                         ) : (
                           <>
                             <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🖼️</div>
-                            <span style={{ fontSize: "0.9rem" }}>Drag & drop a background image, or click to browse</span>
+                            <span style={{ fontSize: "0.9rem" }}>{t("Drag & drop a background image, or click to browse")}</span>
                           </>
                         )}
                         <input
@@ -853,8 +854,8 @@ export default function DashboardPage() {
                 <button type="button" className="form-section-head" onClick={() => toggleSection("05")}>
                   <span className="form-section-num">05</span>
                   <div>
-                    <div className="form-section-title">Custom Links</div>
-                    <div className="form-section-desc">Add anything — LinkedIn, portfolio, anything else</div>
+                    <div className="form-section-title">{t("Custom Links")}</div>
+                    <div className="form-section-desc">{t("Add anything — LinkedIn, portfolio, anything else")}</div>
                   </div>
                   <span className="form-section-chevron">▾</span>
                 </button>
@@ -883,7 +884,7 @@ export default function DashboardPage() {
                       onClick={() => handleRemoveCustomLink(index)}
                       className="link-remove-btn"
                     >
-                      Remove
+                      {t("Remove")}
                     </button>
                   </div>
                 ))}
@@ -892,7 +893,7 @@ export default function DashboardPage() {
                   onClick={handleAddCustomLink}
                   className="link-add-btn"
                 >
-                  + Add Custom Link
+                  {t("+ Add Custom Link")}
                 </button>
                 </CollapseBody>
               </div>
@@ -902,7 +903,7 @@ export default function DashboardPage() {
             <div className="preview-col">
               <div className="preview-sticky">
                 <div className="preview-label">
-                  <span className="preview-label-dot" /> Live Preview
+                  <span className="preview-label-dot" /> {t("Live Preview")}
                 </div>
                 <div className="browser-chrome glass-panel">
                   <div className="browser-dots"><span /><span /><span /></div>
@@ -916,7 +917,7 @@ export default function DashboardPage() {
                       </div>
                     ) : (
                       <div style={{ position: "relative", zIndex: 1, padding: "80px 24px", textAlign: "center", color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
-                        Fill in your name to see a live preview
+                        {t("Fill in your name to see a live preview")}
                       </div>
                     )
                   ) : (
@@ -962,10 +963,10 @@ export default function DashboardPage() {
           {/* ── SAVE BAR ── */}
           <div className="save-bar glass-panel">
             <div className="save-bar-info">
-              {isSubmitting ? "Saving changes..." : isEditing ? "Editing existing profile" : "Ready to launch"}
+              {isSubmitting ? t("Saving changes...") : isEditing ? t("Editing existing profile") : t("Ready to launch")}
             </div>
             <button type="submit" form="profile-form" className="submit-btn" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : (isEditing ? "Save Changes" : "Launch Profile 🚀")}
+              {isSubmitting ? t("Saving...") : (isEditing ? t("Save Changes") : t("Launch Profile 🚀"))}
             </button>
           </div>
         </motion.div>

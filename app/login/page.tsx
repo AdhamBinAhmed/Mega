@@ -5,8 +5,10 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useLang } from "../lib/i18n";
 
 export default function LoginPage() {
+  const { t } = useLang();
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -27,7 +29,7 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to sign in. Make sure Google Auth is enabled in Firebase.");
+      setError(err.message || t("Failed to sign in. Make sure Google Auth is enabled in Firebase."));
     }
   };
 
@@ -69,12 +71,12 @@ export default function LoginPage() {
       <div className="bg-glow" />
       
       <motion.div className="card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h1 className="title">Sign In</h1>
-        <p className="sub">Authenticate to manage your developer profile and secure your subdomain.</p>
-        
+        <h1 className="title">{t("Sign In")}</h1>
+        <p className="sub">{t("Authenticate to manage your developer profile and secure your subdomain.")}</p>
+
         <button className="google-btn" onClick={handleGoogleSignIn}>
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="google-icon" />
-          Sign in with Google
+          {t("Sign in with Google")}
         </button>
 
         {error && <div className="error">{error}</div>}
