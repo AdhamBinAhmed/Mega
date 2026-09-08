@@ -77,12 +77,12 @@ const works = [
   },
   {
     num: "02",
-    title: "Kira Store",
-    category: "Web App",
-    year: "2024",
-    tags: ["Next.js", "PostgreSQL", "Redis", "Stripe"],
+    title: "Asseli",
+    category: "Brand & E-Commerce",
+    year: "2025",
+    tags: ["Next.js", "Tailwind", "Framer Motion", "Vercel"],
     status: "Live",
-    link: "https://kiradecoration.vercel.app/",
+    link: "https://asseli.vercel.app",
   },
   {
     num: "03",
@@ -542,8 +542,8 @@ export default function Home() {
                 <a href="mailto:megatrondevs@gmail.com" className="contact-link">
                   <span>megatrondevs@gmail.com</span><span className="contact-link-arrow">→</span>
                 </a>
-                <a href="tel:+201509916991" className="contact-link">
-                  <span>+20 150 991 6991</span><span className="contact-link-arrow">→</span>
+                <a href="tel:+201023382444" className="contact-link">
+                  <span>+20 102 338 2444</span><span className="contact-link-arrow">→</span>
                 </a>
               </div>
               <div className="contact-meta">
@@ -564,7 +564,7 @@ export default function Home() {
               <div><span className="c-comment">{t("# Project inquiry template")}</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">email</span>: <span className="c-val">&quot;megatrondevs@gmail.com&quot;</span></div>
-              <div><span className="c-key">phone</span>: <span className="c-val">&quot;+20 150 991 6991&quot;</span></div>
+              <div><span className="c-key">phone</span>: <span className="c-val">&quot;+20 102 338 2444&quot;</span></div>
               <div><span className="c-key">subject</span>: <span className="c-val">&quot;New Project Inquiry&quot;</span></div>
               <div><span className="c-key">priority</span>: <span className="c-val">&quot;high&quot;</span></div>
               <div>&nbsp;</div>
