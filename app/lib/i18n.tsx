@@ -499,6 +499,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   return (
     <LangContext.Provider value={{ lang, dir: lang === "ar" ? "rtl" : "ltr", setLang, toggle, t }}>
       {children}
+      {/* Clip layer stays inside the viewport so the translating panel can never
+          create horizontal page scroll on mobile. */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 100000, pointerEvents: "none", overflow: "hidden" }}>
       <AnimatePresence>
         {wipe && (
           <motion.div
@@ -510,9 +513,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
             transition={{ duration: 0.42, ease: [0.7, 0, 0.3, 1] }}
             onAnimationComplete={() => setWipe(null)}
             style={{
-              position: "fixed",
+              position: "absolute",
               inset: 0,
-              zIndex: 100000,
               pointerEvents: "none",
               display: "flex",
               alignItems: "center",
@@ -540,6 +542,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </LangContext.Provider>
   );
 }

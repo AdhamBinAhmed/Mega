@@ -595,6 +595,7 @@ body {
   .hamburger { display: flex; }
   .cmd-trigger { display: none; }
   .hero { padding-top: 132px; }
+  .hero-title { line-height: 0.95; }
   .hero-mid { grid-template-columns: 1fr; gap: 28px; }
   .hero-cta { justify-content: flex-start; }
   .stats { grid-template-columns: repeat(2, 1fr); }
@@ -609,7 +610,7 @@ body {
 }
 @media (max-width: 560px) {
   :root { --gutter: 18px; }
-  .hero-title { font-size: clamp(3rem, 18vw, 5rem); }
+  .hero-title { font-size: clamp(3rem, 18vw, 5rem); line-height: 0.98; letter-spacing: -0.03em; }
   .strap { display: none; }
   .masthead-inner { height: 60px; }
   .svc { grid-template-columns: 40px 1fr; gap: 14px; }
