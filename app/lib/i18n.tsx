@@ -414,6 +414,14 @@ const AR: Record<string, string> = {
     "استبدل صفحتك بالكامل بتصميم البورتفوليو السينمائي — خلفية شفقية، وواجهة بطبقات متحرّكة، وشبكة روابط بميلان ثلاثي الأبعاد. يستخدم اسمك ودورك وصورتك وروابطك.",
   "Enable Pro Design": "تفعيل التصميم الاحترافي",
   "✓ Enabled — Turn Off": "✓ مُفعّل — إيقاف",
+
+  // ── Works: Asseli project ──
+  "Brand & E-Commerce": "علامة تجارية ومتجر إلكتروني",
+  "A warm, refined storefront and brand experience for Asseli — an artisan honey producer. Crafted with smooth motion and a clean product presentation to showcase small-batch, natural honey and turn visitors into loyal customers.":
+    "متجر وتجربة علامة تجارية دافئة وأنيقة لعسلي — منتِج عسل حرفيّ. صُمّم بحركة سلسة وعرض منتجات نظيف لإبراز العسل الطبيعي بكميّات صغيرة وتحويل الزوّار إلى عملاء أوفياء.",
+  "Small-Batch": "كميّات صغيرة",
+  "Natural Product": "منتج طبيعي",
+  "In Production": "في الإنتاج",
 };
 
 /** Registry of translations by language. English is identity (key === value). */
