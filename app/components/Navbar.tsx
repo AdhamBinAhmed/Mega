@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "../lib/i18n";
 import "./navbar.css";
 
 // Full section index — powers the ⌘/Index palette and the mobile drawer.
@@ -27,6 +28,7 @@ const essentials = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { t, lang, toggle: toggleLang } = useLang();
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [cmdOpen, setCmdOpen] = useState(false);
   const [cmdVal, setCmdVal] = useState("");
@@ -81,7 +83,7 @@ export default function Navbar() {
 
   const actions = [
     { l: "Toggle Theme", icon: "◐", run: () => toggleTheme() },
-    { l: "Copy Email", icon: "✉", run: () => { navigator.clipboard?.writeText("megatrondevs@gmail.com"); setToast("Email copied to clipboard"); } },
+    { l: "Copy Email", icon: "✉", run: () => { navigator.clipboard?.writeText("megatrondevs@gmail.com"); setToast(t("Email copied to clipboard")); } },
     { l: "Scroll to Top", icon: "↑", run: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
     { l: "Open GitHub", icon: "⌥", run: () => window.open("https://github.com/AdhamBinAhmed", "_blank") },
     { l: "Stand with Palestine", icon: "🇵🇸", run: () => { window.location.href = "/palestine"; } },
@@ -103,12 +105,15 @@ export default function Navbar() {
           </a>
           <nav className="mnav-links">
             {essentials.map((n) => (
-              <a key={n.l} href={n.h} className={`mnav-link${pathname === n.h ? " active" : ""}`}>{n.l}</a>
+              <a key={n.l} href={n.h} className={`mnav-link${pathname === n.h ? " active" : ""}`}>{t(n.l)}</a>
             ))}
           </nav>
           <div className="mnav-actions">
             <button onClick={() => setCmdOpen(true)} className="mnav-index cmd-trigger" aria-label="Open section index">
-              Index <span className="mnav-key">/</span>
+              {t("Index")} <span className="mnav-key">/</span>
+            </button>
+            <button onClick={toggleLang} className="mnav-icon mnav-lang" aria-label="Switch language" title={lang === "ar" ? "English" : "العربية"}>
+              {lang === "ar" ? "EN" : "ع"}
             </button>
             <button onClick={toggleTheme} className="mnav-icon" aria-label="Toggle theme">{theme === "light" ? "☾" : "☀"}</button>
             <button className={`mnav-burger${menuOpen ? " open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
@@ -125,19 +130,19 @@ export default function Navbar() {
             <motion.div className="mnav-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenuOpen(false)} />
             <motion.div className="mnav-drawer" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}>
               <div className="mnav-drawer-head">
-                <span className="mnav-kicker">Index</span>
+                <span className="mnav-kicker">{t("Index")}</span>
                 <button className="mnav-burger open" onClick={() => setMenuOpen(false)} aria-label="Close menu"><span /><span /><span /></button>
               </div>
               <div className="mnav-drawer-list">
                 {sections.map((n, i) => (
                   <motion.a key={n.l} href={n.h} className="mnav-drawer-link" onClick={() => setMenuOpen(false)}
                     initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 + 0.08 }}>
-                    <span>{String(i + 1).padStart(2, "0")}</span>{n.l}
+                    <span>{String(i + 1).padStart(2, "0")}</span>{t(n.l)}
                   </motion.a>
                 ))}
               </div>
               <div className="mnav-drawer-foot">
-                <a href="/#contact" className="mnav-cta" onClick={() => setMenuOpen(false)}>Start a Project →</a>
+                <a href="/#contact" className="mnav-cta" onClick={() => setMenuOpen(false)}>{t("Start a Project →")}</a>
               </div>
             </motion.div>
           </>
@@ -159,26 +164,26 @@ export default function Navbar() {
                       if (actMatches[0]) { actMatches[0].run(); setCmdOpen(false); setCmdVal(""); }
                     }
                   }}
-                  placeholder="Navigate or run a command..." className="mnav-cmd-input" />
-                <span className="mnav-cmd-esc">ESC</span>
+                  placeholder={t("Navigate or run a command...")} className="mnav-cmd-input" />
+                <span className="mnav-cmd-esc">{t("ESC")}</span>
               </div>
               <div className="mnav-cmd-body">
                 {secMatches.length > 0 && (
                   <>
-                    <div className="mnav-cmd-label">Sections</div>
+                    <div className="mnav-cmd-label">{t("Sections")}</div>
                     {secMatches.map((n) => (
                       <a key={n.l} href={n.h} onClick={() => setCmdOpen(false)} className="mnav-cmd-item">
-                        <span className="mnav-cmd-ic">&gt;</span><span>{n.l}</span>
+                        <span className="mnav-cmd-ic">&gt;</span><span>{t(n.l)}</span>
                       </a>
                     ))}
                   </>
                 )}
                 {actMatches.length > 0 && (
                   <>
-                    <div className="mnav-cmd-label">Actions</div>
+                    <div className="mnav-cmd-label">{t("Actions")}</div>
                     {actMatches.map((a) => (
                       <button key={a.l} onClick={() => { a.run(); setCmdOpen(false); setCmdVal(""); }} className="mnav-cmd-item">
-                        <span className="mnav-cmd-ic">{a.icon}</span><span>{a.l}</span>
+                        <span className="mnav-cmd-ic">{a.icon}</span><span>{t(a.l)}</span>
                       </button>
                     ))}
                   </>

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk, JetBrains_Mono, Sora, Geist, Geist_Mono } from "next/font/google";
+import { Outfit, Space_Grotesk, JetBrains_Mono, Sora, Geist, Geist_Mono, Cairo } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
+import { LanguageProvider } from "./lib/i18n";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -34,6 +35,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
+});
+
+// Arabic webfont, applied when <html lang="ar">.
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-arabic",
 });
 
 export const metadata: Metadata = {
@@ -74,10 +81,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable} ${geistSans.variable} ${geistMono.variable}`}>
-        <LoadingScreen />
-        <Navbar />
-        {children}
+      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable} ${geistSans.variable} ${geistMono.variable} ${cairo.variable}`}>
+        <LanguageProvider>
+          <LoadingScreen />
+          <Navbar />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

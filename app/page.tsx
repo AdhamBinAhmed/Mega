@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import MagneticButton from "./components/MagneticButton";
+import { useLang } from "./lib/i18n";
 import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -12,7 +13,7 @@ const developers = [
   {
     name: "Adham Ahmed",
     role: "Frontend, ROM & Web Developer",
-    telegram: "https://t.me/llxcd_EGy",
+    telegram: "https://t.me/llxcd_EG",
     github: "https://github.com/AdhamBinAhmed",
     image: "/developers/ahmed.jpg",
     tag: "Founder",
@@ -72,7 +73,7 @@ const works = [
     year: "2023",
     tags: ["Android", "C++", "Kernel", "AOSP"],
     status: "Live",
-    link: "https://megaroms.ggff.net/",
+    link: "https://roms.megadevs.site/",
   },
   {
     num: "02",
@@ -155,6 +156,7 @@ const nav = [
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
 export default function Home() {
+  const { t } = useLang();
   const [currentTime, setCurrentTime] = useState("");
   const [scrollPct, setScrollPct] = useState(0);
   const [activeService, setActiveService] = useState(0);
@@ -244,9 +246,9 @@ export default function Home() {
 
       {/* FIXED SIDE-RAIL */}
       <div className="side-rail" aria-hidden="true">
-        <span className="side-rail-txt mark">{activeLabel}</span>
+        <span className="side-rail-txt mark">{t(activeLabel)}</span>
         <div className="side-rail-line" />
-        <span className="side-rail-txt side-rail-scroll">Scroll ↓</span>
+        <span className="side-rail-txt side-rail-scroll">{t("Scroll ↓")}</span>
       </div>
 
       {/* BG */}
@@ -261,45 +263,45 @@ export default function Home() {
         <div className="hero-top">
           <div className="hero-issue">
             <span className="kicker">MEGA Devs</span>
-            <span className="meta">Issue №01</span>
-            <span className="meta">Cairo · Egypt</span>
+            <span className="meta">{t("Issue №01")}</span>
+            <span className="meta">{t("Cairo · Egypt")}</span>
           </div>
-          <span className="meta">Est. 2022</span>
+          <span className="meta">{t("Est. 2022")}</span>
         </div>
 
         <motion.h1 className="hero-title"
           variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
           initial="hidden" animate="show">
-          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }}>We Ship.</motion.span>
-          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="accent">Fast.</motion.span>
-          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="outline">Always.</motion.span>
+          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }}>{t("We Ship.")}</motion.span>
+          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="accent">{t("Fast.")}</motion.span>
+          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="outline">{t("Always.")}</motion.span>
         </motion.h1>
 
         <div className="hero-mid">
           <motion.p className="hero-dek" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }}>
-            Two engineers from Cairo building <strong>high-performance web apps</strong>, custom Android ROMs, and production-grade AI systems for clients across the Middle East and beyond.
+            {t("Two engineers from Cairo building ")}<strong>{t("high-performance web apps")}</strong>{t(", custom Android ROMs, and production-grade AI systems for clients across the Middle East and beyond.")}
           </motion.p>
           <motion.div className="hero-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}>
-            <MagneticButton href="#contact" className="btn-solid"><span>Start a Project →</span></MagneticButton>
-            <a href="/works" className="btn-line"><span>Our Works</span></a>
+            <MagneticButton href="#contact" className="btn-solid"><span>{t("Start a Project →")}</span></MagneticButton>
+            <a href="/works" className="btn-line"><span>{t("Our Works")}</span></a>
           </motion.div>
         </div>
 
         <motion.div className="hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>
-          {["Web Apps", "Android ROMs", "AI Systems", "Backends", "Edge"].map((t) => (
-            <span key={t} className="hero-chip">{t}</span>
+          {["Web Apps", "Android ROMs", "AI Systems", "Backends", "Edge"].map((chip) => (
+            <span key={chip} className="hero-chip">{t(chip)}</span>
           ))}
         </motion.div>
 
         <motion.div className="hero-promo" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}>
-          <span className="hero-promo-text">Make your first free portfolio website online</span>
-          <a href="https://megadevs.site/login" className="btn-solid">Start Now →</a>
+          <span className="hero-promo-text">{t("Make your first free portfolio website online")}</span>
+          <a href="https://megadevs.site/login" className="btn-solid">{t("Start Now →")}</a>
         </motion.div>
 
         <div className="hero-status">
-          <div className="meta"><span className="status-live" />Systems Nominal</div>
-          <div className="meta">Cairo · {currentTime}</div>
-          <div className="meta">UTC+3 · Available</div>
+          <div className="meta"><span className="status-live" />{t("Systems Nominal")}</div>
+          <div className="meta">{t("Cairo · Egypt").split(" · ")[0]} · {currentTime}</div>
+          <div className="meta">{t("UTC+3 · Available")}</div>
         </div>
       </motion.section>
 
@@ -328,8 +330,8 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§01</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">What We Do</span><div className="rule" /></div>
-              <h2 className="sec-title">Services that <em>scale</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("What We Do")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Services that ")}<em>{t("scale")}</em></h2>
             </div>
           </div>
           <div className="svc-list">
@@ -340,13 +342,13 @@ export default function Home() {
                 transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.05 }}>
                 <span className="svc-num">{s.num}</span>
                 <div>
-                  <div className="svc-name">{s.title}</div>
-                  <div className="svc-sub">{s.sub}</div>
+                  <div className="svc-name">{t(s.title)}</div>
+                  <div className="svc-sub">{t(s.sub)}</div>
                 </div>
-                <div className="svc-desc">{s.desc}</div>
+                <div className="svc-desc">{t(s.desc)}</div>
                 <div className="svc-metric">
                   <span className="svc-metric-val">{s.metric}</span>
-                  <span className="svc-metric-lab">{s.metricLabel}</span>
+                  <span className="svc-metric-lab">{t(s.metricLabel)}</span>
                   <span className="svc-arrow">↗</span>
                 </div>
               </motion.a>
@@ -361,16 +363,16 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§02</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">How We Work</span><div className="rule" /></div>
-              <h2 className="sec-title">Built for <em>momentum</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("How We Work")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Built for ")}<em>{t("momentum")}</em></h2>
             </div>
           </div>
           <div className="proc-grid">
             {process.map((p, i) => (
               <motion.div key={p.num} className="proc" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}>
                 <div className="proc-num">{p.num}</div>
-                <div className="proc-title">{p.title}</div>
-                <div className="proc-desc">{p.desc}</div>
+                <div className="proc-title">{t(p.title)}</div>
+                <div className="proc-desc">{t(p.desc)}</div>
               </motion.div>
             ))}
           </div>
@@ -383,8 +385,8 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§03</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">Portfolio</span><div className="rule" /></div>
-              <h2 className="sec-title">Things we&apos;ve <em>shipped</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("Portfolio")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Things we've ")}<em>{t("shipped")}</em></h2>
             </div>
           </div>
           <div>
@@ -397,12 +399,12 @@ export default function Home() {
                 transition={{ type: "spring", damping: 26, stiffness: 140, delay: i * 0.05 }}>
                 <span className="work-num">{w.num}</span>
                 <div>
-                  <div className="work-cat">{w.category}</div>
+                  <div className="work-cat">{t(w.category)}</div>
                   <div className="work-title">{w.title}</div>
-                  <div className="work-tags">{w.tags.map((t) => <span key={t} className="work-tag">{t}</span>)}</div>
+                  <div className="work-tags">{w.tags.map((tag) => <span key={tag} className="work-tag">{tag}</span>)}</div>
                 </div>
                 <span className="work-year">{w.year}</span>
-                <span className={`work-status ${w.status.toLowerCase()}`}>{w.status}</span>
+                <span className={`work-status ${w.status.toLowerCase()}`}>{t(w.status)}</span>
               </motion.a>
             ))}
           </div>
@@ -415,13 +417,13 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§04</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">Tech Stack</span><div className="rule" /></div>
-              <h2 className="sec-title">Modern <em>arsenal</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("Tech Stack")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Modern ")}<em>{t("arsenal")}</em></h2>
             </div>
           </div>
           <div className="stack">
             <div>
-              <h3 className="stack-title">Built for modern stacks</h3>
+              <h3 className="stack-title">{t("Built for modern stacks")}</h3>
               <div className="stack-meta">
                 {[
                   { k: "Languages", v: "JavaScript, Python, C++" },
@@ -431,18 +433,18 @@ export default function Home() {
                   { k: "Status", v: "● All systems nominal" },
                 ].map((m) => (
                   <div key={m.k} className="stack-meta-row">
-                    <span className="stack-meta-k">{m.k}</span>
-                    <span className="stack-meta-v">{m.v}</span>
+                    <span className="stack-meta-k">{t(m.k)}</span>
+                    <span className="stack-meta-v">{t(m.v)}</span>
                   </div>
                 ))}
               </div>
             </div>
             <motion.div className="stack-grid" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-              {techStack.map((t, i) => (
-                <div key={t.name} className="stack-cell">
+              {techStack.map((tech, i) => (
+                <div key={tech.name} className="stack-cell">
                   <span className="stack-cell-idx">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="stack-cell-name">{t.name}</span>
-                  <span className="stack-cell-cat">{t.cat}</span>
+                  <span className="stack-cell-name">{tech.name}</span>
+                  <span className="stack-cell-cat">{t(tech.cat)}</span>
                 </div>
               ))}
             </motion.div>
@@ -456,8 +458,8 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§05</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">Questions</span><div className="rule" /></div>
-              <h2 className="sec-title">Frequently <em>asked</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("Questions")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Frequently ")}<em>{t("asked")}</em></h2>
             </div>
           </div>
           <div className="faq">
@@ -465,13 +467,13 @@ export default function Home() {
               <div key={f.q} className="faq-item">
                 <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
                   <span className="faq-q-num">0{i + 1}</span>
-                  <span>{f.q}</span>
+                  <span>{t(f.q)}</span>
                   <span className={`faq-icon${openFaq === i ? " open" : ""}`}>+</span>
                 </button>
                 <AnimatePresence initial={false}>
                   {openFaq === i && (
                     <motion.div className="faq-a" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}>
-                      <div className="faq-a-inner">{f.a}</div>
+                      <div className="faq-a-inner">{t(f.a)}</div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -487,8 +489,8 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§06</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">The Team</span><div className="rule" /></div>
-              <h2 className="sec-title">Meet the <em>engineers</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("The Team")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Meet the ")}<em>{t("engineers")}</em></h2>
             </div>
           </div>
           <div className="team-grid">
@@ -496,14 +498,14 @@ export default function Home() {
               <motion.div key={d.name} className="dev" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}>
                 <div className="dev-idx">{d.index}</div>
                 <div className="dev-top">
-                  <span className="dev-tag">{d.tag}</span>
-                  <span className="dev-avail"><span className="status-live" />Available</span>
+                  <span className="dev-tag">{t(d.tag)}</span>
+                  <span className="dev-avail"><span className="status-live" />{t("Available")}</span>
                 </div>
                 <Image src={d.image} alt={`Photo of ${d.name}`} width={76} height={76} className="dev-avatar" loading="lazy" />
                 <div className="dev-name">{d.name}</div>
-                <div className="dev-role">{d.role}</div>
+                <div className="dev-role">{t(d.role)}</div>
                 <div className="dev-links">
-                  <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link">✈ Telegram</a>
+                  <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link">{t("✈ Telegram")}</a>
                   <a href={d.github} target="_blank" rel="noopener noreferrer" className="dev-link">⌥ GitHub</a>
                 </div>
               </motion.div>
@@ -517,7 +519,7 @@ export default function Home() {
         <div className="mq-divider-track">
           {Array.from({ length: 2 }).map((_, k) => (
             <span key={k} className="mq-divider-item">
-              Let&apos;s Build Something Great <b>✦</b> Available for Work <b>✦</b>
+              {t("Let's Build Something Great ")}<b>✦</b> {t("Available for Work ")}<b>✦</b>
             </span>
           ))}
         </div>
@@ -529,13 +531,13 @@ export default function Home() {
           <div className="sec-head">
             <div className="sec-index">§07</div>
             <div className="sec-head-r">
-              <div className="sec-head-top"><span className="kicker">Get in Touch</span><div className="rule" /></div>
-              <h2 className="sec-title">Let&apos;s build something <em>great</em></h2>
+              <div className="sec-head-top"><span className="kicker">{t("Get in Touch")}</span><div className="rule" /></div>
+              <h2 className="sec-title">{t("Let's build something ")}<em>{t("great")}</em></h2>
             </div>
           </div>
           <div className="contact">
             <div>
-              <p className="contact-lead">Have a project? We&apos;re two engineers ready to turn your idea into production-grade software — from first commit to live deploy.</p>
+              <p className="contact-lead">{t("Have a project? We're two engineers ready to turn your idea into production-grade software — from first commit to live deploy.")}</p>
               <div className="contact-links">
                 <a href="mailto:megatrondevs@gmail.com" className="contact-link">
                   <span>megatrondevs@gmail.com</span><span className="contact-link-arrow">→</span>
@@ -552,14 +554,14 @@ export default function Home() {
                   { k: "Availability", v: "● Open to Work", cls: "green" },
                 ].map((r) => (
                   <div key={r.k} className="contact-meta-row">
-                    <span className="contact-meta-k">{r.k}</span>
-                    <span className={`contact-meta-v${r.cls ? ` ${r.cls}` : ""}`}>{r.v}</span>
+                    <span className="contact-meta-k">{t(r.k)}</span>
+                    <span className={`contact-meta-v${r.cls ? ` ${r.cls}` : ""}`}>{t(r.v)}</span>
                   </div>
                 ))}
               </div>
             </div>
             <motion.div className="contact-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
-              <div><span className="c-comment"># Project inquiry template</span></div>
+              <div><span className="c-comment">{t("# Project inquiry template")}</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">email</span>: <span className="c-val">&quot;megatrondevs@gmail.com&quot;</span></div>
               <div><span className="c-key">phone</span>: <span className="c-val">&quot;+20 150 991 6991&quot;</span></div>
@@ -574,9 +576,9 @@ export default function Home() {
 
       {/* ═══ HISTORY CTA ═══ */}
       <div className="history">
-        <div className="history-eyebrow">The Origin Story</div>
-        <h2 className="history-title">Curious how <em>MEGA Devs</em> started?</h2>
-        <a href="/history" className="btn-solid">Read Our Story →</a>
+        <div className="history-eyebrow">{t("The Origin Story")}</div>
+        <h2 className="history-title">{t("Curious how ")}<em>MEGA Devs</em>{t(" started?")}</h2>
+        <a href="/history" className="btn-solid">{t("Read Our Story →")}</a>
       </div>
 
       {/* ═══ COLOPHON / FOOTER ═══ */}
@@ -585,30 +587,30 @@ export default function Home() {
           <div className="colophon-word">MEGA<b>·</b>DEVS</div>
           <div className="colophon-cols">
             <div className="colophon-col">
-              <h4>Navigate</h4>
-              <a href="#services">Services</a>
-              <a href="#works">Works</a>
-              <a href="/history">Our Story</a>
-              <a href="#contact">Contact</a>
+              <h4>{t("Navigate")}</h4>
+              <a href="#services">{t("Services")}</a>
+              <a href="#works">{t("Works")}</a>
+              <a href="/history">{t("Our Story")}</a>
+              <a href="#contact">{t("Contact")}</a>
             </div>
             <div className="colophon-col">
-              <h4>Connect</h4>
-              <a href="mailto:megatrondevs@gmail.com">Email</a>
+              <h4>{t("Connect")}</h4>
+              <a href="mailto:megatrondevs@gmail.com">{t("Email")}</a>
               <a href="https://github.com/AdhamBinAhmed" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="/palestine">🇵🇸 Palestine</a>
-              <a href="#">↑ Back to Top</a>
+              <a href="/palestine">{t("🇵🇸 Palestine")}</a>
+              <a href="#">{t("↑ Back to Top")}</a>
             </div>
             <div className="colophon-col">
-              <h4>Studio Time</h4>
-              <span>Cairo · {currentTime}</span>
-              <span>UTC+3</span>
-              <span>● Open to Work</span>
+              <h4>{t("Studio Time")}</h4>
+              <span>{t("Cairo · Egypt").split(" · ")[0]} · {currentTime}</span>
+              <span>{t("UTC+3")}</span>
+              <span>{t("● Open to Work")}</span>
             </div>
           </div>
         </div>
         <div className="colophon-bottom">
-          <span className="colophon-copy">© {new Date().getFullYear()} MEGA Devs · Cairo, Egypt · All rights reserved</span>
-          <span className="colophon-copy">Designed & built in-house — press / for commands</span>
+          <span className="colophon-copy">© {new Date().getFullYear()} {t("MEGA Devs · Cairo, Egypt · All rights reserved")}</span>
+          <span className="colophon-copy">{t("Designed & built in-house — press / for commands")}</span>
         </div>
       </footer>
     </div>

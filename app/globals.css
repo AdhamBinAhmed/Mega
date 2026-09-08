@@ -27,6 +27,19 @@
   }
 }
 
+/* === Arabic / RTL support === */
+[lang="ar"] body,
+[lang="ar"] input,
+[lang="ar"] textarea,
+[lang="ar"] button,
+[lang="ar"] select {
+  font-family: var(--font-arabic), var(--font-outfit), system-ui, sans-serif;
+}
+/* Keep the language toggle glyph readable and let Arabic numerals stay LTR. */
+.mnav-lang { font-weight: 700; }
+[dir="rtl"] .mnav-key,
+[dir="rtl"] .mnav-cmd-prompt { direction: ltr; }
+
 html { scroll-behavior: smooth; }
 
 body {
