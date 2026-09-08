@@ -348,11 +348,11 @@ export default function PalestinePage() {
                 <h3 className="pal-cta-title">{t("Every voice counts")}</h3>
                 <p className="pal-cta-sub">{t("Join the movement and share your solidarity. Amplify the stories that must not be forgotten.")}</p>
               </div>
-              <motion.a href="https://twitter.com/search?q=%23build_with_palestine" target="_blank" rel="noopener noreferrer"
+              <motion.div
                 className="pal-hashtag" whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
                 <span className="pal-hashtag-sweep" />
                 #build_with_palestine
-              </motion.a>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -380,7 +380,7 @@ export default function PalestinePage() {
             </div>
             <div className="pal-colophon-col">
               <h4>{t("Stand With")}</h4>
-              <a href="https://twitter.com/search?q=%23build_with_palestine" target="_blank" rel="noopener noreferrer">#build_with_palestine</a>
+              <span>#build_with_palestine</span>
               <a href="/">{t("Standing for humanity")}</a>
             </div>
           </div>
