@@ -93,6 +93,10 @@ export default function Navbar() {
   const secMatches = sections.filter((n) => n.l.toLowerCase().includes(q));
   const actMatches = actions.filter((a) => a.l.toLowerCase().includes(q));
 
+  // The website builder is a full-screen editor — hide the site nav there so it
+  // doesn't cover the toolbar (Save / View live).
+  if (pathname === "/builder") return null;
+
   return (
     <div className="mega-nav">
       {/* ── BAR ── */}

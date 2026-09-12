@@ -3,6 +3,7 @@ import { db } from "../../../lib/firebase";
 import { notFound } from "next/navigation";
 import CanvasStage from "../../components/CanvasStage";
 import type { SiteDoc } from "../../lib/builderTypes";
+import { googleFontsUrl } from "../../lib/fonts";
 import "../../[subdomain]/subdomain-bg.css";
 
 export const revalidate = 30;
@@ -19,6 +20,12 @@ export default async function SitePage({ params }: { params: { slug: string } })
   const site = snap.data() as SiteDoc;
   const bgStyle = site.bgStyle || "none";
 
+  // Load only the fonts this page actually uses.
+  const usedFonts = (site.elements || [])
+    .map((el) => el.props?.fontFamily)
+    .filter((v): v is string => typeof v === "string");
+  const fontsUrl = googleFontsUrl(usedFonts);
+
   return (
     <div
       style={{
@@ -29,6 +36,8 @@ export default async function SitePage({ params }: { params: { slug: string } })
       }}
       data-theme="dark"
     >
+      {fontsUrl && <link rel="stylesheet" href={fontsUrl} />}
+
       {/* Animated background layers (reused from the profile system) */}
       {bgStyle !== "none" && bgStyle !== "custom" && <div className={bgStyle} />}
       {(bgStyle === "bg-grid") && <div className="bg-glow" />}

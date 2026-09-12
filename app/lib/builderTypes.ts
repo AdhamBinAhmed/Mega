@@ -49,13 +49,9 @@ export const BG_STYLES: { value: string; label: string }[] = [
   { value: "custom", label: "Custom Image" },
 ];
 
-// Font choices for text/button elements.
-export const FONT_FAMILIES: { value: string; label: string }[] = [
-  { value: "var(--font-outfit, 'Outfit'), system-ui, sans-serif", label: "Outfit (Sans)" },
-  { value: "Georgia, 'Times New Roman', serif", label: "Serif" },
-  { value: "'Courier New', ui-monospace, monospace", label: "Monospace" },
-  { value: "Impact, 'Arial Black', sans-serif", label: "Heavy Display" },
-];
+// Font choices come from the shared font library (see ./fonts).
+export { FONT_FAMILIES } from "./fonts";
+import { FONT_FAMILIES } from "./fonts";
 
 let counter = 0;
 function uid() {

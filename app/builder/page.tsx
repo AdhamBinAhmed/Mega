@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 import {
   DESIGN_WIDTH,
   BG_STYLES,
-  FONT_FAMILIES,
   createElement,
   type CanvasElement,
   type ElementType,
 } from "../lib/builderTypes";
+import { FONTS, FONT_CATEGORIES, googleFontsUrl } from "../lib/fonts";
 import { ElementContent } from "../components/CanvasElementView";
 import "../[subdomain]/subdomain-bg.css";
 import "./builder.css";
@@ -107,6 +107,17 @@ export default function BuilderPage() {
     });
     return () => unsub();
   }, [router]);
+
+  // ── Load the whole font library into the editor (once) ──
+  useEffect(() => {
+    const id = "bld-google-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = googleFontsUrl("all");
+    document.head.appendChild(link);
+  }, []);
 
   // ── Responsive scale of the editor canvas ──
   useEffect(() => {
@@ -460,6 +471,28 @@ function Range({ label, value, min, max, step, onChange, suffix }: {
   );
 }
 
+// Font picker: grouped by category, every option rendered in its own font so
+// you can preview each typeface before choosing it. The closed control also
+// shows the currently-selected font.
+function FontPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="bld-field">
+      <label>Font — previews live</label>
+      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ fontFamily: value, fontSize: "0.95rem" }}>
+        {FONT_CATEGORIES.map((cat) => (
+          <optgroup key={cat} label={cat}>
+            {FONTS.filter((f) => f.category === cat).map((f) => (
+              <option key={f.stack} value={f.stack} style={{ fontFamily: f.stack, fontSize: "1rem", padding: "4px" }}>
+                {f.label}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 function PropertiesPanel({ el, patchEl, patchProps, removeEl, bringToFront, onImage }: {
   el: CanvasElement;
   patchEl: (id: string, patch: Partial<CanvasElement>) => void;
@@ -481,12 +514,7 @@ function PropertiesPanel({ el, patchEl, patchProps, removeEl, bringToFront, onIm
             <label>Text</label>
             <textarea value={p.content} onChange={(e) => set({ content: e.target.value })} />
           </div>
-          <div className="bld-field">
-            <label>Font</label>
-            <select value={p.fontFamily} onChange={(e) => set({ fontFamily: e.target.value })}>
-              {FONT_FAMILIES.map((f) => <option key={f.label} value={f.value}>{f.label}</option>)}
-            </select>
-          </div>
+          <FontPicker value={p.fontFamily} onChange={(v) => set({ fontFamily: v })} />
           <Range label="Font size" value={p.fontSize} min={10} max={160} onChange={(v) => set({ fontSize: v })} />
           <Range label="Weight" value={p.fontWeight} min={100} max={900} step={100} onChange={(v) => set({ fontWeight: v })} />
           <Range label="Line height" value={p.lineHeight} min={0.8} max={2.5} step={0.05} onChange={(v) => set({ lineHeight: v })} />
@@ -516,6 +544,7 @@ function PropertiesPanel({ el, patchEl, patchProps, removeEl, bringToFront, onIm
             <label>Link URL</label>
             <input type="url" value={p.href} onChange={(e) => set({ href: e.target.value })} placeholder="https://…" />
           </div>
+          <FontPicker value={p.fontFamily} onChange={(v) => set({ fontFamily: v })} />
           <div className="bld-row">
             <div className="bld-field">
               <label>Background</label>
