@@ -356,6 +356,7 @@ export default function DashboardPage() {
             {isLive && (
               <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">{t("↗ View Live Site")}</a>
             )}
+            <a href="/builder" className="back-btn">{t("🎨 Website Builder")}</a>
             <button className="theme-btn" onClick={() => signOut(auth)}>{t("Sign Out")}</button>
           </div>
 
