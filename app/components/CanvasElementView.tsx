@@ -1,4 +1,46 @@
+import type { CSSProperties } from "react";
 import type { CanvasElement } from "../lib/builderTypes";
+import "./canvas-buttons.css";
+
+// Shared button styling used by both the live renderer and the editor's preset
+// swatches, so a preset looks identical everywhere.
+export function buttonStyleFromProps(p: Record<string, any>): CSSProperties {
+  const style: CSSProperties = {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: p.bg,
+    color: p.color,
+    borderRadius: p.radius,
+    fontSize: p.fontSize,
+    fontWeight: p.fontWeight,
+    fontFamily: p.fontFamily,
+    padding: "0 20px",
+    textAlign: "center",
+    letterSpacing: `${p.letterSpacing ?? 0}px`,
+    textTransform: p.textTransform || "none",
+    border: p.border && p.border !== "none" ? p.border : "none",
+    boxShadow:
+      p.boxShadow !== undefined ? p.boxShadow : p.shadow ? "0 10px 30px rgba(0,0,0,0.35)" : "none",
+    textShadow: p.textShadow || "none",
+    cursor: "pointer",
+    userSelect: "none",
+    boxSizing: "border-box",
+    whiteSpace: "nowrap",
+  };
+  if (p.backdropBlur) {
+    (style as any).backdropFilter = `blur(${p.backdropBlur}px)`;
+    (style as any).WebkitBackdropFilter = `blur(${p.backdropBlur}px)`;
+  }
+  if (p.animClass === "btn-gradient-move") style.backgroundSize = "220% 220%";
+  return style;
+}
+
+export function buttonClassName(p: Record<string, any>): string {
+  return p.animClass ? `cbtn ${p.animClass}` : "cbtn";
+}
 
 // Pure, hook-free renderer for a single canvas element's *content*.
 // The wrapper (absolute position / size / rotation) is applied by the caller,
@@ -36,27 +78,7 @@ export function ElementContent({ el, live }: { el: CanvasElement; live?: boolean
 
     case "button": {
       const inner = (
-        <span
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: p.bg,
-            color: p.color,
-            borderRadius: p.radius,
-            fontSize: p.fontSize,
-            fontWeight: p.fontWeight,
-            fontFamily: p.fontFamily,
-            padding: "0 20px",
-            textAlign: "center",
-            boxShadow: p.shadow ? "0 10px 30px rgba(0,0,0,0.35)" : "none",
-            cursor: "pointer",
-            userSelect: "none",
-            boxSizing: "border-box",
-          }}
-        >
+        <span className={buttonClassName(p)} style={buttonStyleFromProps(p)}>
           {p.label}
         </span>
       );

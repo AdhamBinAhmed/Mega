@@ -13,7 +13,8 @@ import {
   type ElementType,
 } from "../lib/builderTypes";
 import { FONTS, FONT_CATEGORIES, googleFontsUrl } from "../lib/fonts";
-import { ElementContent } from "../components/CanvasElementView";
+import { ElementContent, buttonStyleFromProps, buttonClassName } from "../components/CanvasElementView";
+import { BUTTON_PRESETS, BUTTON_PRESET_CATEGORIES } from "../lib/buttonPresets";
 import "../[subdomain]/subdomain-bg.css";
 import "./builder.css";
 
@@ -493,6 +494,39 @@ function FontPicker({ value, onChange }: { value: string; onChange: (v: string) 
   );
 }
 
+// Grid of live-preview button styles. Clicking one applies its look while
+// keeping the button's label, link, font and size.
+function ButtonPresetPicker({ p, set }: { p: Record<string, any>; set: (patch: Record<string, any>) => void }) {
+  return (
+    <div className="bld-field">
+      <label>Style presets — {BUTTON_PRESETS.length} designs</label>
+      {BUTTON_PRESET_CATEGORIES.map((cat) => (
+        <div key={cat} style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: "0.64rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.1em", margin: "6px 0 5px" }}>{cat}</div>
+          <div className="bld-preset-grid">
+            {BUTTON_PRESETS.filter((b) => b.category === cat).map((b) => {
+              const previewProps = { ...b.style, fontSize: 12, fontWeight: b.style.fontWeight || 700, fontFamily: "inherit" };
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  className="bld-preset"
+                  title={b.label}
+                  onClick={() => set({ ...b.style })}
+                >
+                  <span className={buttonClassName(previewProps)} style={{ ...buttonStyleFromProps(previewProps), height: 34, padding: "0 8px" }}>
+                    {b.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PropertiesPanel({ el, patchEl, patchProps, removeEl, bringToFront, onImage }: {
   el: CanvasElement;
   patchEl: (id: string, patch: Partial<CanvasElement>) => void;
@@ -544,10 +578,18 @@ function PropertiesPanel({ el, patchEl, patchProps, removeEl, bringToFront, onIm
             <label>Link URL</label>
             <input type="url" value={p.href} onChange={(e) => set({ href: e.target.value })} placeholder="https://…" />
           </div>
+
+          <ButtonPresetPicker p={p} set={set} />
+
           <FontPicker value={p.fontFamily} onChange={(v) => set({ fontFamily: v })} />
+
+          <div className="bld-field">
+            <label>Fill (color or CSS gradient)</label>
+            <input type="text" value={p.bg} onChange={(e) => set({ bg: e.target.value })} />
+          </div>
           <div className="bld-row">
             <div className="bld-field">
-              <label>Background</label>
+              <label>Solid pick</label>
               <input type="color" value={/^#/.test(p.bg) ? p.bg : "#6366f1"} onChange={(e) => set({ bg: e.target.value })} />
             </div>
             <div className="bld-field">
@@ -556,12 +598,27 @@ function PropertiesPanel({ el, patchEl, patchProps, removeEl, bringToFront, onIm
             </div>
           </div>
           <Range label="Font size" value={p.fontSize} min={10} max={48} onChange={(v) => set({ fontSize: v })} />
+          <Range label="Weight" value={p.fontWeight ?? 700} min={100} max={900} step={100} onChange={(v) => set({ fontWeight: v })} />
           <Range label="Corner radius" value={p.radius} min={0} max={999} onChange={(v) => set({ radius: v })} />
+          <Range label="Letter spacing" value={p.letterSpacing ?? 0} min={-2} max={12} onChange={(v) => set({ letterSpacing: v })} suffix="px" />
           <div className="bld-field">
-            <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <input type="checkbox" checked={!!p.shadow} onChange={(e) => set({ shadow: e.target.checked })} style={{ width: "auto" }} />
-              Drop shadow
-            </label>
+            <label>Text case</label>
+            <select value={p.textTransform || "none"} onChange={(e) => set({ textTransform: e.target.value })}>
+              <option value="none">Normal</option>
+              <option value="uppercase">UPPERCASE</option>
+              <option value="lowercase">lowercase</option>
+              <option value="capitalize">Capitalize</option>
+            </select>
+          </div>
+          <div className="bld-field">
+            <label>Motion</label>
+            <select value={p.animClass || ""} onChange={(e) => set({ animClass: e.target.value })}>
+              <option value="">None</option>
+              <option value="btn-shine">Shine sweep</option>
+              <option value="btn-gradient-move">Living gradient</option>
+              <option value="btn-pulse">Pulse glow</option>
+              <option value="btn-neon">Neon breathe</option>
+            </select>
           </div>
         </>
       )}

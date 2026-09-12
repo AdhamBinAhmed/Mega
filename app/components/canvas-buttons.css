@@ -1,0 +1,53 @@
+/* Shared button visuals for canvas buttons (editor preview + live site). */
+.cbtn {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Diagonal light sweep */
+.cbtn.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: cbtn-shine 2.6s ease-in-out infinite;
+}
+@keyframes cbtn-shine {
+  0% { left: -60%; }
+  60%, 100% { left: 130%; }
+}
+
+/* Breathing glow pulse (works with the preset's own box-shadow color) */
+.cbtn.btn-pulse { animation: cbtn-pulse 1.8s ease-in-out infinite; }
+@keyframes cbtn-pulse {
+  0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(99, 102, 241, 0); }
+  50% { filter: brightness(1.15); }
+}
+
+/* Animated moving gradient (pair with a gradient background) */
+.cbtn.btn-gradient-move {
+  background-size: 220% 220% !important;
+  animation: cbtn-gradient 4s ease infinite;
+}
+@keyframes cbtn-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Neon flicker-free steady breathing glow */
+.cbtn.btn-neon { animation: cbtn-neon 2.2s ease-in-out infinite alternate; }
+@keyframes cbtn-neon {
+  from { filter: brightness(0.92); }
+  to { filter: brightness(1.25); }
+}

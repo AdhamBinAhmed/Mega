@@ -85,13 +85,19 @@ export function createElement(type: ElementType, topZ: number): CanvasElement {
         props: {
           label: "Click me",
           href: "https://",
-          bg: "#6366f1",
+          bg: "linear-gradient(135deg,#6366f1,#a855f7)",
           color: "#ffffff",
-          radius: 999,
+          radius: 14,
           fontSize: 18,
           fontWeight: 700,
           fontFamily: FONT_FAMILIES[0].value,
-          shadow: true,
+          border: "none",
+          boxShadow: "0 10px 26px rgba(139,92,246,0.45)",
+          textShadow: "none",
+          letterSpacing: 0,
+          textTransform: "none",
+          backdropBlur: 0,
+          animClass: "",
         },
       };
     case "image":

@@ -196,6 +196,27 @@
 .bld-range input[type="range"] { flex: 1; }
 .bld-range .val { font-size: 0.72rem; color: #9ca3af; width: 42px; text-align: right; }
 
+/* Button preset swatches */
+.bld-preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.bld-preset {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  transition: border-color 0.15s, background 0.15s;
+  overflow: hidden;
+}
+.bld-preset:hover { border-color: rgba(99, 102, 241, 0.6); background: rgba(99, 102, 241, 0.1); }
+
 .bld-danger {
   width: 100%;
   cursor: pointer;
