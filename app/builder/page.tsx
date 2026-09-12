@@ -9,11 +9,14 @@ import {
   DESIGN_WIDTH,
   BG_STYLES,
   createElement,
+  createPage,
+  pagesFromDoc,
   type CanvasElement,
   type ElementType,
+  type Page,
 } from "../lib/builderTypes";
 import { FONTS, FONT_CATEGORIES, googleFontsUrl } from "../lib/fonts";
-import { ElementContent, buttonStyleFromProps, buttonClassName } from "../components/CanvasElementView";
+import { ElementContent, buttonStyleFromProps, buttonClassName, MobileFlow } from "../components/CanvasElementView";
 import { BUTTON_PRESETS, BUTTON_PRESET_CATEGORIES } from "../lib/buttonPresets";
 import "../[subdomain]/subdomain-bg.css";
 import "./builder.css";
@@ -59,12 +62,60 @@ export default function BuilderPage() {
   // Site state
   const [title, setTitle] = useState("My Website");
   const [slug, setSlug] = useState("");
-  const [bgColor, setBgColor] = useState("#050507");
-  const [bgStyle, setBgStyle] = useState("bg-grid");
-  const [bgImageUrl, setBgImageUrl] = useState("");
-  const [canvasHeight, setCanvasHeight] = useState(1200);
-  const [elements, setElements] = useState<CanvasElement[]>([]);
+  const [pages, setPages] = useState<Page[]>(() => [createPage("Home", true)]);
+  const [currentPageIdx, setCurrentPageIdx] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [preview, setPreview] = useState<"desktop" | "mobile">("desktop");
+
+  // The current page is the source of truth for the canvas below.
+  const safeIdx = Math.min(currentPageIdx, pages.length - 1);
+  const page = pages[safeIdx];
+  const elements = page.elements;
+  const { bgColor, bgStyle, bgImageUrl, canvasHeight } = page;
+
+  const updatePage = useCallback((patch: Partial<Page>) => {
+    setPages((ps) => ps.map((pg, i) => (i === safeIdx ? { ...pg, ...patch } : pg)));
+  }, [safeIdx]);
+
+  // Backwards-compatible setters used throughout the editor.
+  const setElements = useCallback(
+    (updater: CanvasElement[] | ((prev: CanvasElement[]) => CanvasElement[])) =>
+      setPages((ps) =>
+        ps.map((pg, i) =>
+          i === safeIdx
+            ? { ...pg, elements: typeof updater === "function" ? updater(pg.elements) : updater }
+            : pg
+        )
+      ),
+    [safeIdx]
+  );
+  const setBgColor = (v: string) => updatePage({ bgColor: v });
+  const setBgStyle = (v: string) => updatePage({ bgStyle: v });
+  const setBgImageUrl = (v: string) => updatePage({ bgImageUrl: v });
+  const setCanvasHeight = (v: number) => updatePage({ canvasHeight: v });
+
+  // ── Page management ──
+  const addPage = () => {
+    const n = pages.length + 1;
+    const pg = createPage(`Page ${n}`);
+    setPages((ps) => [...ps, pg]);
+    setCurrentPageIdx(pages.length);
+    setSelectedId(null);
+  };
+  const switchPage = (idx: number) => {
+    setCurrentPageIdx(idx);
+    setSelectedId(null);
+  };
+  const renameCurrentPage = (name: string) => updatePage({ name });
+  const deleteCurrentPage = () => {
+    if (pages.length <= 1) {
+      showToast("A site needs at least one page.", "err");
+      return;
+    }
+    setPages((ps) => ps.filter((_, i) => i !== safeIdx));
+    setCurrentPageIdx((i) => Math.max(0, i - 1));
+    setSelectedId(null);
+  };
 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
@@ -95,11 +146,8 @@ export default function BuilderPage() {
           setSlug(d.id);
           setIsExisting(true);
           setTitle(data.title || "My Website");
-          setBgColor(data.bgColor || "#050507");
-          setBgStyle(data.bgStyle || "bg-grid");
-          setBgImageUrl(data.bgImageUrl || "");
-          setCanvasHeight(data.canvasHeight || 1200);
-          setElements(data.elements || []);
+          setPages(pagesFromDoc(data));
+          setCurrentPageIdx(0);
         }
       } catch (e) {
         console.error("Load site failed", e);
@@ -129,7 +177,7 @@ export default function BuilderPage() {
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [loadingAuth]);
+  }, [loadingAuth, preview]);
 
   // ── Drag / resize via window pointer events ──
   useEffect(() => {
@@ -243,21 +291,15 @@ export default function BuilderPage() {
         const existing = await getDoc(doc(db, "sites", clean));
         if (existing.exists()) throw new Error(`"${clean}" is already taken.`);
       }
-      await setDoc(
-        doc(db, "sites", clean),
-        {
-          uid: user!.uid,
-          slug: clean,
-          title,
-          bgColor,
-          bgStyle,
-          bgImageUrl,
-          canvasHeight,
-          elements,
-          updatedAt: new Date().toISOString(),
-        },
-        { merge: true }
-      );
+      // Ensure the first page is always the home page (empty path).
+      const outPages = pages.map((pg, i) => (i === 0 ? { ...pg, path: "" } : pg));
+      await setDoc(doc(db, "sites", clean), {
+        uid: user!.uid,
+        slug: clean,
+        title,
+        pages: outPages,
+        updatedAt: new Date().toISOString(),
+      });
       setSlug(clean);
       setIsExisting(true);
       showToast("Saved & live ✓");
@@ -299,6 +341,10 @@ export default function BuilderPage() {
           <span>/site</span>
         </div>
         <div className="bld-spacer" />
+        <div className="bld-device-toggle">
+          <button className={preview === "desktop" ? "active" : ""} onClick={() => setPreview("desktop")} title="Desktop editor">🖥️ PC</button>
+          <button className={preview === "mobile" ? "active" : ""} onClick={() => setPreview("mobile")} title="Phone preview">📱 Phone</button>
+        </div>
         {isExisting && slug && (
           <a className="bld-btn" href={`/site/${slug}`} target="_blank" rel="noopener noreferrer">
             ↗ View live
@@ -313,7 +359,50 @@ export default function BuilderPage() {
       <div className="bld-body">
         {/* ── LEFT: add elements ── */}
         <div className="bld-left">
-          <div className="bld-section-label">Add element</div>
+          <div className="bld-section-label">Pages</div>
+          <div className="bld-page-tabs">
+            {pages.map((pg, i) => (
+              <button
+                key={pg.id}
+                className={`bld-page-tab ${i === safeIdx ? "active" : ""}`}
+                onClick={() => switchPage(i)}
+                title={i === 0 ? "Home page" : `/${pg.path}`}
+              >
+                {i === 0 ? "🏠 " : ""}{pg.name}
+              </button>
+            ))}
+          </div>
+          <button className="bld-add-btn" style={{ marginBottom: 10 }} onClick={addPage}>
+            <span className="ico">＋</span> Add new page
+          </button>
+          <div className="bld-field">
+            <label>Rename this page</label>
+            <input
+              type="text"
+              value={page.name}
+              onChange={(e) => renameCurrentPage(e.target.value)}
+            />
+          </div>
+          {safeIdx > 0 && (
+            <>
+              <div className="bld-field">
+                <label>URL segment</label>
+                <div className="bld-slug" style={{ width: "100%" }}>
+                  <span>/site/{slug || "…"}/</span>
+                  <input
+                    value={page.path}
+                    onChange={(e) => updatePage({ path: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
+                    placeholder="about"
+                  />
+                </div>
+              </div>
+              <button className="bld-danger" style={{ marginBottom: 8 }} onClick={deleteCurrentPage}>
+                Delete this page
+              </button>
+            </>
+          )}
+
+          <div className="bld-section-label" style={{ marginTop: 18 }}>Add element</div>
           <div className="bld-add-grid">
             {ADD_BUTTONS.map((b) => (
               <button key={b.type} className="bld-add-btn" onClick={() => addEl(b.type)}>
@@ -360,6 +449,19 @@ export default function BuilderPage() {
         {/* ── CENTER: canvas ── */}
         <div className="bld-canvas-area">
           <div className="bld-canvas-wrap">
+            {preview === "mobile" ? (
+              <div className="bld-phone">
+                <div className="bld-phone-notch" />
+                <div className="bld-phone-screen" style={{ background: bgColor }}>
+                  {bgStyle !== "none" && bgStyle !== "custom" && <div className={bgStyle} style={{ position: "absolute", inset: 0 }} />}
+                  {bgStyle === "bg-grid" && <div className="bg-glow" style={{ position: "absolute", inset: 0 }} />}
+                  {bgStyle === "custom" && bgImageUrl && (
+                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${bgImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                  )}
+                  <MobileFlow elements={elements} width={360} />
+                </div>
+              </div>
+            ) : (
             <div
               ref={canvasRef}
               className="bld-canvas"
@@ -422,6 +524,7 @@ export default function BuilderPage() {
                 })}
               </div>
             </div>
+            )}
           </div>
         </div>
 

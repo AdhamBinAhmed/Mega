@@ -48,6 +48,55 @@
   font-size: 0.8rem;
 }
 .bld-spacer { flex: 1; }
+
+/* Device preview toggle */
+.bld-device-toggle {
+  display: inline-flex;
+  background: #16161d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.bld-device-toggle button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.bld-device-toggle button.active { background: rgba(99, 102, 241, 0.25); color: #fff; }
+
+/* Phone preview frame */
+.bld-phone {
+  width: 390px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #0a0a0e;
+  border: 10px solid #1a1a22;
+  border-radius: 42px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  padding: 12px 10px;
+  position: relative;
+}
+.bld-phone-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 22px;
+  background: #1a1a22;
+  border-radius: 0 0 14px 14px;
+  z-index: 3;
+}
+.bld-phone-screen {
+  position: relative;
+  border-radius: 32px;
+  overflow: hidden;
+  min-height: 640px;
+}
 .bld-btn {
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -98,6 +147,35 @@
   color: #6b7280;
   margin: 4px 0 10px;
   font-weight: 700;
+}
+
+/* Page tabs */
+.bld-page-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.bld-page-tab {
+  cursor: pointer;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #cbced6;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bld-page-tab:hover { background: rgba(255, 255, 255, 0.08); }
+.bld-page-tab.active {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.6);
+  color: #fff;
 }
 
 .bld-add-grid { display: grid; gap: 8px; }

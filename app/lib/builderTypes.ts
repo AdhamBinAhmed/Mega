@@ -1,6 +1,7 @@
 // Shared types + constants for the drag-and-drop website builder.
 
 export const DESIGN_WIDTH = 1080; // design-space width in px; live view scales to viewport
+export const MOBILE_BREAKPOINT = 640; // below this, the canvas reflows into a vertical stack
 
 export type ElementType = "text" | "button" | "image" | "box";
 
@@ -16,16 +17,77 @@ export interface CanvasElement {
   props: Record<string, any>;
 }
 
-export interface SiteDoc {
-  uid: string;
-  slug: string;
-  title: string;
+// A single page within a site. Each page has its own background + canvas.
+export interface Page {
+  id: string;
+  name: string; // shown in nav
+  path: string; // url segment; "" for the home page
   bgColor: string;
   bgStyle: string; // reuses subdomain-bg.css classes, or "none"
   bgImageUrl: string;
   canvasHeight: number; // design-space px
   elements: CanvasElement[];
+}
+
+export interface SiteDoc {
+  uid: string;
+  slug: string;
+  title: string;
+  pages: Page[];
   updatedAt: string;
+  // Legacy single-page fields (older docs) — read for back-compat only.
+  bgColor?: string;
+  bgStyle?: string;
+  bgImageUrl?: string;
+  canvasHeight?: number;
+  elements?: CanvasElement[];
+}
+
+function slugify(s: string): string {
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+// Factory for a new blank page. isHome forces an empty path.
+export function createPage(name: string, isHome = false): Page {
+  counter += 1;
+  return {
+    id: `pg_${Date.now().toString(36)}_${counter}`,
+    name,
+    path: isHome ? "" : slugify(name) || `page-${counter}`,
+    bgColor: "#050507",
+    bgStyle: "bg-grid",
+    bgImageUrl: "",
+    canvasHeight: 1200,
+    elements: [],
+  };
+}
+
+// Normalize any stored site doc into a pages array (handles legacy docs).
+export function pagesFromDoc(data: any): Page[] {
+  if (Array.isArray(data?.pages) && data.pages.length > 0) {
+    return data.pages.map((p: any, i: number) => ({
+      id: p.id || `pg_${i}`,
+      name: p.name || (i === 0 ? "Home" : `Page ${i + 1}`),
+      path: i === 0 ? "" : p.path || slugify(p.name || `page-${i + 1}`),
+      bgColor: p.bgColor || "#050507",
+      bgStyle: p.bgStyle || "bg-grid",
+      bgImageUrl: p.bgImageUrl || "",
+      canvasHeight: p.canvasHeight || 1200,
+      elements: p.elements || [],
+    }));
+  }
+  // Legacy: wrap the old top-level canvas into a single Home page.
+  const home = createPage("Home", true);
+  return [
+    {
+      ...home,
+      bgColor: data?.bgColor || "#050507",
+      bgStyle: data?.bgStyle || "bg-grid",
+      bgImageUrl: data?.bgImageUrl || "",
+      canvasHeight: data?.canvasHeight || 1200,
+      elements: data?.elements || [],
+    },
+  ];
 }
 
 // Background styles reused from the existing profile system (subdomain-bg.css).

@@ -26,8 +26,23 @@ const essentials = [
   { l: "Contact", h: "/#contact" },
 ];
 
+// Top-level routes that belong to the MEGA Devs app itself and keep the navbar.
+// Anything else at the root (e.g. /adham) is a user profile/site and hides it.
+const APP_SEGMENTS = new Set(["", "works", "history", "dashboard", "login", "palestine"]);
+
+function isSubdomainHost(host: string): boolean {
+  const h = host.split(":")[0];
+  if (h.endsWith("localhost")) return h !== "localhost"; // e.g. adham.localhost
+  if (h === "127.0.0.1" || h.endsWith("vercel.app")) return false;
+  const root = "megadevs.site";
+  if (h === root || h === `www.${root}`) return false;
+  return h.endsWith(`.${root}`); // e.g. adham.megadevs.site
+}
+
 export default function Navbar() {
   const pathname = usePathname();
+  const [host, setHost] = useState<string | null>(null);
+  useEffect(() => setHost(window.location.hostname), []);
   const { t, lang, toggle: toggleLang } = useLang();
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [cmdOpen, setCmdOpen] = useState(false);
@@ -93,9 +108,13 @@ export default function Navbar() {
   const secMatches = sections.filter((n) => n.l.toLowerCase().includes(q));
   const actMatches = actions.filter((a) => a.l.toLowerCase().includes(q));
 
-  // The website builder is a full-screen editor — hide the site nav there so it
-  // doesn't cover the toolbar (Save / View live).
-  if (pathname === "/builder") return null;
+  // Hide the MEGA Devs nav on user-owned pages: the builder (full-screen editor),
+  // published builder sites (/site/...), profile pages (/[subdomain]), and any
+  // real subdomain host — so it only shows on the app's own pages.
+  const seg = pathname.split("/")[1] || "";
+  const hideNav =
+    !APP_SEGMENTS.has(seg) || (host !== null && isSubdomainHost(host));
+  if (hideNav) return null;
 
   return (
     <div className="mega-nav">

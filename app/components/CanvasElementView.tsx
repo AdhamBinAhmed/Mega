@@ -2,6 +2,68 @@ import type { CSSProperties } from "react";
 import type { CanvasElement } from "../lib/builderTypes";
 import "./canvas-buttons.css";
 
+// Auto mobile layout: reflow absolutely-positioned elements into a clean vertical
+// stack in reading order (top-to-bottom, then left-to-right). Each element is
+// scaled to fit the phone width, so nothing overflows or overlaps — while text
+// and buttons stay readable because the whole element (font included) scales.
+export function MobileFlow({
+  elements,
+  width,
+  pad = 20,
+  gap = 16,
+}: {
+  elements: CanvasElement[];
+  width: number;
+  pad?: number;
+  gap?: number;
+}) {
+  const innerW = Math.max(40, width - pad * 2);
+  const ordered = [...elements].sort((a, b) => a.y - b.y || a.x - b.x);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap,
+        padding: `${pad + 8}px ${pad}px`,
+        width,
+        boxSizing: "border-box",
+        position: "relative",
+        zIndex: 1,
+      }}
+    >
+      {ordered.map((el) => {
+        const targetW = Math.min(el.w, innerW);
+        const s = targetW / el.w;
+        return (
+          <div key={el.id} style={{ width: targetW, height: el.h * s, flexShrink: 0 }}>
+            <div
+              style={{
+                width: el.w,
+                height: el.h,
+                transform: `scale(${s})`,
+                transformOrigin: "top left",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  transform: el.rotation ? `rotate(${el.rotation}deg)` : undefined,
+                }}
+              >
+                <ElementContent el={el} live />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // Shared button styling used by both the live renderer and the editor's preset
 // swatches, so a preset looks identical everywhere.
 export function buttonStyleFromProps(p: Record<string, any>): CSSProperties {
