@@ -200,7 +200,7 @@
 /* Canvas area */
 .bld-canvas-area {
   overflow: auto;
-  padding: 28px;
+  padding: 16px;
   background:
     radial-gradient(circle at 20% 10%, rgba(99, 102, 241, 0.08), transparent 40%),
     #101016;
@@ -210,7 +210,7 @@
 }
 .bld-canvas-wrap {
   width: 100%;
-  max-width: 720px;
+  max-width: 1080px; /* design width — canvas renders up to full 1:1 size */
   position: relative;
 }
 .bld-canvas {
