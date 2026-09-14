@@ -17,7 +17,6 @@ const developers = [
     github: "https://github.com/AdhamBinAhmed",
     image: "/developers/ahmed.jpg",
     tag: "Founder",
-    index: "01",
   },
   {
     name: "Seif El-Din Ismail",
@@ -26,7 +25,6 @@ const developers = [
     github: "https://github.com/QOS3",
     image: "/developers/seif.jpg",
     tag: "CTO",
-    index: "02",
   },
 ];
 
@@ -140,7 +138,7 @@ const faqs = [
   { q: "Can you handle both the app and the infrastructure?", a: "Yes — frontend, backend, deployment, CI/CD, and monitoring. One team, one point of contact." },
 ];
 
-// Full index — powers the ⌘ command palette and the mobile drawer.
+// Navigation — powers the ⌘ command palette and the mobile drawer.
 const nav = [
   { l: "Services", h: "#services" },
   { l: "Process", h: "#process" },
@@ -159,7 +157,6 @@ export default function Home() {
   const { t } = useLang();
   const [currentTime, setCurrentTime] = useState("");
   const [scrollPct, setScrollPct] = useState(0);
-  const [activeService, setActiveService] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -210,11 +207,6 @@ export default function Home() {
   }, [scrollYProgress]);
 
   useEffect(() => {
-    const t = setInterval(() => setActiveService(s => (s + 1) % services.length), 3500);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
     const ids = nav.filter((n) => n.h.startsWith("#")).map((n) => n.h.slice(1));
     const sections = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     if (!sections.length) return;
@@ -229,13 +221,13 @@ export default function Home() {
   }, []);
 
   const sectionLabels: Record<string, string> = {
-    services: "§01 · Services",
-    process: "§02 · Process",
-    works: "§03 · Works",
-    stack: "§04 · Stack",
-    faq: "§05 · FAQ",
-    developers: "§06 · Team",
-    contact: "§07 · Contact",
+    services: "Services",
+    process: "Process",
+    works: "Works",
+    stack: "Stack",
+    faq: "FAQ",
+    developers: "Team",
+    contact: "Contact",
   };
   const activeLabel = sectionLabels[activeSection] ?? "MEGA · Devs";
 
@@ -248,29 +240,24 @@ export default function Home() {
       <div className="side-rail" aria-hidden="true">
         <span className="side-rail-txt mark">{t(activeLabel)}</span>
         <div className="side-rail-line" />
-        <span className="side-rail-txt side-rail-scroll">{t("Scroll ↓")}</span>
       </div>
 
-      {/* BG */}
-      <div className="paper-lines" />
+      {/* BG — simplified: just noise + one soft glow */}
       <div className="paper-glow" />
-      <div className="paper-vignette" />
       <div className="noise" />
 
       {/* ═══ HERO ═══ */}
       <motion.section className="hero" ref={heroRef} style={{ opacity: heroOpacity, y: heroY }}>
-        <div className="hero-year" aria-hidden="true">&rsquo;22</div>
         <div className="hero-top">
           <div className="hero-issue">
             <span className="kicker">MEGA Devs</span>
-            <span className="meta">{t("Issue №01")}</span>
-            <span className="meta">{t("Cairo · Egypt")}</span>
+            <span className="meta">{t("Cairo, Egypt")}</span>
           </div>
           <span className="meta">{t("Est. 2022")}</span>
         </div>
 
         <motion.h1 className="hero-title"
-          variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
+          variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.1 } } }}
           initial="hidden" animate="show">
           <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }}>{t("We Ship.")}</motion.span>
           <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="accent">{t("Fast.")}</motion.span>
@@ -285,24 +272,16 @@ export default function Home() {
             <MagneticButton href="#contact" className="btn-solid"><span>{t("Start a Project →")}</span></MagneticButton>
             <a href="/works" className="btn-line"><span>{t("Our Works")}</span></a>
           </motion.div>
+          <motion.div className="hero-promo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>
+            <span className="promo-text">{t("Make your first free portfolio website online")}</span>
+            <a href="https://megadevs.site/login" className="promo-link">{t("Start Now →")}</a>
+          </motion.div>
         </div>
 
-        <motion.div className="hero-tags" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>
-          {["Web Apps", "Android ROMs", "AI Systems", "Backends", "Edge"].map((chip) => (
-            <span key={chip} className="hero-chip">{t(chip)}</span>
-          ))}
-        </motion.div>
-
-        <motion.div className="hero-promo" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}>
-          <span className="hero-promo-text">{t("Make your first free portfolio website online")}</span>
-          <a href="https://megadevs.site/login" className="btn-solid">{t("Start Now →")}</a>
-        </motion.div>
-
-        <div className="hero-status">
+        <motion.div className="hero-status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
           <div className="meta"><span className="status-live" />{t("Systems Nominal")}</div>
-          <div className="meta">{t("Cairo · Egypt").split(" · ")[0]} · {currentTime}</div>
-          <div className="meta">{t("UTC+3 · Available")}</div>
-        </div>
+          <div className="meta">{t("Cairo")} · {currentTime}</div>
+        </motion.div>
       </motion.section>
 
       {/* ═══ TICKER ═══ */}
@@ -317,7 +296,7 @@ export default function Home() {
       {/* ═══ STATS ═══ */}
       <div className="stats">
         {stats.map((s, i) => (
-          <motion.div key={s.label} className="stat" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+          <motion.div key={s.label} className="stat" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
             <div className="stat-num">{s.value}</div>
             <div className="stat-label">{s.label}</div>
           </motion.div>
@@ -328,7 +307,6 @@ export default function Home() {
       <section id="services" className="section">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§01</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("What We Do")}</span><div className="rule" /></div>
               <h2 className="sec-title">{t("Services that ")}<em>{t("scale")}</em></h2>
@@ -336,9 +314,8 @@ export default function Home() {
           </div>
           <div className="svc-list">
             {services.map((s, i) => (
-              <motion.a key={s.num} href="#contact" className={`svc${activeService === i ? " active" : ""}`}
-                onMouseEnter={() => setActiveService(i)}
-                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              <motion.a key={s.num} href="#contact" className="svc"
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.05 }}>
                 <span className="svc-num">{s.num}</span>
                 <div>
@@ -361,7 +338,6 @@ export default function Home() {
       <section id="process" className="section alt">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§02</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("How We Work")}</span><div className="rule" /></div>
               <h2 className="sec-title">{t("Built for ")}<em>{t("momentum")}</em></h2>
@@ -369,7 +345,7 @@ export default function Home() {
           </div>
           <div className="proc-grid">
             {process.map((p, i) => (
-              <motion.div key={p.num} className="proc" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}>
+              <motion.div key={p.num} className="proc" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}>
                 <div className="proc-num">{p.num}</div>
                 <div className="proc-title">{t(p.title)}</div>
                 <div className="proc-desc">{t(p.desc)}</div>
@@ -383,7 +359,6 @@ export default function Home() {
       <section id="works" className="section">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§03</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("Portfolio")}</span><div className="rule" /></div>
               <h2 className="sec-title">{t("Things we've ")}<em>{t("shipped")}</em></h2>
@@ -395,9 +370,8 @@ export default function Home() {
                 target={w.link.startsWith("http") ? "_blank" : undefined}
                 rel={w.link.startsWith("http") ? "noopener noreferrer" : undefined}
                 className="work"
-                initial={{ opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 16 : 0 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true }}
+                initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ type: "spring", damping: 26, stiffness: 140, delay: i * 0.05 }}>
-                <span className="work-num">{w.num}</span>
                 <div>
                   <div className="work-cat">{t(w.category)}</div>
                   <div className="work-title">{w.title}</div>
@@ -415,10 +389,9 @@ export default function Home() {
       <section id="stack" className="section alt">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§04</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("Tech Stack")}</span><div className="rule" /></div>
-              <h2 className="sec-title">{t("Modern ")}<em>{t("arsenal")}</em></h2>
+              <h2 className="sec-title">{t("Our ")}<em>{t("tools")}</em></h2>
             </div>
           </div>
           <div className="stack">
@@ -430,7 +403,6 @@ export default function Home() {
                   { k: "Runtime", v: "Linux, Android, Edge" },
                   { k: "Frameworks", v: "Next.js, React, FastAPI" },
                   { k: "Databases", v: "PostgreSQL, Redis, SQLite" },
-                  { k: "Status", v: "● All systems nominal" },
                 ].map((m) => (
                   <div key={m.k} className="stack-meta-row">
                     <span className="stack-meta-k">{t(m.k)}</span>
@@ -440,9 +412,8 @@ export default function Home() {
               </div>
             </div>
             <motion.div className="stack-grid" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-              {techStack.map((tech, i) => (
+              {techStack.map((tech) => (
                 <div key={tech.name} className="stack-cell">
-                  <span className="stack-cell-idx">{String(i + 1).padStart(2, "0")}</span>
                   <span className="stack-cell-name">{tech.name}</span>
                   <span className="stack-cell-cat">{t(tech.cat)}</span>
                 </div>
@@ -456,7 +427,6 @@ export default function Home() {
       <section id="faq" className="section">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§05</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("Questions")}</span><div className="rule" /></div>
               <h2 className="sec-title">{t("Frequently ")}<em>{t("asked")}</em></h2>
@@ -466,7 +436,6 @@ export default function Home() {
             {faqs.map((f, i) => (
               <div key={f.q} className="faq-item">
                 <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
-                  <span className="faq-q-num">0{i + 1}</span>
                   <span>{t(f.q)}</span>
                   <span className={`faq-icon${openFaq === i ? " open" : ""}`}>+</span>
                 </button>
@@ -487,7 +456,6 @@ export default function Home() {
       <section id="developers" className="section alt">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§06</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("The Team")}</span><div className="rule" /></div>
               <h2 className="sec-title">{t("Meet the ")}<em>{t("engineers")}</em></h2>
@@ -495,18 +463,18 @@ export default function Home() {
           </div>
           <div className="team-grid">
             {developers.map((d, i) => (
-              <motion.div key={d.name} className="dev" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}>
-                <div className="dev-idx">{d.index}</div>
+              <motion.div key={d.name} className="dev" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}>
+                <span className="dev-bg-num">0{i + 1}</span>
                 <div className="dev-top">
                   <span className="dev-tag">{t(d.tag)}</span>
                   <span className="dev-avail"><span className="status-live" />{t("Available")}</span>
                 </div>
-                <Image src={d.image} alt={`Photo of ${d.name}`} width={76} height={76} className="dev-avatar" loading="lazy" />
+                <Image src={d.image} alt={`Photo of ${d.name}`} width={72} height={72} className="dev-avatar" loading="lazy" />
                 <div className="dev-name">{d.name}</div>
                 <div className="dev-role">{t(d.role)}</div>
                 <div className="dev-links">
-                  <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link">{t("✈ Telegram")}</a>
-                  <a href={d.github} target="_blank" rel="noopener noreferrer" className="dev-link">⌥ GitHub</a>
+                  <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link">{t("Telegram")}</a>
+                  <a href={d.github} target="_blank" rel="noopener noreferrer" className="dev-link">GitHub</a>
                 </div>
               </motion.div>
             ))}
@@ -529,7 +497,6 @@ export default function Home() {
       <section id="contact" className="section">
         <div className="wrap">
           <div className="sec-head">
-            <div className="sec-index">§07</div>
             <div className="sec-head-r">
               <div className="sec-head-top"><span className="kicker">{t("Get in Touch")}</span><div className="rule" /></div>
               <h2 className="sec-title">{t("Let's build something ")}<em>{t("great")}</em></h2>
@@ -560,13 +527,12 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <motion.div className="contact-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
-              <div><span className="c-comment">{t("# Project inquiry template")}</span></div>
+            <motion.div className="contact-card" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
+              <div><span className="c-comment">{t("# Ready to start?")}</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">email</span>: <span className="c-val">&quot;megatrondevs@gmail.com&quot;</span></div>
               <div><span className="c-key">phone</span>: <span className="c-val">&quot;+20 102 338 2444&quot;</span></div>
               <div><span className="c-key">subject</span>: <span className="c-val">&quot;New Project Inquiry&quot;</span></div>
-              <div><span className="c-key">priority</span>: <span className="c-val">&quot;high&quot;</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">status</span>: <span className="c-val">&quot;awaiting_your_message&quot;</span><span className="c-cursor">_</span></div>
             </motion.div>
@@ -581,7 +547,7 @@ export default function Home() {
         <a href="/history" className="btn-solid">{t("Read Our Story →")}</a>
       </div>
 
-      {/* ═══ COLOPHON / FOOTER ═══ */}
+      {/* ═══ FOOTER ═══ */}
       <footer className="colophon">
         <div className="colophon-top">
           <div className="colophon-word">MEGA<b>·</b>DEVS</div>
@@ -598,19 +564,17 @@ export default function Home() {
               <a href="mailto:megatrondevs@gmail.com">{t("Email")}</a>
               <a href="https://github.com/AdhamBinAhmed" target="_blank" rel="noopener noreferrer">GitHub</a>
               <a href="/palestine">{t("🇵🇸 Palestine")}</a>
-              <a href="#">{t("↑ Back to Top")}</a>
             </div>
             <div className="colophon-col">
-              <h4>{t("Studio Time")}</h4>
-              <span>{t("Cairo · Egypt").split(" · ")[0]} · {currentTime}</span>
+              <h4>{t("Studio")}</h4>
+              <span>{t("Cairo")} · {currentTime}</span>
               <span>{t("UTC+3")}</span>
               <span>{t("● Open to Work")}</span>
             </div>
           </div>
         </div>
         <div className="colophon-bottom">
-          <span className="colophon-copy">© {new Date().getFullYear()} {t("MEGA Devs · Cairo, Egypt · All rights reserved")}</span>
-          <span className="colophon-copy">{t("Designed & built in-house — press / for commands")}</span>
+          <span className="colophon-copy">© {new Date().getFullYear()} {t("MEGA Devs · Cairo, Egypt")}</span>
         </div>
       </footer>
     </div>

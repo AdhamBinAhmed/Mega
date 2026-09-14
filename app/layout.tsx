@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk, JetBrains_Mono, Sora, Geist, Geist_Mono, Cairo } from "next/font/google";
+import { Outfit, Space_Grotesk, JetBrains_Mono, Sora, Geist, Geist_Mono, Cairo, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
@@ -43,6 +43,14 @@ const cairo = Cairo({
   variable: "--font-arabic",
 });
 
+// Accent serif for personality — breaks monotony of all-grotesk typography.
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.megadevs.site"),
   title: "MEGA Devs — Engineering Studio",
@@ -81,7 +89,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable} ${geistSans.variable} ${geistMono.variable} ${cairo.variable}`}>
+      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable} ${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${dmSerif.variable}`}>
         <LanguageProvider>
           <LoadingScreen />
           <Navbar />

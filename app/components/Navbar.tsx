@@ -133,7 +133,7 @@ export default function Navbar() {
           </nav>
           <div className="mnav-actions">
             <button onClick={() => setCmdOpen(true)} className="mnav-index cmd-trigger" aria-label="Open section index">
-              {t("Index")} <span className="mnav-key">/</span>
+              <span className="mnav-key">/ {t("Index")}</span>
             </button>
             <motion.button
               onClick={toggleLang}
@@ -179,7 +179,7 @@ export default function Navbar() {
                 {sections.map((n, i) => (
                   <motion.a key={n.l} href={n.h} className="mnav-drawer-link" onClick={() => setMenuOpen(false)}
                     initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 + 0.08 }}>
-                    <span>{String(i + 1).padStart(2, "0")}</span>{t(n.l)}
+                    <span>{i + 1}</span>{t(n.l)}
                   </motion.a>
                 ))}
               </div>

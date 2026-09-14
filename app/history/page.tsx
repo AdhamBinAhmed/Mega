@@ -94,15 +94,15 @@ export default function HistoryPage() {
       <style>{`
         /* ── TOKENS (mirror main site exactly) ── */
         .history-root {
-          --bg:       #050507;
-          --surface:  #0d0d10;
-          --surface2: #131318;
+          --bg:       #0c0b0f;
+          --surface:  #111015;
+          --surface2: #18171e;
           --border:   rgba(255,255,255,0.06);
           --border2:  rgba(255,255,255,0.12);
-          --text:     #f0f0f2;
-          --muted:    #6b6b7a;
+          --text:     #f4f2ed;
+          --muted:    #6a6862;
           --green:    #22c55e;
-          --accent:   #e84545;
+          --accent:   #ef4444;
           --accent2:  #ff7043;
           --accent3:  #ffd166;
           --ghost:    rgba(255,255,255,0.03);
@@ -110,17 +110,18 @@ export default function HistoryPage() {
           --font-display: var(--font-outfit,'Outfit'),sans-serif;
           --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
           --font-logo:    var(--font-logo,'Sora'),sans-serif;
+          --font-accent:  var(--font-serif,'DM Serif Display'),serif;
         }
         [data-theme="light"] .history-root {
-          --bg:       #faf8f5;
-          --surface:  #ffffff;
-          --surface2: #f0ede8;
+          --bg:       #f6f3ec;
+          --surface:  #faf8f2;
+          --surface2: #ece7db;
           --border:   rgba(0,0,0,0.07);
           --border2:  rgba(0,0,0,0.14);
-          --text:     #111111;
+          --text:     #111010;
           --muted:    #7a7570;
           --green:    #14532d;
-          --accent:   #c8392b;
+          --accent:   #d92b1f;
           --accent2:  #e8571a;
           --accent3:  #c08b20;
           --ghost:    rgba(0,0,0,0.03);
@@ -155,13 +156,7 @@ export default function HistoryPage() {
             radial-gradient(ellipse 40% 40% at 50% 105%, rgba(192,139,32,0.05) 0%, transparent 70%);
         }
         .h-grid-overlay {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4;
-          background-image:
-            linear-gradient(var(--border) 1px, transparent 1px),
-            linear-gradient(90deg, var(--border) 1px, transparent 1px);
-          background-size: 64px 64px;
-          mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 80%);
-          -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 80%);
+          display: none; /* removed: grid overlay is an AI template cliché */
         }
 
         /* ── SCROLL PROGRESS ── */
@@ -171,17 +166,8 @@ export default function HistoryPage() {
           pointer-events: none; transform-origin: left;
         }
 
-        /* ── NAV ── */
-        .h-nav {
-          position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-          padding: 0 56px; height: 64px;
-          display: flex; align-items: center; justify-content: space-between;
-          border-bottom: 1px solid var(--border);
-          background: rgba(5,5,7,0.7);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          transition: background 0.3s;
-        }
+        /* NAV — uses global navbar now */
+        .h-nav { display: none !important; }
         [data-theme="light"] .history-root .h-nav { background: rgba(250,248,245,0.72); }
         .h-logo {
           font-family: var(--font-logo); font-size: 1.15rem; font-weight: 800;
@@ -243,12 +229,8 @@ export default function HistoryPage() {
           font-size: clamp(3rem, 9vw, 7rem); font-weight: 800;
           letter-spacing: -0.045em; line-height: 0.92; margin-bottom: 32px;
         }
-        .h-headline em { font-style: normal; position: relative; display: inline-block; }
-        .h-headline em::after {
-          content: ''; position: absolute; left: 0; right: 0; bottom: 0.06em; height: 0.14em;
-          background: linear-gradient(90deg, var(--accent), var(--accent2));
-          border-radius: 2px; z-index: -1; opacity: 0.9;
-        }
+        .h-headline em{font-family:var(--font-accent);font-style:italic;font-weight:400;color:var(--accent);}
+        .h-headline em::after{display:none;}
         .h-subhead {
           font-size: 1.15rem; color: var(--muted); line-height: 1.7;
           max-width: 560px; margin-bottom: 56px;
@@ -386,7 +368,7 @@ export default function HistoryPage() {
           transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
           box-shadow: 0 8px 30px rgba(232,69,69,0.3);
         }
-        .h-cta-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(232,69,69,0.4); }
+        .h-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(239,68,68,0.3); }
 
         /* ── FOOTER ── */
         .h-footer {
