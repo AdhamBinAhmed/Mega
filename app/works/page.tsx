@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 
@@ -128,6 +128,24 @@ const works: Work[] = [
     ],
     window: "browser",
   },
+  {
+    num: "07",
+    title: "DevFolio",
+    category: "Developer Tool",
+    year: "2025",
+    desc: "A developer portfolio generator that turns any GitHub account into a polished, shareable CV instantly. It detects skills from repo topics and language mix, aggregates real byte-count language analytics, ranks projects by recency-weighted activity, and scores repo health — no manual data entry required.",
+    tags: ["Next.js", "GitHub API", "TypeScript", "Vercel"],
+    status: "Live",
+    link: "https://gitcv.megadevs.site/",
+    accent: "#38bdf8",
+    accent2: "#818cf8",
+    metrics: [
+      { k: "Auto", v: "Skill Detection" },
+      { k: "1yr", v: "Contribution Graph" },
+      { k: "PDF", v: "Exportable CV" },
+    ],
+    window: "browser",
+  },
 ];
 
 const stats = [
@@ -137,7 +155,13 @@ const stats = [
   { k: "847+", v: "Days Max Uptime" },
 ];
 
-function WindowVisual({ work }: { work: Work }) {
+function shotUrl(link: string, v: number) {
+  // Live screenshot service — cache-busted by `v` so new deploys show up.
+  return `https://image.thum.io/get/width/1000/crop/1400/noanimate/maxAge/1/${link}?v=${v}`;
+}
+
+function WindowVisual({ work, shotV }: { work: Work; shotV: number }) {
+  const hasShot = work.status === "Live" && work.link !== "#";
   return (
     <div className="w-visual" style={{ ["--wa" as string]: work.accent, ["--wa2" as string]: work.accent2 }}>
       <div className="w-visual-glow" />
@@ -146,10 +170,20 @@ function WindowVisual({ work }: { work: Work }) {
           <span className="w-dot" style={{ background: "#ff5f57" }} />
           <span className="w-dot" style={{ background: "#febc2e" }} />
           <span className="w-dot" style={{ background: "#28c840" }} />
-          <span className="w-window-label">{work.title.toLowerCase().replace(/\s+/g, "")}</span>
+          <span className="w-window-label">
+            {hasShot ? work.link.replace(/^https?:\/\//, "").replace(/\/$/, "") : work.title.toLowerCase().replace(/\s+/g, "")}
+          </span>
         </div>
         <div className={`w-window-body wb-${work.window}`}>
-          {work.window === "terminal" && (
+          {hasShot && (
+            <img
+              className="w-shot"
+              src={shotUrl(work.link, shotV)}
+              alt={`Live preview of ${work.title}`}
+              loading="lazy"
+            />
+          )}
+          {!hasShot && work.window === "terminal" && (
             <div className="wb-term">
               <p><span className="wb-prompt">$</span> sentinel --scan --live</p>
               <p className="wb-dim">initializing model · 12.4M params</p>
@@ -162,7 +196,7 @@ function WindowVisual({ work }: { work: Work }) {
               </div>
             </div>
           )}
-          {work.window === "browser" && (
+          {!hasShot && work.window === "browser" && (
             <div className="wb-browser">
               <div className="wb-nav">
                 <span className="wb-pill" />
@@ -180,7 +214,7 @@ function WindowVisual({ work }: { work: Work }) {
               </div>
             </div>
           )}
-          {work.window === "mobile" && (
+          {!hasShot && work.window === "mobile" && (
             <div className="wb-mobile">
               <div className="wb-phone">
                 <span className="wb-notch" />
@@ -200,7 +234,7 @@ function WindowVisual({ work }: { work: Work }) {
               </div>
             </div>
           )}
-          {work.window === "dashboard" && (
+          {!hasShot && work.window === "dashboard" && (
             <div className="wb-dash">
               <div className="wb-metric-row">
                 <span className="wb-metric" />
@@ -238,6 +272,13 @@ export default function WorksPage() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
   const rootRef = useRef<HTMLDivElement>(null);
+
+  // Live screenshots — refresh periodically so any new deploy is picked up.
+  const [shotV, setShotV] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setShotV((v) => v + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div className="works-root" ref={rootRef}>
@@ -366,6 +407,12 @@ export default function WorksPage() {
         .w-dot{width:9px;height:9px;border-radius:50%;}
         .w-window-label{font-family:var(--font-mono);font-size:.52rem;color:var(--muted);margin-left:8px;letter-spacing:.04em;}
         .w-window-body{padding:16px;height:240px;overflow:hidden;position:relative;}
+
+        /* live screenshot — full-bleed, scrolls-in from the top of the page */
+        .w-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;
+          display:block;background:var(--surface2);
+          animation:shotIn .5s var(--ease-out);}
+        @keyframes shotIn{from{opacity:0;}to{opacity:1;}}
 
         /* terminal */
         .wb-term{font-family:var(--font-mono);font-size:.64rem;line-height:1.9;color:var(--muted);}
@@ -500,7 +547,7 @@ export default function WorksPage() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ type: "spring", damping: 26, stiffness: 120 }}
               >
-                <WindowVisual work={w} />
+                <WindowVisual work={w} shotV={shotV} />
                 <div className="w-info">
                   <div className="w-info-top">
                     <span className="w-num">{w.num}</span>
