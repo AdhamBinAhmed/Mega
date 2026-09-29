@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 
@@ -17,6 +17,10 @@ type Work = {
   accent2: string;
   metrics: { k: string; v: string }[];
   window: "browser" | "terminal" | "mobile" | "dashboard";
+  // Optional static screenshot served from /public. Present only for sites that
+  // are live, public, and render without a stuck loader; the rest fall back to
+  // the animated window below.
+  shot?: string;
 };
 
 const works: Work[] = [
@@ -46,7 +50,8 @@ const works: Work[] = [
     desc: "A full-stack e-commerce platform featuring real-time inventory management, bilingual Arabic and English support, integrated payment processing, and a purpose-built administrative dashboard.",
     tags: ["Next.js", "PostgreSQL", "Redis", "Stripe"],
     status: "Live",
-    link: "https://kiradecoration.vercel.app/",
+    link: "https://kira.megadevs.site",
+    shot: "/works/kira-store-v2.png",
     accent: "#e84545",
     accent2: "#ff7043",
     metrics: [
@@ -137,6 +142,7 @@ const works: Work[] = [
     tags: ["Next.js", "GitHub API", "TypeScript", "Vercel"],
     status: "Live",
     link: "https://gitcv.megadevs.site/",
+    shot: "/works/devfolio-v2.png",
     accent: "#38bdf8",
     accent2: "#818cf8",
     metrics: [
@@ -155,13 +161,12 @@ const stats = [
   { k: "847+", v: "Days Max Uptime" },
 ];
 
-function shotUrl(link: string, v: number) {
-  // Live screenshot service — cache-busted by `v` so new deploys show up.
-  return `https://image.thum.io/get/width/1000/crop/1400/noanimate/maxAge/1/${link}?v=${v}`;
-}
-
-function WindowVisual({ work, shotV }: { work: Work; shotV: number }) {
-  const hasShot = work.status === "Live" && work.link !== "#";
+function WindowVisual({ work }: { work: Work }) {
+  const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  // Use a real screenshot only when we have a static image AND it actually
+  // loaded; on any load error we fall through to the animated placeholder.
+  const hasShot = !!work.shot && !failed;
   return (
     <div className="w-visual" style={{ ["--wa" as string]: work.accent, ["--wa2" as string]: work.accent2 }}>
       <div className="w-visual-glow" />
@@ -178,9 +183,12 @@ function WindowVisual({ work, shotV }: { work: Work; shotV: number }) {
           {hasShot && (
             <img
               className="w-shot"
-              src={shotUrl(work.link, shotV)}
-              alt={`Live preview of ${work.title}`}
+              src={work.shot}
+              alt={`Preview of ${work.title}`}
               loading="lazy"
+              style={{ opacity: loaded ? 1 : 0 }}
+              onLoad={() => setLoaded(true)}
+              onError={() => setFailed(true)}
             />
           )}
           {!hasShot && work.window === "terminal" && (
@@ -272,13 +280,6 @@ export default function WorksPage() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
   const rootRef = useRef<HTMLDivElement>(null);
-
-  // Live screenshots — refresh periodically so any new deploy is picked up.
-  const [shotV, setShotV] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setShotV((v) => v + 1), 30000);
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <div className="works-root" ref={rootRef}>
@@ -408,11 +409,16 @@ export default function WorksPage() {
         .w-window-label{font-family:var(--font-mono);font-size:.52rem;color:var(--muted);margin-left:8px;letter-spacing:.04em;}
         .w-window-body{padding:16px;height:240px;overflow:hidden;position:relative;}
 
-        /* live screenshot — full-bleed, scrolls-in from the top of the page */
+        /* live screenshot — full-bleed, fades in once the image has loaded */
         .w-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;
-          display:block;background:var(--surface2);
-          animation:shotIn .5s var(--ease-out);}
-        @keyframes shotIn{from{opacity:0;}to{opacity:1;}}
+          display:block;transition:opacity .5s var(--ease-out);z-index:1;}
+        /* shimmer placeholder shown behind the shot while it loads */
+        .w-window-body::after{content:'';position:absolute;inset:0;pointer-events:none;
+          background:linear-gradient(110deg,var(--surface2) 30%,var(--surface) 50%,var(--surface2) 70%);
+          background-size:200% 100%;animation:shotShimmer 1.4s var(--ease-out) infinite;}
+        .w-window-body:has(.w-shot)::after{z-index:0;}
+        .w-window-body:not(:has(.w-shot))::after{display:none;}
+        @keyframes shotShimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
 
         /* terminal */
         .wb-term{font-family:var(--font-mono);font-size:.64rem;line-height:1.9;color:var(--muted);}
@@ -547,7 +553,7 @@ export default function WorksPage() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ type: "spring", damping: 26, stiffness: 120 }}
               >
-                <WindowVisual work={w} shotV={shotV} />
+                <WindowVisual work={w} />
                 <div className="w-info">
                   <div className="w-info-top">
                     <span className="w-num">{w.num}</span>
