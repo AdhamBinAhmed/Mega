@@ -66,8 +66,6 @@ const AR: Record<string, string> = {
   "Systems Nominal": "الأنظمة تعمل بكفاءة",
   "UTC+3 · Available": "توقيت +3 · متاح",
 
-<<<<<<< HEAD
-=======
   // ── DevMega ad ──
   "DevMega": "DevMega",
   "Tools": "الأدوات",
@@ -87,7 +85,6 @@ const AR: Record<string, string> = {
   "Free Tools": "أدوات مجانية",
   "Client Latency": "زمن الاستجابة",
 
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
   // ── Stats ──
   "Max Uptime": "أقصى مدة تشغيل",
   "Live Products": "منتجات مباشرة",
