@@ -66,6 +66,28 @@ const AR: Record<string, string> = {
   "Systems Nominal": "الأنظمة تعمل بكفاءة",
   "UTC+3 · Available": "توقيت +3 · متاح",
 
+<<<<<<< HEAD
+=======
+  // ── DevMega ad ──
+  "DevMega": "DevMega",
+  "Tools": "الأدوات",
+  "DevMega developer tools": "أدوات DevMega للمطوّرين",
+  "Now Live": "متاح الآن",
+  "Free Forever": "مجاني للأبد",
+  "DevMega — ": "DevMega — ",
+  "8 free tools": "8 أدوات مجانية",
+  " for developers": " للمطوّرين",
+  "A privacy-first toolkit that stays in your browser: repo analysis, error debugging, a real regex IDE, API workspace, and more. Fast, local, and completely free.":
+    "مجموعة أدوات تحترم الخصوصية وتعمل داخل متصفّحك: تحليل المستودعات، تصحيح الأخطاء، بيئة تعبيرات نمطية حقيقية، مساحة عمل للـ API، والمزيد. سريعة، محلية، ومجانية بالكامل.",
+  "Launch the toolkit →": "افتح الأدوات →",
+  "Client latency": "زمن الاستجابة",
+  "Developer Tools": "أدوات المطوّرين",
+  "A curated suite of eight privacy-first developer utilities — live GitHub analysis, error debugging, a real regex IDE, API workspace, secret scanning, and more. Client-side, blazing fast, and free forever.":
+    "مجموعة مختارة من ثماني أدوات للمطوّرين تحترم الخصوصية — تحليل GitHub مباشر، تصحيح الأخطاء، بيئة تعبيرات نمطية حقيقية، مساحة عمل للـ API، وفحص الأسرار، والمزيد. تعمل محلياً، سريعة جداً، ومجانية للأبد.",
+  "Free Tools": "أدوات مجانية",
+  "Client Latency": "زمن الاستجابة",
+
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
   // ── Stats ──
   "Max Uptime": "أقصى مدة تشغيل",
   "Live Products": "منتجات مباشرة",

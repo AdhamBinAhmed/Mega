@@ -10,6 +10,10 @@ import "./navbar.css";
 const sections = [
   { l: "Services", h: "/#services" },
   { l: "Process", h: "/#process" },
+<<<<<<< HEAD
+=======
+  { l: "DevMega", h: "https://dev.megadevs.site" },
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
   { l: "Works", h: "/works" },
   { l: "Our Story", h: "/history" },
   { l: "Stack", h: "/#stack" },
@@ -21,6 +25,10 @@ const sections = [
 
 // Only the essentials sit on the desktop bar.
 const essentials = [
+<<<<<<< HEAD
+=======
+  { l: "DevMega", h: "https://dev.megadevs.site" },
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
   { l: "Works", h: "/works" },
   { l: "Our Story", h: "/history" },
   { l: "Contact", h: "/#contact" },
@@ -127,9 +135,26 @@ export default function Navbar() {
             <span className="mnav-dot" />
           </a>
           <nav className="mnav-links">
+<<<<<<< HEAD
             {essentials.map((n) => (
               <a key={n.l} href={n.h} className={`mnav-link${pathname === n.h ? " active" : ""}`}>{t(n.l)}</a>
             ))}
+=======
+            {essentials.map((n) => {
+              const ext = n.h.startsWith("http");
+              return (
+                <a
+                  key={n.l}
+                  href={n.h}
+                  className={`mnav-link${pathname === n.h ? " active" : ""}`}
+                  target={ext ? "_blank" : undefined}
+                  rel={ext ? "noopener noreferrer" : undefined}
+                >
+                  {t(n.l)}
+                </a>
+              );
+            })}
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
           </nav>
           <div className="mnav-actions">
             <button onClick={() => setCmdOpen(true)} className="mnav-index cmd-trigger" aria-label="Open section index">
@@ -176,12 +201,33 @@ export default function Navbar() {
                 <button className="mnav-burger open" onClick={() => setMenuOpen(false)} aria-label="Close menu"><span /><span /><span /></button>
               </div>
               <div className="mnav-drawer-list">
+<<<<<<< HEAD
                 {sections.map((n, i) => (
                   <motion.a key={n.l} href={n.h} className="mnav-drawer-link" onClick={() => setMenuOpen(false)}
                     initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 + 0.08 }}>
                     <span>{i + 1}</span>{t(n.l)}
                   </motion.a>
                 ))}
+=======
+                {sections.map((n, i) => {
+                  const ext = n.h.startsWith("http");
+                  return (
+                    <motion.a
+                      key={n.l}
+                      href={n.h}
+                      className="mnav-drawer-link"
+                      onClick={() => setMenuOpen(false)}
+                      target={ext ? "_blank" : undefined}
+                      rel={ext ? "noopener noreferrer" : undefined}
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.04 + 0.08 }}
+                    >
+                      <span>{i + 1}</span>{t(n.l)}
+                    </motion.a>
+                  );
+                })}
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
               </div>
               <div className="mnav-drawer-foot">
                 <a href="/#contact" className="mnav-cta" onClick={() => setMenuOpen(false)}>{t("Start a Project →")}</a>
@@ -202,7 +248,16 @@ export default function Navbar() {
                   onKeyDown={(e) => {
                     if (e.key === "Escape") setCmdOpen(false);
                     if (e.key === "Enter") {
+<<<<<<< HEAD
                       if (secMatches[0]) { window.location.href = secMatches[0].h; setCmdOpen(false); setCmdVal(""); return; }
+=======
+                      if (secMatches[0]) {
+                        const href = secMatches[0].h;
+                        if (href.startsWith("http")) window.open(href, "_blank", "noopener,noreferrer");
+                        else window.location.href = href;
+                        setCmdOpen(false); setCmdVal(""); return;
+                      }
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
                       if (actMatches[0]) { actMatches[0].run(); setCmdOpen(false); setCmdVal(""); }
                     }
                   }}
@@ -213,11 +268,29 @@ export default function Navbar() {
                 {secMatches.length > 0 && (
                   <>
                     <div className="mnav-cmd-label">{t("Sections")}</div>
+<<<<<<< HEAD
                     {secMatches.map((n) => (
                       <a key={n.l} href={n.h} onClick={() => setCmdOpen(false)} className="mnav-cmd-item">
                         <span className="mnav-cmd-ic">&gt;</span><span>{t(n.l)}</span>
                       </a>
                     ))}
+=======
+                    {secMatches.map((n) => {
+                      const ext = n.h.startsWith("http");
+                      return (
+                        <a
+                          key={n.l}
+                          href={n.h}
+                          onClick={() => setCmdOpen(false)}
+                          className="mnav-cmd-item"
+                          target={ext ? "_blank" : undefined}
+                          rel={ext ? "noopener noreferrer" : undefined}
+                        >
+                          <span className="mnav-cmd-ic">&gt;</span><span>{t(n.l)}</span>
+                        </a>
+                      );
+                    })}
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
                   </>
                 )}
                 {actMatches.length > 0 && (

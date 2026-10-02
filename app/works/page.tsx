@@ -26,6 +26,27 @@ type Work = {
 const works: Work[] = [
   {
     num: "01",
+<<<<<<< HEAD
+=======
+    title: "DevMega",
+    category: "Developer Tools",
+    year: "2026",
+    desc: "A curated suite of eight privacy-first developer utilities — live GitHub analysis, error debugging, a real regex IDE, API workspace, secret scanning, and more. Client-side, blazing fast, and free forever.",
+    tags: ["Next.js", "TypeScript", "Privacy-first", "Client-side"],
+    status: "Live",
+    link: "https://dev.megadevs.site",
+    accent: "#38bdf8",
+    accent2: "#818cf8",
+    metrics: [
+      { k: "8", v: "Free Tools" },
+      { k: "0ms", v: "Client Latency" },
+      { k: "100%", v: "Private" },
+    ],
+    window: "dashboard",
+  },
+  {
+    num: "02",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "MEGA ROM",
     category: "Android Platform",
     year: "2023",
@@ -43,7 +64,11 @@ const works: Work[] = [
     window: "mobile",
   },
   {
+<<<<<<< HEAD
     num: "02",
+=======
+    num: "03",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Kira Store",
     category: "Web Application",
     year: "2024",
@@ -62,7 +87,11 @@ const works: Work[] = [
     window: "browser",
   },
   {
+<<<<<<< HEAD
     num: "03",
+=======
+    num: "04",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Asseli",
     category: "Brand & E-Commerce",
     year: "2025",
@@ -80,7 +109,11 @@ const works: Work[] = [
     window: "browser",
   },
   {
+<<<<<<< HEAD
     num: "04",
+=======
+    num: "05",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "SentinelAI",
     category: "AI System",
     year: "2024",
@@ -98,7 +131,11 @@ const works: Work[] = [
     window: "terminal",
   },
   {
+<<<<<<< HEAD
     num: "05",
+=======
+    num: "06",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "DevPanel",
     category: "Infrastructure",
     year: "2024",
@@ -116,7 +153,11 @@ const works: Work[] = [
     window: "dashboard",
   },
   {
+<<<<<<< HEAD
     num: "06",
+=======
+    num: "07",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Kira Decoration",
     category: "Brand & Portfolio",
     year: "2024",
@@ -134,7 +175,11 @@ const works: Work[] = [
     window: "browser",
   },
   {
+<<<<<<< HEAD
     num: "07",
+=======
+    num: "08",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "DevFolio",
     category: "Developer Tool",
     year: "2025",

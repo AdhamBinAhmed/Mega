@@ -4,6 +4,10 @@ import Image from "next/image";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import MagneticButton from "./components/MagneticButton";
+<<<<<<< HEAD
+=======
+import DevMegaAd from "./components/DevMegaAd";
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
 import { useLang } from "./lib/i18n";
 import "./page.css";
 
@@ -66,6 +70,18 @@ const services = [
 const works = [
   {
     num: "01",
+<<<<<<< HEAD
+=======
+    title: "DevMega",
+    category: "Developer Tools",
+    year: "2026",
+    tags: ["Next.js", "Privacy-first", "Client-side", "Free"],
+    status: "Live",
+    link: "https://dev.megadevs.site",
+  },
+  {
+    num: "02",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "MEGA ROM",
     category: "Android ROM",
     year: "2023",
@@ -74,7 +90,11 @@ const works = [
     link: "https://roms.megadevs.site/",
   },
   {
+<<<<<<< HEAD
     num: "02",
+=======
+    num: "03",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Asseli",
     category: "Brand & E-Commerce",
     year: "2025",
@@ -83,7 +103,11 @@ const works = [
     link: "https://asseli.vercel.app",
   },
   {
+<<<<<<< HEAD
     num: "03",
+=======
+    num: "04",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "SentinelAI",
     category: "AI System",
     year: "2024",
@@ -92,7 +116,11 @@ const works = [
     link: "#works",
   },
   {
+<<<<<<< HEAD
     num: "04",
+=======
+    num: "05",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "DevPanel",
     category: "Backend",
     year: "2024",
@@ -142,6 +170,10 @@ const faqs = [
 const nav = [
   { l: "Services", h: "#services" },
   { l: "Process", h: "#process" },
+<<<<<<< HEAD
+=======
+  { l: "Tools", h: "#tools" },
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
   { l: "Works", h: "/works" },
   { l: "Our Story", h: "/history" },
   { l: "Stack", h: "#stack" },
@@ -223,6 +255,10 @@ export default function Home() {
   const sectionLabels: Record<string, string> = {
     services: "Services",
     process: "Process",
+<<<<<<< HEAD
+=======
+    tools: "Tools",
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     works: "Works",
     stack: "Stack",
     faq: "FAQ",
@@ -303,6 +339,11 @@ export default function Home() {
         ))}
       </div>
 
+<<<<<<< HEAD
+=======
+      <DevMegaAd />
+
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
       {/* ═══ SERVICES ═══ */}
       <section id="services" className="section">
         <div className="wrap">
@@ -555,6 +596,10 @@ export default function Home() {
             <div className="colophon-col">
               <h4>{t("Navigate")}</h4>
               <a href="#services">{t("Services")}</a>
+<<<<<<< HEAD
+=======
+              <a href="https://dev.megadevs.site" target="_blank" rel="noopener noreferrer">{t("DevMega")}</a>
+>>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
               <a href="#works">{t("Works")}</a>
               <a href="/history">{t("Our Story")}</a>
               <a href="#contact">{t("Contact")}</a>
