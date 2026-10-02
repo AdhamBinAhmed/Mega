@@ -26,8 +26,6 @@ type Work = {
 const works: Work[] = [
   {
     num: "01",
-<<<<<<< HEAD
-=======
     title: "DevMega",
     category: "Developer Tools",
     year: "2026",
@@ -46,7 +44,6 @@ const works: Work[] = [
   },
   {
     num: "02",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "MEGA ROM",
     category: "Android Platform",
     year: "2023",
@@ -64,11 +61,7 @@ const works: Work[] = [
     window: "mobile",
   },
   {
-<<<<<<< HEAD
-    num: "02",
-=======
     num: "03",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Kira Store",
     category: "Web Application",
     year: "2024",
@@ -87,11 +80,7 @@ const works: Work[] = [
     window: "browser",
   },
   {
-<<<<<<< HEAD
-    num: "03",
-=======
     num: "04",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Asseli",
     category: "Brand & E-Commerce",
     year: "2025",
@@ -109,11 +98,7 @@ const works: Work[] = [
     window: "browser",
   },
   {
-<<<<<<< HEAD
-    num: "04",
-=======
     num: "05",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "SentinelAI",
     category: "AI System",
     year: "2024",
@@ -131,11 +116,7 @@ const works: Work[] = [
     window: "terminal",
   },
   {
-<<<<<<< HEAD
-    num: "05",
-=======
     num: "06",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "DevPanel",
     category: "Infrastructure",
     year: "2024",
@@ -153,11 +134,7 @@ const works: Work[] = [
     window: "dashboard",
   },
   {
-<<<<<<< HEAD
-    num: "06",
-=======
     num: "07",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "Kira Decoration",
     category: "Brand & Portfolio",
     year: "2024",
@@ -175,11 +152,7 @@ const works: Work[] = [
     window: "browser",
   },
   {
-<<<<<<< HEAD
-    num: "07",
-=======
     num: "08",
->>>>>>> 00202ba (this-website-limit-is-down-contact-owner-Megadevs.site)
     title: "DevFolio",
     category: "Developer Tool",
     year: "2025",
