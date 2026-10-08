@@ -1,14 +1,17 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import Image from "next/image";
 import PremiumProfileCard from "../components/PremiumProfileCard";
 import ProProfile from "../components/ProProfile";
+import { safeBgUrl } from "../lib/sanitizeUrl";
 import "./subdomain-bg.css";
 
-export const revalidate = 60; // optionally revalidate every 60 seconds
-
 export default async function SubdomainProfilePage({ params }: { params: { subdomain: string } }) {
+  // Firestore's client SDK is not a Next fetch cache participant. Wait for a
+  // real request so builds do not query Firebase with build-time credentials.
+  await connection();
   const { subdomain } = await params;
   const docRef = doc(db, "profiles", subdomain);
   const docSnap = await getDoc(docRef);
@@ -26,6 +29,7 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
 
   const theme = "dark"; // Defaulting profiles to dark theme for consistency
   const bgStyle = profile.backgroundStyle || "bg-grid";
+  const customBg = safeBgUrl(profile.customBgUrl);
 
   return (
     <div className="min-h-screen relative overflow-x-hidden pt-12 pb-24 px-4 sm:px-6" data-theme={theme}>
@@ -47,13 +51,13 @@ export default async function SubdomainProfilePage({ params }: { params: { subdo
       {bgStyle === "bg-nebula" && <div className="bg-nebula" />}
       {bgStyle === "bg-plasma" && <div className="bg-plasma" />}
       {bgStyle === "bg-circuit" && <div className="bg-circuit" />}
-      {bgStyle === "custom" && profile.customBgUrl && (
+      {bgStyle === "custom" && customBg && (
         <div style={{
           position: "absolute",
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          backgroundImage: `url(${profile.customBgUrl})`,
+          backgroundImage: `url(${customBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: "fixed",

@@ -1,0 +1,96 @@
+rules_version = '2';
+
+// Ownership- and quota-enforced rules for Mega (megadevs.site).
+//
+// Public pages are server-rendered from these docs with the *client* SDK and
+// no auth context, so reads must stay public. Writes are locked to the
+// authenticated owner AND are rate-limited to 5 saves per account per 24h.
+//
+// The 24h/5-write cap is enforced by pairing every content write with a
+// counter increment at rateLimits/{uid} IN THE SAME BATCH:
+//   * the counter's own rules only allow +1 per write and a window reset no
+//     sooner than every 24h (anchored to server time), so a counter can
+//     advance at most 5 times per 24h;
+//   * each profile/site write requires (via getAfter) that the counter was
+//     bumped in this same commit, so content writes inherit that cap.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function nowMs() {
+      return request.time.toMillis();
+    }
+
+    // A client-supplied epoch-ms timestamp must sit close to real server time
+    // (5 min tolerance for clock skew), so windows can't be faked.
+    function freshTs(v) {
+      return v is int && v >= nowMs() - 300000 && v <= nowMs() + 300000;
+    }
+
+    function isOwner() {
+      return request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    function claimsSelf() {
+      return request.auth != null
+        && request.resource.data.uid is string
+        && request.resource.data.uid == request.auth.uid;
+    }
+
+    // True only when rateLimits/{uid} was updated in THIS same commit (its
+    // updatedAt changed) and shows a valid, in-range counter.
+    function quotaBumpedThisWrite() {
+      let path = /databases/$(database)/documents/rateLimits/$(request.auth.uid);
+      let after = getAfter(path).data;
+      return after.uid == request.auth.uid
+        && after.count is int && after.count >= 1 && after.count <= 5
+        && freshTs(after.updatedAt)
+        && ( !exists(path) || after.updatedAt != get(path).data.updatedAt );
+    }
+
+    match /rateLimits/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow delete: if false;
+
+      // First write of a brand-new window.
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.count == 1
+        && freshTs(request.resource.data.windowStart)
+        && freshTs(request.resource.data.updatedAt);
+
+      allow update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && freshTs(request.resource.data.updatedAt)
+        && (
+          // +1 within the current, still-open window (cap at 5)
+          ( request.resource.data.windowStart == resource.data.windowStart
+            && resource.data.count is int && resource.data.count < 5
+            && request.resource.data.count == resource.data.count + 1 )
+          ||
+          // start a fresh window — only once 24h have really elapsed
+          ( resource.data.windowStart <= nowMs() - 86400000
+            && request.resource.data.count == 1
+            && freshTs(request.resource.data.windowStart) )
+        );
+    }
+
+    match /profiles/{subdomain} {
+      allow read: if true;
+      allow create: if claimsSelf() && quotaBumpedThisWrite();
+      allow update: if isOwner() && claimsSelf() && quotaBumpedThisWrite();
+      allow delete: if isOwner();
+    }
+
+    match /sites/{slug} {
+      allow read: if true;
+      allow create: if claimsSelf() && quotaBumpedThisWrite();
+      allow update: if isOwner() && claimsSelf() && quotaBumpedThisWrite();
+      allow delete: if isOwner();
+    }
+
+    // Everything else is denied by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

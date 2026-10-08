@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { CanvasElement } from "../lib/builderTypes";
+import { safeImageUrl, safeUrl } from "../lib/sanitizeUrl";
 import "./canvas-buttons.css";
 
 // Auto mobile layout: reflow absolutely-positioned elements into a clean vertical
@@ -148,7 +149,7 @@ export function ElementContent({ el, live }: { el: CanvasElement; live?: boolean
       if (live && p.href && p.href !== "https://") {
         return (
           <a
-            href={p.href}
+            href={safeUrl(p.href)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "block", width: "100%", height: "100%", textDecoration: "none" }}
@@ -160,11 +161,12 @@ export function ElementContent({ el, live }: { el: CanvasElement; live?: boolean
       return inner;
     }
 
-    case "image":
-      return p.src ? (
+    case "image": {
+      const imageSrc = safeImageUrl(p.src);
+      return imageSrc ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={p.src}
+          src={imageSrc}
           alt=""
           draggable={false}
           style={{
@@ -196,6 +198,7 @@ export function ElementContent({ el, live }: { el: CanvasElement; live?: boolean
           No image
         </div>
       );
+    }
 
     case "box":
     default:

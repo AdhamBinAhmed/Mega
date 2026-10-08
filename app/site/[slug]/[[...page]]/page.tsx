@@ -1,12 +1,12 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../lib/firebase";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import CanvasStage from "../../../components/CanvasStage";
 import { pagesFromDoc, type Page } from "../../../lib/builderTypes";
 import { googleFontsUrl } from "../../../lib/fonts";
+import { safeBgUrl } from "../../../lib/sanitizeUrl";
 import "../../../[subdomain]/subdomain-bg.css";
-
-export const revalidate = 30;
 
 // Public render of a user-built site. Handles multiple pages:
 //   /site/<slug>            -> home (first page)
@@ -16,12 +16,15 @@ export default async function SitePage({
 }: {
   params: { slug: string; page?: string[] };
 }) {
+  // See the profile route: defer Firestore access until a request arrives.
+  await connection();
   const { slug, page } = await params;
   const snap = await getDoc(doc(db, "sites", slug.toLowerCase()));
   if (!snap.exists()) notFound();
 
   const data = snap.data();
   const pages = pagesFromDoc(data);
+  if (page && page.length > 1) notFound();
   const seg = page?.[0] || "";
 
   const current: Page | undefined = seg
@@ -30,6 +33,7 @@ export default async function SitePage({
   if (!current) notFound();
 
   const bgStyle = current.bgStyle || "none";
+  const customBg = safeBgUrl(current.bgImageUrl);
 
   // Load only the fonts this page uses.
   const usedFonts = (current.elements || [])
@@ -55,14 +59,14 @@ export default async function SitePage({
       {/* Background layers */}
       {bgStyle !== "none" && bgStyle !== "custom" && <div className={bgStyle} />}
       {bgStyle === "bg-grid" && <div className="bg-glow" />}
-      {bgStyle === "custom" && current.bgImageUrl && (
+      {bgStyle === "custom" && customBg && (
         <div
           style={{
             position: "absolute",
             inset: 0,
             zIndex: 0,
             pointerEvents: "none",
-            backgroundImage: `url(${current.bgImageUrl})`,
+            backgroundImage: `url(${customBg})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

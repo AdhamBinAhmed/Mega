@@ -1,14 +1,13 @@
 [
   {
     "origin": [
-      "*"
+      "https://megadevs.site",
+      "https://www.megadevs.site",
+      "https://*.megadevs.site"
     ],
     "method": [
       "GET",
-      "HEAD",
-      "PUT",
-      "POST",
-      "DELETE"
+      "HEAD"
     ],
     "maxAgeSeconds": 3600
   }

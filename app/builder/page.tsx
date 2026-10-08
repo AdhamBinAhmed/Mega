@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,8 @@ import {
 import { FONTS, FONT_CATEGORIES, googleFontsUrl } from "../lib/fonts";
 import { ElementContent, buttonStyleFromProps, buttonClassName, MobileFlow } from "../components/CanvasElementView";
 import { BUTTON_PRESETS, BUTTON_PRESET_CATEGORIES } from "../lib/buttonPresets";
+import { cleanSlug, isReservedSlug } from "../lib/reserved";
+import { addQuotaWrite, newBatch } from "../lib/rateLimit";
 import "../[subdomain]/subdomain-bg.css";
 import "./builder.css";
 
@@ -39,7 +41,11 @@ const ADD_BUTTONS: { type: ElementType; label: string; ico: string }[] = [
   { type: "box", label: "Box / Shape", ico: "▢" },
 ];
 
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+
 async function uploadToCloudinary(file: File): Promise<string> {
+  if (!file.type.startsWith("image/")) throw new Error("Only image files can be uploaded.");
+  if (file.size > MAX_IMAGE_BYTES) throw new Error("Images must be 10 MB or smaller.");
   const data = new FormData();
   data.append("file", file);
   data.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "my_preset");
@@ -280,9 +286,17 @@ export default function BuilderPage() {
   };
 
   const save = async () => {
-    const clean = slug.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const clean = cleanSlug(slug);
     if (!clean) {
       showToast("Pick a site address (slug) first.", "err");
+      return;
+    }
+    if (!user) {
+      showToast("You must be signed in to save.", "err");
+      return;
+    }
+    if (!isExisting && isReservedSlug(clean)) {
+      showToast(`"${clean}" is a reserved name. Pick another.`, "err");
       return;
     }
     setSaving(true);
@@ -291,15 +305,29 @@ export default function BuilderPage() {
         const existing = await getDoc(doc(db, "sites", clean));
         if (existing.exists()) throw new Error(`"${clean}" is already taken.`);
       }
-      // Ensure the first page is always the home page (empty path).
-      const outPages = pages.map((pg, i) => (i === 0 ? { ...pg, path: "" } : pg));
-      await setDoc(doc(db, "sites", clean), {
-        uid: user!.uid,
+      // Ensure every public route is unique and has a normalized path.
+      const paths = new Set<string>();
+      const outPages = pages.map((pg, i) => {
+        if (i === 0) return { ...pg, path: "" };
+        const path = cleanSlug(pg.path);
+        if (!path) throw new Error(`Page "${pg.name || i + 1}" needs a URL segment.`);
+        if (paths.has(path)) throw new Error(`More than one page uses /${path}. Choose unique URL segments.`);
+        paths.add(path);
+        return { ...pg, path };
+      });
+
+      // Write the site and the rate-limit counter in one batch, so the
+      // per-account 5/24h quota is enforced atomically by the security rules.
+      const batch = newBatch();
+      await addQuotaWrite(batch, user.uid);
+      batch.set(doc(db, "sites", clean), {
+        uid: user.uid,
         slug: clean,
         title,
         pages: outPages,
         updatedAt: new Date().toISOString(),
       });
+      await batch.commit();
       setSlug(clean);
       setIsExisting(true);
       showToast("Saved & live ✓");
@@ -391,7 +419,7 @@ export default function BuilderPage() {
                   <span>/site/{slug || "…"}/</span>
                   <input
                     value={page.path}
-                    onChange={(e) => updatePage({ path: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
+                    onChange={(e) => updatePage({ path: cleanSlug(e.target.value) })}
                     placeholder="about"
                   />
                 </div>

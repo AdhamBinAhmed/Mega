@@ -3,6 +3,7 @@
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
+import { safeUrl } from "../lib/sanitizeUrl";
 
 interface Profile {
   name: string;
@@ -731,7 +732,7 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
                 <div className="ppc-av-inner">
                   {profile.photoUrl
                     ? <img src={profile.photoUrl} alt={profile.name} className="ppc-av-img" />
-                    : <div className="ppc-av-init">{profile.name.charAt(0)}</div>}
+                    : <div className="ppc-av-init">{profile.name?.charAt(0) || "?"}</div>}
                 </div>
               </motion.div>
 
@@ -844,7 +845,7 @@ export default function PremiumProfileCard({ profile, bgStyle }: { profile: Prof
 
 function Btn({ href, grad, icon, label, sub }: { href: string; grad: string; icon: React.ReactNode; label: string; sub: string }) {
   return (
-    <motion.a href={href} target="_blank" rel="noopener noreferrer" whileTap={{ scale: 0.97 }} className="ppc-btn">
+    <motion.a href={safeUrl(href)} target="_blank" rel="noopener noreferrer" whileTap={{ scale: 0.97 }} className="ppc-btn">
       <div className="ppc-btn-liquid" />
       <div className="ppc-icon" style={{ background: grad, position: "relative", zIndex: 2 }}>{icon}</div>
       <div style={{ flex: 1, textAlign: "left", position: "relative", zIndex: 2 }}>

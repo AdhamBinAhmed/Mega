@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
 import TiltCard from "./TiltCard";
 import type { LinkNode } from "./proData";
+import { safeUrl } from "../../lib/sanitizeUrl";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -75,14 +76,16 @@ export default function LinkCard({
     </motion.div>
   );
 
+  const href = safeUrl(node.href);
+
   return node.internal ? (
-    <Link href={node.href} className={wrapper}>
+    <Link href={href} className={wrapper}>
       {body}
     </Link>
   ) : (
     <a
-      href={node.href}
-      target={node.href.startsWith("http") ? "_blank" : undefined}
+      href={href}
+      target={href.startsWith("http") ? "_blank" : undefined}
       rel="noopener noreferrer"
       className={wrapper}
     >

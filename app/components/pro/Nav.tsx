@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { FiGithub } from "react-icons/fi";
 import type { Identity } from "./proData";
+import { safeUrl } from "../../lib/sanitizeUrl";
 
 function initials(name: string) {
   return (
@@ -41,7 +42,7 @@ export default function Nav({ identity, github }: { identity: Identity; github?:
           <>
             <span className="w-px h-5 bg-[var(--border)]" />
             <a
-              href={github}
+              href={safeUrl(github)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"

@@ -20,8 +20,12 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 // Initialize Auth
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
+import { getAuth, GoogleAuthProvider, type Auth } from "firebase/auth";
+
+// Public pages import Firestore from this module during server rendering. Auth
+// is browser-only; constructing it on the server makes `next build` require a
+// browser Firebase API key even though no authentication is performed there.
+const auth = (typeof window === "undefined" ? null : getAuth(app)) as Auth;
+const googleProvider = (typeof window === "undefined" ? null : new GoogleAuthProvider()) as GoogleAuthProvider;
 
 export { app, db, storage, auth, googleProvider };

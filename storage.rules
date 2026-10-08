@@ -1,0 +1,14 @@
+rules_version = '2';
+
+// Image uploads now go to Cloudinary, so Firebase Storage should not accept
+// anonymous writes. Allow public read of any legacy assets, deny all writes.
+// (If you reintroduce Storage uploads, scope writes to request.auth and a
+// per-user path instead of re-opening this.)
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

@@ -5,6 +5,11 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Sparkles, Environment, Stars } from "@react-three/drei";
 import * as THREE from "three";
 
+function seededUnit(index: number, salt: number): number {
+  const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;
+  return value - Math.floor(value);
+}
+
 function FloatingGlassShapes() {
   const group = useRef<THREE.Group>(null);
 
@@ -19,17 +24,17 @@ function FloatingGlassShapes() {
 
   return (
     <group ref={group}>
-      {Array.from({ length: 45 }).map((_, i) => {
-        // Distribute objects across a wide volume
-        const x = (Math.random() - 0.5) * 30;
-        const y = (Math.random() - 0.5) * 30;
-        const z = (Math.random() - 0.5) * 20 - 5;
-        const s = Math.random() * 1.5 + 0.5;
+      {Array.from({ length: 45 }, (_, i) => {
         const color = colors[i % colors.length];
+        const x = (seededUnit(i, 1) - 0.5) * 30;
+        const y = (seededUnit(i, 2) - 0.5) * 30;
+        const z = (seededUnit(i, 3) - 0.5) * 20 - 5;
+        const scale = seededUnit(i, 4) * 1.5 + 0.5;
+        const speed = seededUnit(i, 5) * 1.5 + 0.5;
 
         return (
-          <Float key={i} speed={Math.random() * 1.5 + 0.5} rotationIntensity={3} floatIntensity={4}>
-            <mesh position={[x, y, z]} scale={s}>
+          <Float key={i} speed={speed} rotationIntensity={3} floatIntensity={4}>
+            <mesh position={[x, y, z]} scale={scale}>
               {i % 2 === 0 ? <icosahedronGeometry args={[1, 1]} /> : <sphereGeometry args={[1, 32, 32]} />}
               <meshPhysicalMaterial
                 color={color}
