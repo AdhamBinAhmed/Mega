@@ -4,13 +4,13 @@ rules_version = '2';
 //
 // Public pages are server-rendered from these docs with the *client* SDK and
 // no auth context, so reads must stay public. Writes are locked to the
-// authenticated owner AND are rate-limited to 5 saves per account per 24h.
+// authenticated owner AND are rate-limited to 10 saves per account per 5h.
 //
-// The 24h/5-write cap is enforced by pairing every content write with a
+// The 5h/10-write cap is enforced by pairing every content write with a
 // counter increment at rateLimits/{uid} IN THE SAME BATCH:
 //   * the counter's own rules only allow +1 per write and a window reset no
-//     sooner than every 24h (anchored to server time), so a counter can
-//     advance at most 5 times per 24h;
+//     sooner than every 5h (anchored to server time), so a counter can
+//     advance at most 10 times per 5h;
 //   * each profile/site write requires (via getAfter) that the counter was
 //     bumped in this same commit, so content writes inherit that cap.
 service cloud.firestore {
@@ -42,7 +42,7 @@ service cloud.firestore {
       let path = /databases/$(database)/documents/rateLimits/$(request.auth.uid);
       let after = getAfter(path).data;
       return after.uid == request.auth.uid
-        && after.count is int && after.count >= 1 && after.count <= 5
+        && after.count is int && after.count >= 1 && after.count <= 10
         && freshTs(after.updatedAt)
         && ( !exists(path) || after.updatedAt != get(path).data.updatedAt );
     }
@@ -62,13 +62,13 @@ service cloud.firestore {
         && request.resource.data.uid == uid
         && freshTs(request.resource.data.updatedAt)
         && (
-          // +1 within the current, still-open window (cap at 5)
+          // +1 within the current, still-open window (cap at 10)
           ( request.resource.data.windowStart == resource.data.windowStart
-            && resource.data.count is int && resource.data.count < 5
+            && resource.data.count is int && resource.data.count < 10
             && request.resource.data.count == resource.data.count + 1 )
           ||
-          // start a fresh window — only once 24h have really elapsed
-          ( resource.data.windowStart <= nowMs() - 86400000
+          // start a fresh window — only once 5h have really elapsed
+          ( resource.data.windowStart <= nowMs() - 18000000
             && request.resource.data.count == 1
             && freshTs(request.resource.data.windowStart) )
         );

@@ -1,15 +1,15 @@
 import { doc, getDoc, writeBatch, type WriteBatch } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
-// Per-account write quota: at most 5 profile/site saves per rolling 24 hours.
+// Per-account write quota: at most 10 profile/site saves per rolling 5 hours.
 // (The 50-requests-per-60-seconds limit is a per-IP edge limit enforced in
 // middleware.ts — this file is the per-account layer.)
-export const MAX_ACCOUNT_WRITES = 5;
-export const ACCOUNT_WINDOW_MS = 24 * 60 * 60 * 1000;
+export const MAX_ACCOUNT_WRITES = 10;
+export const ACCOUNT_WINDOW_MS = 5 * 60 * 60 * 1000;
 
 /**
  * Reads the caller's rate-limit counter at `rateLimits/{uid}`, throws if the
- * 5-per-24h quota is spent, and otherwise queues the incremented counter into
+ * 10-per-5h quota is spent, and otherwise queues the incremented counter into
  * `batch`.
  *
  * IMPORTANT: the profile/site write MUST be committed in the SAME batch, so
@@ -39,7 +39,7 @@ export async function addQuotaWrite(batch: WriteBatch, uid: string): Promise<voi
     const remainingMs = ACCOUNT_WINDOW_MS - (now - windowStart);
     const hrs = Math.max(1, Math.ceil(remainingMs / 3_600_000));
     throw new Error(
-      `Save limit reached (${MAX_ACCOUNT_WRITES} saves per 24 hours). ` +
+      `Save limit reached (${MAX_ACCOUNT_WRITES} saves per 5 hours). ` +
         `Please try again in about ${hrs} hour${hrs > 1 ? "s" : ""}.`
     );
   }

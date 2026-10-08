@@ -10,6 +10,8 @@ import { useLang } from "../lib/i18n";
 export default function LoginPage() {
   const { t } = useLang();
   const [error, setError] = useState("");
+  const [locked, setLocked] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const router = useRouter();
 
   // Redirect if already logged in
@@ -22,14 +24,32 @@ export default function LoginPage() {
     return () => unsubscribe();
   }, [router]);
 
+  useEffect(() => {
+    fetch("/api/login-gate", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((gate: { allowed?: boolean }) => setLocked(gate.allowed === false))
+      .catch(() => setError("Unable to verify login availability. Please try again shortly."));
+  }, []);
+
   const handleGoogleSignIn = async () => {
+    if (locked || signingIn) return;
     try {
       setError("");
+      setSigningIn(true);
+      const response = await fetch("/api/login-gate", { method: "POST", cache: "no-store" });
+      const gate = await response.json() as { allowed?: boolean };
+      if (!response.ok || gate.allowed === false) {
+        setLocked(true);
+        setError("Login terminated for 20 minutes for security reasons.");
+        return;
+      }
       await signInWithPopup(auth, googleProvider);
       router.push("/dashboard");
     } catch (err: any) {
       console.error(err);
       setError(err.message || t("Failed to sign in. Make sure Google Auth is enabled in Firebase."));
+    } finally {
+      setSigningIn(false);
     }
   };
 
@@ -74,11 +94,12 @@ export default function LoginPage() {
         <h1 className="title">{t("Sign In")}</h1>
         <p className="sub">{t("Authenticate to manage your developer profile and secure your subdomain.")}</p>
 
-        <button className="google-btn" onClick={handleGoogleSignIn}>
+        <button className="google-btn" onClick={handleGoogleSignIn} disabled={locked || signingIn}>
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="google-icon" />
-          {t("Sign in with Google")}
+          {signingIn ? t("Signing in...") : t("Sign in with Google")}
         </button>
 
+        {locked && <div className="error">Login terminated for 20 minutes for security reasons.</div>}
         {error && <div className="error">{error}</div>}
       </motion.div>
     </div>
