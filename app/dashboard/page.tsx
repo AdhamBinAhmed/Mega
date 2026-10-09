@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useDeferredValue } from "react";
 import { motion } from "framer-motion";
 import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore";
 // Firebase storage imports removed for Cloudinary
@@ -78,6 +78,8 @@ export default function DashboardPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "phone">("desktop");
+  const [previewKey, setPreviewKey] = useState(0);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     "01": true, "02": false, "03": false, "04": false, "05": false,
   });
@@ -372,6 +374,7 @@ export default function DashboardPage() {
 
   const isLive = isEditing && !!formData.subdomain;
   const previewProfile = { ...formData, photoUrl: imagePreview || formData.photoUrl };
+  const deferredPreviewProfile = useDeferredValue(previewProfile);
 
   return (
     <div className="create-root">
@@ -938,15 +941,23 @@ export default function DashboardPage() {
                 <div className="preview-label">
                   <span className="preview-label-dot" /> {t("Live Preview")}
                 </div>
+                <div className="preview-controls" role="group" aria-label={t("Preview device") }>
+                  <div className="preview-device-switch">
+                    <button type="button" className={previewDevice === "desktop" ? "active" : ""} onClick={() => setPreviewDevice("desktop")}>▭ {t("Desktop")}</button>
+                    <button type="button" className={previewDevice === "phone" ? "active" : ""} onClick={() => setPreviewDevice("phone")}>▯ {t("Phone")}</button>
+                  </div>
+                  <button type="button" className="preview-refresh" onClick={() => setPreviewKey((key) => key + 1)} title={t("Restart preview animations")}>↻</button>
+                </div>
                 <div className="browser-chrome glass-panel">
                   <div className="browser-dots"><span /><span /><span /></div>
                   <div className="browser-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
+                  {isLive && <a className="preview-open" href={`https://${formData.subdomain.toLowerCase()}.megadevs.site`} target="_blank" rel="noopener noreferrer">↗</a>}
                 </div>
-                <div className="preview-frame" data-theme="dark">
+                <div className={`preview-frame preview-frame--${previewDevice}`} data-theme="dark" key={previewKey}>
                   {formData.proDesign ? (
-                    previewProfile.name ? (
-                      <div style={{ transform: "scale(0.5)", transformOrigin: "top left", width: "200%", height: "200%" }}>
-                        <ProProfile profile={previewProfile} />
+                    deferredPreviewProfile.name ? (
+                      <div className="preview-pro-wrap">
+                        <ProProfile profile={deferredPreviewProfile} preview />
                       </div>
                     ) : (
                       <div style={{ position: "relative", zIndex: 1, padding: "80px 24px", textAlign: "center", color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
@@ -979,8 +990,8 @@ export default function DashboardPage() {
                       backgroundPosition: "center", opacity: 0.3,
                     }} />
                   )}
-                  {previewProfile.name ? (
-                    <PremiumProfileCard profile={previewProfile} bgStyle={formData.backgroundStyle} />
+                  {deferredPreviewProfile.name ? (
+                    <PremiumProfileCard profile={deferredPreviewProfile} bgStyle={formData.backgroundStyle} />
                   ) : (
                     <div style={{ position: "relative", zIndex: 1, padding: "80px 24px", textAlign: "center", color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
                       Fill in your name to see a live preview

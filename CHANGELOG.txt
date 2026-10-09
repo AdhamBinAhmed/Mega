@@ -1,0 +1,154 @@
+===========================================================================
+ CHANGELOG — Security hardening, bug fixes & rate limiting
+ Project: Mega (megadevs.site)
+ Date: 2026-10-09
+===========================================================================
+
+---------------------------------------------------------------------------
+ ⚠️  ACTION REQUIRED BEFORE DEPLOY — two items
+---------------------------------------------------------------------------
+ 1) DEPLOY THE NEW RULES. The old live Firestore rules are incompatible with
+    the new rate-limiting code (the batched counter write to `rateLimits`
+    would be denied, which fails the whole save). Deploy firestore.rules:
+        firebase deploy --only firestore:rules
+
+ 2) LIMIT MISMATCH. app/lib/rateLimit.ts is now set to 10 saves / 5 hours,
+    but firestore.rules still enforce the original 5 / 24h
+    (count <= 5, count < 5, window = 86400000 ms). If deployed as-is the
+    rules win (6th save rejected). To match the code, change firestore.rules
+    to: count <= 10, count < 10, window = 18000000 ms (5h).
+
+
+===========================================================================
+ NEW FILES
+===========================================================================
+ app/lib/sanitizeUrl.ts
+   URL scheme allow-list used everywhere user links/images are rendered.
+     - safeUrl()      : allows http/https/mailto/tel + relative/anchor links;
+                        neutralizes javascript:, data:, vbscript:, etc.
+     - safeBgUrl()    : http(s) only, and rejects characters that could break
+                        out of a CSS url(...) wrapper.
+     - safeImageUrl() : (added as a follow-up) http(s)-only for <img src>.
+
+ app/lib/reserved.ts
+   RESERVED_SLUGS deny-list + isReservedSlug() + cleanSlug()
+   (lowercases, strips invalid chars, collapses/trims hyphens, caps len 63).
+
+ app/lib/rateLimit.ts
+   Per-account save quota helpers: addQuotaWrite(batch, uid) + newBatch().
+   Current setting: 10 saves per rolling 5 hours (MAX_ACCOUNT_WRITES=10,
+   ACCOUNT_WINDOW_MS=5h).
+
+ firestore.rules
+   Ownership- AND quota-enforced rules. Replaces the old live rules.
+
+ firestore.indexes.json
+   Empty index config required by the deploy.
+
+ firebase.json
+   Deploy config. Firestore-only (the storage block was removed because the
+   app does not use Firebase Storage).
+
+ storage.rules
+   Lock-down for Firebase Storage (read public, write denied). Now ORPHANED —
+   not referenced by firebase.json — safe to delete since Storage is unused.
+
+ SECURITY_AUDIT.txt
+   Full findings report + remediation status.
+
+
+===========================================================================
+ SECURITY FIXES  (modified files)
+===========================================================================
+ [HIGH]   Stored XSS (javascript:/data: hrefs)
+   safeUrl() applied to every user-supplied link:
+     - app/components/PremiumProfileCard.tsx   (Btn href)
+     - app/components/CanvasElementView.tsx     (button href)
+     - app/components/pro/LinkCard.tsx          (node.href)
+     - app/components/pro/Nav.tsx               (github href)
+
+ [MEDIUM] CSS injection / visitor tracking via background URLs
+   safeBgUrl() applied to custom backgrounds:
+     - app/[subdomain]/page.tsx
+     - app/site/[slug]/[[...page]]/page.tsx
+   safeImageUrl() applied to <img src> in CanvasElementView.tsx (follow-up).
+
+ [MEDIUM] Missing Content-Security-Policy
+   netlify.toml now sends a CSP (plus existing HSTS / X-Frame-Options / etc.).
+
+ [MEDIUM] Wide-open Storage CORS
+   cors.json narrowed from origin "*" + PUT/POST/DELETE to the megadevs.site
+   origins with GET/HEAD only.
+
+ [MEDIUM] Reserved-route collision (subdomain shadows real app routes)
+   Deny-list enforced in middleware.ts, app/dashboard/page.tsx,
+   app/builder/page.tsx.
+
+ [LOW]    Host header trust / non-null assertion
+   middleware.ts now safely handles a missing Host header (removed `!`).
+
+ [CRITICAL] Client-only authorization
+   firestore.rules now enforce ownership server-side (see NEW FILES / rules).
+
+
+===========================================================================
+ BUG FIXES  (modified files)
+===========================================================================
+ [HIGH]   Netlify static-export vs SSR mismatch
+   netlify.toml: removed `publish = "out"`, added @netlify/plugin-nextjs so
+   middleware / server components / ISR work.
+
+ [MEDIUM] React state mutation in custom-link editing
+   app/dashboard/page.tsx handleCustomLinkChange is now immutable.
+
+ [LOW]    Crash on missing name
+   PremiumProfileCard avatar initial guarded: profile.name?.charAt(0) || "?".
+
+ [LOW]    user! non-null assertions in save handlers
+   dashboard + builder now guard `if (!user)` before writing.
+
+ [LOW]    Weak slug sanitization
+   cleanSlug() used in both save paths (dashboard, builder).
+
+
+===========================================================================
+ RATE LIMITING  (new feature)
+===========================================================================
+ Per-IP  : 50 requests / 60s sliding window in middleware.ts -> HTTP 429.
+           (In-memory per edge instance; back with Redis/Upstash for a strict
+            global limit.)
+
+ Per-account : counter at rateLimits/{uid} written in the SAME batch as the
+           profile/site write. dashboard + builder save paths were rewritten
+           to batched writes (unused setDoc imports removed). firestore.rules
+           enforce it server-side via getAfter: each content write must carry
+           a fresh +1 counter bump, the counter advances at most once per
+           write, and resets only after the real window elapses (anchored to
+           request.time, with a 5-min client-clock tolerance).
+           Current limit: 10 saves per account per 5 hours (see MISMATCH note
+           at top).
+
+
+===========================================================================
+ FOLLOW-UP REFINEMENTS  (landed after the initial edits)
+===========================================================================
+ - app/lib/rateLimit.ts  : limit changed 5/24h -> 10/5h.
+ - app/lib/sanitizeUrl.ts: added safeImageUrl().
+ - CanvasElementView.tsx : image src routed through safeImageUrl().
+ - builder/page.tsx      : uploadToCloudinary rejects non-images and files
+                           larger than 10 MB.
+ - site/[slug]/[[...page]]/page.tsx : added `await connection()` (defer
+                           Firestore to request time) and notFound() for
+                           multi-segment paths.
+ - firebase.json         : removed the storage block.
+
+
+===========================================================================
+ REMAINING OPERATIONAL STEPS (outside the repo)
+===========================================================================
+ a) Deploy rules:            firebase deploy --only firestore:rules
+ b) Apply the narrowed CORS: gsutil cors set cors.json gs://<your-bucket>
+                             (only if you actually use the Storage bucket)
+ c) Netlify plugin:          npm i -D @netlify/plugin-nextjs (if not auto-added)
+ d) Decide final rate limit and sync code + rules (see MISMATCH note).
+===========================================================================

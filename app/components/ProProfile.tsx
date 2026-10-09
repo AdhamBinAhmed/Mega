@@ -8,16 +8,17 @@ import LinkCard from "./pro/LinkCard";
 import { buildIdentity, buildLinks, type Profile } from "./pro/proData";
 import "../[subdomain]/pro-design.css";
 
-export default function ProProfile({ profile }: { profile: Profile }) {
+export default function ProProfile({ profile, preview = false }: { profile: Profile; preview?: boolean }) {
   const identity = buildIdentity(profile);
   const links = buildLinks(profile);
 
   // Full takeover: hide the global MEGA navbar while this page is mounted.
   useEffect(() => {
+    if (preview) return;
     const root = document.documentElement;
     root.classList.add("pro-active");
     return () => root.classList.remove("pro-active");
-  }, []);
+  }, [preview]);
 
   return (
     <div className="pro-root" data-theme="dark">
