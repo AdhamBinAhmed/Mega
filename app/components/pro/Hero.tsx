@@ -23,7 +23,7 @@ function initials(name: string) {
   );
 }
 
-export default function Hero({ identity }: { identity: Identity }) {
+export default function Hero({ identity, preview = false }: { identity: Identity; preview?: boolean }) {
   const mx = useMotionValue(0.5);
   const my = useMotionValue(0.5);
   const sx = useSpring(mx, { stiffness: 60, damping: 18 });
@@ -40,23 +40,24 @@ export default function Hero({ identity }: { identity: Identity }) {
   const rotX = useTransform(sy, [0, 1], [-6, 6]);
 
   useEffect(() => {
+    if (preview) return;
     const onMove = (e: PointerEvent) => {
       mx.set(e.clientX / window.innerWidth);
       my.set(e.clientY / window.innerHeight);
     };
     window.addEventListener("pointermove", onMove);
     return () => window.removeEventListener("pointermove", onMove);
-  }, [mx, my]);
+  }, [mx, my, preview]);
 
   return (
     <header className="scene relative min-h-[88vh] flex flex-col items-center justify-center text-center px-4">
       <motion.div
-        style={{ rotateX: rotX, rotateY: rotY }}
+        style={preview ? undefined : { rotateX: rotX, rotateY: rotY }}
         className="preserve-3d flex flex-col items-center"
       >
         {/* avatar */}
         <motion.div
-          style={{ x: avaX, y: avaY }}
+          style={preview ? undefined : { x: avaX, y: avaY }}
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, ease }}
@@ -96,7 +97,7 @@ export default function Hero({ identity }: { identity: Identity }) {
 
         {/* name — the closest, most-parallaxed layer */}
         <motion.h1
-          style={{ x: nameX, y: nameY }}
+          style={preview ? undefined : { x: nameX, y: nameY }}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.2, ease }}
@@ -109,7 +110,7 @@ export default function Hero({ identity }: { identity: Identity }) {
         {/* role */}
         {identity.role && (
           <motion.p
-            style={{ x: roleX, y: roleY }}
+            style={preview ? undefined : { x: roleX, y: roleY }}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35, ease }}

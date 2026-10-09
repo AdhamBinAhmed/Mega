@@ -25,7 +25,7 @@ export default function ProProfile({ profile, preview = false }: { profile: Prof
       <main className="relative min-h-screen">
         <Aurora />
         <Nav identity={identity} github={(profile.github || "").trim() || undefined} />
-        <Hero identity={identity} />
+        <Hero identity={identity} preview={preview} />
 
         {/* Connect */}
         <section className="relative mx-auto max-w-5xl px-4 sm:px-6 pb-24">

@@ -317,8 +317,14 @@ html { scroll-behavior: smooth; }
   content: ""; position: sticky; top: 8px; display: block; z-index: 30;
   width: 76px; height: 7px; margin: 7px auto -14px; border-radius: 999px; background: #050507;
 }
-.preview-pro-wrap { min-height: 100%; }
+.preview-pro-wrap { min-height: 100%; container-type: inline-size; }
 .preview-frame :is(.ppc-shell, .pro-root) { min-height: 100%; }
+.preview-pro-wrap .scene { min-height: 520px; }
+.preview-pro-wrap .scene h1 {
+  max-width: 100%; overflow-wrap: anywhere;
+  font-size: clamp(2.5rem, 14cqi, 4rem);
+}
+.preview-pro-wrap .scene > div { max-width: 100%; }
 
 /* ── SAVE BAR ── */
 .save-bar {
