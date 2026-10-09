@@ -368,13 +368,16 @@ export default function DashboardPage() {
     setBgImagePreview(URL.createObjectURL(file));
   };
 
+  // Keep the expensive animated preview from competing with form input, while
+  // preserving hook order during the initial authentication loading state.
+  const previewProfile = { ...formData, photoUrl: imagePreview || formData.photoUrl };
+  const deferredPreviewProfile = useDeferredValue(previewProfile);
+
   if (loadingAuth) {
     return <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#050507", color: "white", fontFamily: "monospace" }}>{t("Loading Secure Dashboard...")}</div>;
   }
 
   const isLive = isEditing && !!formData.subdomain;
-  const previewProfile = { ...formData, photoUrl: imagePreview || formData.photoUrl };
-  const deferredPreviewProfile = useDeferredValue(previewProfile);
 
   return (
     <div className="create-root">
