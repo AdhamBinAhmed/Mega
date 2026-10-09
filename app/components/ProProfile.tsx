@@ -21,7 +21,7 @@ export default function ProProfile({ profile, preview = false }: { profile: Prof
   }, [preview]);
 
   return (
-    <div className="pro-root" data-theme="dark">
+    <div className={preview ? "pro-root pro-preview" : "pro-root"} data-theme="dark">
       <main className="relative min-h-screen">
         <Aurora />
         <Nav identity={identity} github={(profile.github || "").trim() || undefined} />

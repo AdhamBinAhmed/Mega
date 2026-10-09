@@ -36,6 +36,21 @@
   overflow-x: hidden;
 }
 
+/* The dashboard embeds this design as a live preview. Keep every visual layer
+   inside that small viewport instead of allowing fixed backgrounds/navs to
+   paint over the editor. */
+.pro-root.pro-preview {
+  isolation: isolate;
+  contain: paint;
+}
+.pro-root.pro-preview .ambient,
+.pro-root.pro-preview .grain {
+  position: absolute;
+}
+.pro-root.pro-preview .fixed {
+  position: absolute;
+}
+
 /* Faithful about-me typography: Geist Sans body, Sora display, Geist Mono. */
 .pro-root .font-display {
   font-family: var(--font-logo), var(--font-geist-sans), sans-serif;
