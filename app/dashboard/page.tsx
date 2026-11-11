@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import PremiumProfileCard from "../components/PremiumProfileCard";
 import ProProfile from "../components/ProProfile";
 import { useLang } from "../lib/i18n";
+import { SquareArrowRightUpIcon, CheckCircleIcon, AltArrowDownIcon, GalleryIcon } from "@solar-icons/react/linear";
 import { cleanSlug, isReservedSlug } from "../lib/reserved";
 import { addQuotaWrite, newBatch } from "../lib/rateLimit";
 import "./dashboard.css";
@@ -392,7 +393,7 @@ export default function DashboardPage() {
           {/* DASH ACTIONS */}
           <div className="dash-actions">
             {isLive && (
-              <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn">{t("↗ View Live Site")}</a>
+              <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn"><SquareArrowRightUpIcon size={14} className="icon-mirror" /> {t("View Live Site")}</a>
             )}
             <a href="/builder" className="back-btn">{t("🎨 Website Builder")}</a>
             <button className="theme-btn" onClick={() => signOut(auth)}>{t("Sign Out")}</button>
@@ -416,7 +417,7 @@ export default function DashboardPage() {
                 </span>
                 <div className="status-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
                 <button type="button" className="copy-btn" onClick={handleCopyLink}>
-                  {copiedLink ? t("Copied ✓") : t("Copy Link")}
+                  {copiedLink ? <>{t("Copied")} <CheckCircleIcon size={14} /></> : t("Copy Link")}
                 </button>
               </div>
             )}
@@ -466,7 +467,7 @@ export default function DashboardPage() {
                 transition: "all 0.3s ease",
               }}
             >
-              {formData.proDesign ? t("✓ Enabled — Turn Off") : t("Enable Pro Design")}
+              {formData.proDesign ? <><CheckCircleIcon size={14} /> {t("Enabled — Turn Off")}</> : t("Enable Pro Design")}
             </button>
           </div>
 
@@ -495,7 +496,7 @@ export default function DashboardPage() {
                     <div className="form-section-title">{t("Basics")}</div>
                     <div className="form-section-desc">{t("Your identity on the network")}</div>
                   </div>
-                  <span className="form-section-chevron">▾</span>
+                  <span className="form-section-chevron"><AltArrowDownIcon size={16} /></span>
                 </button>
                 <CollapseBody open={openSections["01"]}>
 
@@ -545,7 +546,7 @@ export default function DashboardPage() {
                     <div className="form-section-title">{t("Profile Photo")}</div>
                     <div className="form-section-desc">{t("Shown on your avatar ring")}</div>
                   </div>
-                  <span className="form-section-chevron">▾</span>
+                  <span className="form-section-chevron"><AltArrowDownIcon size={16} /></span>
                 </button>
                 <CollapseBody open={openSections["02"]}>
 
@@ -585,7 +586,7 @@ export default function DashboardPage() {
                     <div className="form-section-title">{t("Social Links")}</div>
                     <div className="form-section-desc">{t("Where people can reach you")}</div>
                   </div>
-                  <span className="form-section-chevron">▾</span>
+                  <span className="form-section-chevron"><AltArrowDownIcon size={16} /></span>
                 </button>
                 <CollapseBody open={openSections["03"]}>
 
@@ -649,7 +650,7 @@ export default function DashboardPage() {
                     <div className="form-section-title">{t("Appearance")}</div>
                     <div className="form-section-desc">{t("Background, accent color & effects")}</div>
                   </div>
-                  <span className="form-section-chevron">▾</span>
+                  <span className="form-section-chevron"><AltArrowDownIcon size={16} /></span>
                 </button>
                 <CollapseBody open={openSections["04"]}>
 
@@ -713,7 +714,7 @@ export default function DashboardPage() {
                           </>
                         ) : (
                           <>
-                            <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🖼️</div>
+                            <div style={{ marginBottom: "8px" }}><GalleryIcon size={32} /></div>
                             <span style={{ fontSize: "0.9rem" }}>{t("Drag & drop a background image, or click to browse")}</span>
                           </>
                         )}
@@ -896,7 +897,7 @@ export default function DashboardPage() {
                     <div className="form-section-title">{t("Custom Links")}</div>
                     <div className="form-section-desc">{t("Add anything — LinkedIn, portfolio, anything else")}</div>
                   </div>
-                  <span className="form-section-chevron">▾</span>
+                  <span className="form-section-chevron"><AltArrowDownIcon size={16} /></span>
                 </button>
                 <CollapseBody open={openSections["05"]}>
 
@@ -954,7 +955,7 @@ export default function DashboardPage() {
                 <div className="browser-chrome glass-panel">
                   <div className="browser-dots"><span /><span /><span /></div>
                   <div className="browser-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
-                  {isLive && <a className="preview-open" href={`https://${formData.subdomain.toLowerCase()}.megadevs.site`} target="_blank" rel="noopener noreferrer">↗</a>}
+                  {isLive && <a className="preview-open" href={`https://${formData.subdomain.toLowerCase()}.megadevs.site`} target="_blank" rel="noopener noreferrer"><SquareArrowRightUpIcon size={14} className="icon-mirror" /></a>}
                 </div>
                 <div className={`preview-frame preview-frame--${previewDevice}`} data-theme="dark" key={previewKey}>
                   {formData.proDesign ? (

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useLang } from "../lib/i18n";
+import { SquareArrowRightUpIcon } from "@solar-icons/react/linear";
 import "./DevMegaAd.css";
 
 const TOOLS = [
@@ -52,7 +53,7 @@ export default function DevMegaAd() {
               ))}
             </ul>
             <span className="devmega-cta">
-              {t("Launch the toolkit →")}
+              {t("Launch the toolkit")} <SquareArrowRightUpIcon size={16} className="icon-mirror" />
             </span>
           </div>
           <aside className="devmega-stats" aria-hidden="true">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
@@ -19,6 +19,7 @@ import { FONTS, FONT_CATEGORIES, googleFontsUrl } from "../lib/fonts";
 import { ElementContent, buttonStyleFromProps, buttonClassName, MobileFlow } from "../components/CanvasElementView";
 import { BUTTON_PRESETS, BUTTON_PRESET_CATEGORIES } from "../lib/buttonPresets";
 import { cleanSlug, isReservedSlug } from "../lib/reserved";
+import { TextSquareIcon, BoxMinimalisticIcon, GalleryIcon, Widget2Icon, SmartphoneIcon, SquareArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";
 import { addQuotaWrite, newBatch } from "../lib/rateLimit";
 import "../[subdomain]/subdomain-bg.css";
 import "./builder.css";
@@ -34,11 +35,11 @@ type DragState = {
   origH: number;
 } | null;
 
-const ADD_BUTTONS: { type: ElementType; label: string; ico: string }[] = [
-  { type: "text", label: "Text / Heading", ico: "🅣" },
-  { type: "button", label: "Button", ico: "⬛" },
-  { type: "image", label: "Image", ico: "🖼️" },
-  { type: "box", label: "Box / Shape", ico: "▢" },
+const ADD_BUTTONS: { type: ElementType; label: string; ico: ReactNode }[] = [
+  { type: "text", label: "Text / Heading", ico: <TextSquareIcon size="1em" /> },
+  { type: "button", label: "Button", ico: <BoxMinimalisticIcon size="1em" /> },
+  { type: "image", label: "Image", ico: <GalleryIcon size="1em" /> },
+  { type: "box", label: "Box / Shape", ico: <Widget2Icon size="1em" /> },
 ];
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
@@ -268,7 +269,7 @@ export default function BuilderPage() {
       const url = await uploadToCloudinary(file);
       setBgImageUrl(url);
       setBgStyle("custom");
-      showToast("Background uploaded ✓");
+      showToast("Background uploaded");
     } catch (e: any) {
       showToast(e.message || "Upload failed", "err");
     }
@@ -279,7 +280,7 @@ export default function BuilderPage() {
       showToast("Uploading image…");
       const url = await uploadToCloudinary(file);
       patchProps(id, { src: url });
-      showToast("Image uploaded ✓");
+      showToast("Image uploaded");
     } catch (e: any) {
       showToast(e.message || "Upload failed", "err");
     }
@@ -330,7 +331,7 @@ export default function BuilderPage() {
       await batch.commit();
       setSlug(clean);
       setIsExisting(true);
-      showToast("Saved & live ✓");
+      showToast("Saved & live");
     } catch (e: any) {
       showToast(e.message || "Save failed", "err");
     }
@@ -371,11 +372,11 @@ export default function BuilderPage() {
         <div className="bld-spacer" />
         <div className="bld-device-toggle">
           <button className={preview === "desktop" ? "active" : ""} onClick={() => setPreview("desktop")} title="Desktop editor">🖥️ PC</button>
-          <button className={preview === "mobile" ? "active" : ""} onClick={() => setPreview("mobile")} title="Phone preview">📱 Phone</button>
+          <button className={preview === "mobile" ? "active" : ""} onClick={() => setPreview("mobile")} title="Phone preview"><SmartphoneIcon size="1em" /> Phone</button>
         </div>
         {isExisting && slug && (
           <a className="bld-btn" href={`/site/${slug}`} target="_blank" rel="noopener noreferrer">
-            ↗ View live
+            <SquareArrowRightUpIcon size="1em" className="icon-mirror" /> View live
           </a>
         )}
         <button className="bld-btn" onClick={() => signOut(auth)}>Sign out</button>
@@ -401,7 +402,7 @@ export default function BuilderPage() {
             ))}
           </div>
           <button className="bld-add-btn" style={{ marginBottom: 10 }} onClick={addPage}>
-            <span className="ico">＋</span> Add new page
+            <span className="ico"><AddCircleIcon size="1em" /></span> Add new page
           </button>
           <div className="bld-field">
             <label>Rename this page</label>

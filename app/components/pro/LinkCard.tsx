@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
+import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
 import TiltCard from "./TiltCard";
 import type { LinkNode } from "./proData";
 import { safeUrl } from "../../lib/sanitizeUrl";
@@ -46,10 +46,10 @@ export default function LinkCard({
               bg-white/5 text-xl transition-transform duration-300 group-hover/tilt:scale-110"
             style={{ color: accent, boxShadow: `0 8px 30px -10px ${accent}` }}
           >
-            <Icon />
+            <Icon size="1em" />
           </span>
           <span className="text-[var(--dim)] group-hover/tilt:text-[var(--text)] transition-colors text-lg">
-            {node.internal ? <FiArrowRight /> : <FiArrowUpRight />}
+            {node.internal ? <ArrowRightIcon size="1em" /> : <ArrowRightUpIcon size="1em" />}
           </span>
         </div>
 

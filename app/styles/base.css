@@ -55,6 +55,12 @@ body {
 [data-theme="light"] .kicker { color: var(--ink-soft); }
 [data-theme="light"] .kicker::before { content: ""; display: inline-block; width: 14px; height: 2px; margin-inline-end: 8px; vertical-align: middle; background: var(--accent); }
 
+/* Directional icons flip in RTL (Solar has no mirrored prop). */
+[dir="rtl"] .icon-mirror { transform: scaleX(-1); }
+/* Inline icons sit on the text baseline like the glyphs they replaced. */
+.svc-arrow svg, .contact-link-arrow svg, .faq-icon svg, .dev-link svg,
+.devmega-cta svg, .btn-solid svg, .btn-line svg, .promo-link svg { vertical-align: -0.15em; }
+
 /* Magnetic hover effect (MagneticButton) */
 .magnetic { transition: transform 0.2s var(--ease-out); }
 

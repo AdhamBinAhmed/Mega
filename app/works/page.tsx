@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
+import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
 
 type Work = {
   num: string;
@@ -594,7 +595,7 @@ export default function WorksPage() {
                   <div className="w-pfoot">
                     {isLive ? (
                       <a href={w.link} target="_blank" rel="noopener noreferrer" className="w-plink">
-                        {t("Visit Project")} <span className="arw">→</span>
+                        {t("Visit Project")} <span className="arw"><ArrowRightUpIcon size="1em" className="icon-mirror" /></span>
                       </a>
                     ) : (
                       <span className="w-plink disabled">{t("Confidential")} <span className="arw">•</span></span>
@@ -611,7 +612,7 @@ export default function WorksPage() {
         <motion.div className="w-cta" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
           <h2 className="w-cta-title">{t("Have something")}<br />{t("worth building?")}</h2>
           <p className="w-cta-sub">{t("We partner with teams to design and ship software that performs in production.")}</p>
-          <a href="/#contact" className="w-cta-btn">{t("Start a Project →")}</a>
+          <a href="/#contact" className="w-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></a>
         </motion.div>
       </div>
 

@@ -23,6 +23,7 @@ const AR: Record<string, string> = {
   "Palestine": "فلسطين",
   "Index": "الفهرس",
   "Start a Project →": "ابدأ مشروعاً →",
+  "Start a Project": "ابدأ مشروعاً",
   "Sections": "الأقسام",
   "Actions": "إجراءات",
   "Navigate or run a command...": "تنقّل أو نفّذ أمراً...",
@@ -33,6 +34,14 @@ const AR: Record<string, string> = {
   "Open GitHub": "فتح GitHub",
   "Stand with Palestine": "ادعم فلسطين",
   "Email copied to clipboard": "تم نسخ البريد الإلكتروني",
+  "Menu": "القائمة",
+  "Close": "إغلاق",
+  "Socials": "تواصل",
+  "Dashboard": "لوحة التحكم",
+  "Builder": "منشئ المواقع",
+  "Sign out": "تسجيل الخروج",
+  "Login": "تسجيل الدخول",
+  "MEGA DEVS • WE SHIP FAST • ": "MEGA DEVS • WE SHIP FAST • ",
 
   // ── Homepage: side rail + section labels ──
   "§01 · Services": "§01 · الخدمات",
@@ -63,6 +72,7 @@ const AR: Record<string, string> = {
   "Edge": "الحوسبة الطرفية",
   "Make your first free portfolio website online": "أنشئ أول موقع بورتفوليو مجاني لك على الإنترنت",
   "Start Now →": "ابدأ الآن →",
+  "Start Now": "ابدأ الآن",
   "Systems Nominal": "الأنظمة تعمل بكفاءة",
   "UTC+3 · Available": "توقيت +3 · متاح",
 
@@ -78,6 +88,7 @@ const AR: Record<string, string> = {
   "A privacy-first toolkit that stays in your browser: repo analysis, error debugging, a real regex IDE, API workspace, and more. Fast, local, and completely free.":
     "مجموعة أدوات تحترم الخصوصية وتعمل داخل متصفّحك: تحليل المستودعات، تصحيح الأخطاء، بيئة تعبيرات نمطية حقيقية، مساحة عمل للـ API، والمزيد. سريعة، محلية، ومجانية بالكامل.",
   "Launch the toolkit →": "افتح الأدوات →",
+  "Launch the toolkit": "افتح الأدوات",
   "Client latency": "زمن الاستجابة",
   "Developer Tools": "أدوات المطوّرين",
   "A curated suite of eight privacy-first developer utilities — live GitHub analysis, error debugging, a real regex IDE, API workspace, secret scanning, and more. Client-side, blazing fast, and free forever.":
@@ -216,6 +227,7 @@ const AR: Record<string, string> = {
   "Curious how ": "هل تتساءل كيف بدأت ",
   " started?": "؟",
   "Read Our Story →": "اقرأ قصّتنا →",
+  "Read Our Story": "اقرأ قصّتنا",
 
   // ── Footer ──
   "Navigate": "تصفّح",
@@ -381,7 +393,7 @@ const AR: Record<string, string> = {
 
   // ── Dashboard ──
   "Loading Secure Dashboard...": "جارٍ تحميل لوحة التحكّم الآمنة...",
-  "↗ View Live Site": "↗ عرض الموقع المباشر",
+  "View Live Site": "عرض الموقع المباشر",
   "Sign Out": "تسجيل الخروج",
   "Editing Profile": "تعديل الملف",
   "New Profile": "ملف جديد",
@@ -394,7 +406,7 @@ const AR: Record<string, string> = {
     "أطلق صفحتك الشخصية كمطوّر على شبكة Mega Devs. اختر نطاقك الفرعي المخصّص وابدأ التألّق.",
   "Draft": "مسودّة",
   "Copy Link": "نسخ الرابط",
-  "Copied ✓": "تم النسخ ✓",
+  "Copied": "تم النسخ",
   "Profile Saved!": "تم حفظ الملف!",
   "Subdomain and Name are required.": "النطاق الفرعي والاسم مطلوبان.",
   "Basics": "الأساسيات",
@@ -439,7 +451,7 @@ const AR: Record<string, string> = {
   "Replace your whole page with the cinematic portfolio layout — aurora background, parallax hero & tilt link grid. Uses your name, role, photo & links.":
     "استبدل صفحتك بالكامل بتصميم البورتفوليو السينمائي — خلفية شفقية، وواجهة بطبقات متحرّكة، وشبكة روابط بميلان ثلاثي الأبعاد. يستخدم اسمك ودورك وصورتك وروابطك.",
   "Enable Pro Design": "تفعيل التصميم الاحترافي",
-  "✓ Enabled — Turn Off": "✓ مُفعّل — إيقاف",
+  "Enabled — Turn Off": "مُفعّل — إيقاف",
 
   // ── Works: Asseli project ──
   "Brand & E-Commerce": "علامة تجارية ومتجر إلكتروني",

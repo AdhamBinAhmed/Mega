@@ -6,6 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import MagneticButton from "./components/MagneticButton";
 import DevMegaAd from "./components/DevMegaAd";
 import { useLang } from "./lib/i18n";
+import { ArrowRightIcon, ArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";
+import { GitHubLogo, TelegramLogo } from "./components/icons/brand";
 import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -281,12 +283,12 @@ export default function Home() {
             {t("Two engineers from Cairo building ")}<strong>{t("high-performance web apps")}</strong>{t(", custom Android ROMs, and production-grade AI systems for clients across the Middle East and beyond.")}
           </motion.p>
           <motion.div className="hero-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}>
-            <MagneticButton href="#contact" className="btn-solid"><span>{t("Start a Project →")}</span></MagneticButton>
+            <MagneticButton href="#contact" className="btn-solid"><span>{t("Start a Project")}</span><ArrowRightIcon size={16} className="icon-mirror" /></MagneticButton>
             <a href="/works" className="btn-line"><span>{t("Our Works")}</span></a>
           </motion.div>
           <motion.div className="hero-promo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>
             <span className="promo-text">{t("Make your first free portfolio website online")}</span>
-            <a href="https://megadevs.site/login" className="promo-link">{t("Start Now →")}</a>
+            <a href="https://megadevs.site/login" className="promo-link">{t("Start Now")} <ArrowRightIcon size={14} className="icon-mirror" /></a>
           </motion.div>
         </div>
 
@@ -341,7 +343,7 @@ export default function Home() {
                 <div className="svc-metric">
                   <span className="svc-metric-val">{s.metric}</span>
                   <span className="svc-metric-lab">{t(s.metricLabel)}</span>
-                  <span className="svc-arrow">↗</span>
+                  <span className="svc-arrow"><ArrowRightUpIcon size={16} className="icon-mirror" /></span>
                 </div>
               </motion.a>
             ))}
@@ -452,7 +454,7 @@ export default function Home() {
               <div key={f.q} className="faq-item">
                 <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
                   <span>{t(f.q)}</span>
-                  <span className={`faq-icon${openFaq === i ? " open" : ""}`}>+</span>
+                  <span className={`faq-icon${openFaq === i ? " open" : ""}`}><AddCircleIcon size={18} /></span>
                 </button>
                 <AnimatePresence initial={false}>
                   {openFaq === i && (
@@ -488,8 +490,8 @@ export default function Home() {
                 <div className="dev-name">{d.name}</div>
                 <div className="dev-role">{t(d.role)}</div>
                 <div className="dev-links">
-                  <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link">{t("Telegram")}</a>
-                  <a href={d.github} target="_blank" rel="noopener noreferrer" className="dev-link">GitHub</a>
+                  <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link"><TelegramLogo size={14} />{t("Telegram")}</a>
+                  <a href={d.github} target="_blank" rel="noopener noreferrer" className="dev-link"><GitHubLogo size={14} />GitHub</a>
                 </div>
               </motion.div>
             ))}
@@ -522,10 +524,10 @@ export default function Home() {
               <p className="contact-lead">{t("Have a project? We're two engineers ready to turn your idea into production-grade software — from first commit to live deploy.")}</p>
               <div className="contact-links">
                 <a href="mailto:megatrondevs@gmail.com" className="contact-link">
-                  <span>megatrondevs@gmail.com</span><span className="contact-link-arrow">→</span>
+                  <span>megatrondevs@gmail.com</span><span className="contact-link-arrow"><ArrowRightIcon size={16} className="icon-mirror" /></span>
                 </a>
                 <a href="tel:+201023382444" className="contact-link">
-                  <span>+20 102 338 2444</span><span className="contact-link-arrow">→</span>
+                  <span>+20 102 338 2444</span><span className="contact-link-arrow"><ArrowRightIcon size={16} className="icon-mirror" /></span>
                 </a>
               </div>
               <div className="contact-meta">
@@ -559,7 +561,7 @@ export default function Home() {
       <div className="history">
         <div className="history-eyebrow">{t("The Origin Story")}</div>
         <h2 className="history-title">{t("Curious how ")}<em>MEGA Devs</em>{t(" started?")}</h2>
-        <a href="/history" className="btn-solid">{t("Read Our Story →")}</a>
+        <a href="/history" className="btn-solid">{t("Read Our Story")} <ArrowRightIcon size={16} className="icon-mirror" /></a>
       </div>
 
       {/* ═══ FOOTER ═══ */}

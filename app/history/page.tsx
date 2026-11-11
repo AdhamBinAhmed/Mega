@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
+import { ArrowRightIcon, GlobalIcon, CpuIcon, Widget2Icon, StarIcon } from "@solar-icons/react/linear";
 
 export default function HistoryPage() {
   const { t } = useLang();
@@ -66,25 +67,25 @@ export default function HistoryPage() {
     {
       title: "Global Technology Leadership",
       body: "We aim to establish Mega Devs as a recognized benchmark in the technology sector — extending our capabilities beyond regional markets to deliver enterprise-grade solutions to clients worldwide.",
-      icon: "◎",
+      icon: <GlobalIcon size="1em" />,
       span: "wide",
     },
     {
       title: "Innovation & AI Integration",
       body: "We are committed to advancing the next generation of software by embedding artificial intelligence and machine learning into the core of the MegaOS platform.",
-      icon: "⬡",
+      icon: <CpuIcon size="1em" />,
       span: "tall",
     },
     {
       title: "Ecosystem Expansion",
       body: "We are building Mega Devs into a multi-disciplinary technology group, developing a portfolio of products designed to redefine how people interact with technology.",
-      icon: "⊞",
+      icon: <Widget2Icon size="1em" />,
       span: "normal",
     },
     {
       title: "Developing Future Talent",
       body: "Beyond delivery, we invest in people — cultivating talent and sustaining an environment where engineering excellence and innovation can thrive.",
-      icon: "◈",
+      icon: <StarIcon size="1em" />,
       span: "normal",
     },
   ];
@@ -552,7 +553,7 @@ export default function HistoryPage() {
         >
           <h2 className="h-cta-title">{t("The next chapter")}<br />{t("is already underway.")}</h2>
           <p className="h-cta-sub">{t("Interested in building with us? We'd welcome the opportunity to discuss your project.")}</p>
-          <a href="/#contact" className="h-cta-btn">{t("Start a Project →")}</a>
+          <a href="/#contact" className="h-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></a>
         </motion.div>
       </div>
 

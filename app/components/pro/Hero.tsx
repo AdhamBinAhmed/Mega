@@ -7,7 +7,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect } from "react";
-import { FiArrowDown } from "react-icons/fi";
+import { AltArrowDownIcon } from "@solar-icons/react/linear";
 import type { Identity } from "./proData";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -133,7 +133,7 @@ export default function Hero({ identity, preview = false }: { identity: Identity
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <FiArrowDown />
+          <AltArrowDownIcon size="1em" />
         </motion.span>
       </motion.div>
     </header>

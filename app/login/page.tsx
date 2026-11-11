@@ -6,6 +6,7 @@ import { auth, googleProvider } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useLang } from "../lib/i18n";
+import { GoogleLogo } from "../components/icons/brand";
 
 export default function LoginPage() {
   const { t } = useLang();
@@ -95,7 +96,7 @@ export default function LoginPage() {
         <p className="sub">{t("Authenticate to manage your developer profile and secure your subdomain.")}</p>
 
         <button className="google-btn" onClick={handleGoogleSignIn} disabled={locked || signingIn}>
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="google-icon" />
+          <GoogleLogo size={22} className="google-icon" title="Google" />
           {signingIn ? t("Signing in...") : t("Sign in with Google")}
         </button>
 

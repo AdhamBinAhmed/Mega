@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiGithub } from "react-icons/fi";
+import { GitHubLogo } from "../icons/brand";
 import type { Identity } from "./proData";
 import { safeUrl } from "../../lib/sanitizeUrl";
 
@@ -48,7 +48,7 @@ export default function Nav({ identity, github }: { identity: Identity; github?:
               aria-label="GitHub"
               className="grid place-items-center w-9 h-9 rounded-full text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5 transition-colors"
             >
-              <FiGithub />
+              <GitHubLogo size="1em" />
             </a>
           </>
         )}

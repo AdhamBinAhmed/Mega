@@ -1,15 +1,15 @@
-import type { IconType } from "react-icons";
+import type { ComponentType } from "react";
+import { PhoneIcon, LetterIcon, LinkIcon } from "@solar-icons/react/linear";
 import {
-  FaInstagram,
-  FaGithub,
-  FaPhoneAlt,
-  FaGlobe,
-  FaWhatsapp,
-  FaTelegramPlane,
-  FaFacebookF,
-  FaEnvelope,
-  FaLink,
-} from "react-icons/fa";
+  GitHubLogo,
+  WhatsAppLogo,
+  InstagramLogo,
+  TelegramLogo,
+  FacebookLogo,
+} from "../icons/brand";
+
+/** Minimal icon contract shared by Solar icons and the vendored brand logos. */
+export type IconType = ComponentType<{ size?: number | string; className?: string }>;
 
 /* Mirror of about-me's LinkNode type. */
 export type LinkNode = {
@@ -70,17 +70,17 @@ export function buildLinks(profile: Profile): LinkNode[] {
     nodes.push({ key, label, detail, icon, accent, href: hrefBuilder ? hrefBuilder(v) : v });
   };
 
-  push(profile.github, "github", "GitHub", "open-source & code", FaGithub, "--text");
-  push(profile.whatsapp, "whatsapp", "WhatsApp", "let's talk", FaWhatsapp, "--green", (v) =>
+  push(profile.github, "github", "GitHub", "open-source & code", GitHubLogo, "--text");
+  push(profile.whatsapp, "whatsapp", "WhatsApp", "let's talk", WhatsAppLogo, "--green", (v) =>
     v.startsWith("http") ? v : `https://wa.me/${v.replace(/[^\d]/g, "")}`
   );
-  push(profile.instagram, "instagram", "Instagram", "photos & moments", FaInstagram, "--magenta");
-  push(profile.telegram, "telegram", "Telegram", "message me", FaTelegramPlane, "--indigo");
-  push(profile.facebook, "facebook", "Facebook", "on the socials", FaFacebookF, "--indigo");
-  push(profile.gmail, "gmail", "Email", profile.gmail || "get in touch", FaEnvelope, "--cyan", (v) =>
+  push(profile.instagram, "instagram", "Instagram", "photos & moments", InstagramLogo, "--magenta");
+  push(profile.telegram, "telegram", "Telegram", "message me", TelegramLogo, "--indigo");
+  push(profile.facebook, "facebook", "Facebook", "on the socials", FacebookLogo, "--indigo");
+  push(profile.gmail, "gmail", "Email", profile.gmail || "get in touch", LetterIcon, "--cyan", (v) =>
     v.startsWith("mailto:") ? v : `mailto:${v}`
   );
-  push(profile.phone, "phone", "Call", profile.phone || "give me a ring", FaPhoneAlt, "--amber", (v) =>
+  push(profile.phone, "phone", "Call", profile.phone || "give me a ring", PhoneIcon, "--amber", (v) =>
     v.startsWith("tel:") ? v : `tel:${v.replace(/\s+/g, "")}`
   );
 
@@ -91,7 +91,7 @@ export function buildLinks(profile: Profile): LinkNode[] {
       label: l.title?.trim() || "Link",
       detail: "custom link",
       href: l.url.trim(),
-      icon: FaLink,
+      icon: LinkIcon,
       accent: "--violet",
     });
   });
