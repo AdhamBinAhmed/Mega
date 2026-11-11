@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import MagneticButton from "./components/MagneticButton";
@@ -285,7 +286,7 @@ export default function Home() {
           </motion.p>
           <motion.div className="hero-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}>
             <MagneticButton href="#contact" className="btn-solid"><span>{t("Start a Project")}</span><ArrowRightIcon size={16} className="icon-mirror" /></MagneticButton>
-            <a href="/works" className="btn-line"><span>{t("Our Works")}</span></a>
+            <Link href="/works" className="btn-line"><span>{t("Our Works")}</span></Link>
           </motion.div>
           <motion.div className="hero-promo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>
             <span className="promo-text">{t("Make your first free portfolio website online")}</span>
@@ -562,7 +563,7 @@ export default function Home() {
       <div className="history">
         <div className="history-eyebrow">{t("The Origin Story")}</div>
         <h2 className="history-title">{t("Curious how ")}<em>MEGA Devs</em>{t(" started?")}</h2>
-        <a href="/history" className="btn-solid">{t("Read Our Story")} <ArrowRightIcon size={16} className="icon-mirror" /></a>
+        <Link href="/history" className="btn-solid">{t("Read Our Story")} <ArrowRightIcon size={16} className="icon-mirror" /></Link>
       </div>
 
       {/* ═══ FOOTER ═══ */}
@@ -575,14 +576,14 @@ export default function Home() {
               <a href="#services">{t("Services")}</a>
               <a href="https://dev.megadevs.site" target="_blank" rel="noopener noreferrer">{t("DevMega")}</a>
               <a href="#works">{t("Works")}</a>
-              <a href="/history">{t("Our Story")}</a>
+              <Link href="/history">{t("Our Story")}</Link>
               <a href="#contact">{t("Contact")}</a>
             </div>
             <div className="colophon-col">
               <h4>{t("Connect")}</h4>
               <a href="mailto:megatrondevs@gmail.com">{t("Email")}</a>
               <a href="https://github.com/AdhamBinAhmed" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="/palestine">{t("🇵🇸 Palestine")}</a>
+              <Link href="/palestine">{t("🇵🇸 Palestine")}</Link>
             </div>
             <div className="colophon-col">
               <h4>{t("Studio")}</h4>

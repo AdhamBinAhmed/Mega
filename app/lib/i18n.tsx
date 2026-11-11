@@ -42,6 +42,12 @@ const AR: Record<string, string> = {
   "Sign out": "تسجيل الخروج",
   "Login": "تسجيل الدخول",
   "MEGA DEVS • WE SHIP FAST • ": "MEGA DEVS • WE SHIP FAST • ",
+  "Account": "الحساب",
+  "No results": "لا نتائج",
+  "Theme: light": "المظهر: فاتح",
+  "Theme: dark": "المظهر: داكن",
+  "Theme: system": "المظهر: تلقائي",
+  "Skip to content": "تخطَّ إلى المحتوى",
 
   // ── Homepage: side rail + section labels ──
   "§01 · Services": "§01 · الخدمات",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
@@ -612,7 +613,7 @@ export default function WorksPage() {
         <motion.div className="w-cta" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
           <h2 className="w-cta-title">{t("Have something")}<br />{t("worth building?")}</h2>
           <p className="w-cta-sub">{t("We partner with teams to design and ship software that performs in production.")}</p>
-          <a href="/#contact" className="w-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></a>
+          <Link href="/#contact" className="w-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></Link>
         </motion.div>
       </div>
 
@@ -620,9 +621,9 @@ export default function WorksPage() {
       <footer className="w-footer">
         <span className="w-footer-copy">© {new Date().getFullYear()} {t("Mega Devs. All rights reserved.")}</span>
         <div className="w-footer-links">
-          <a href="/" className="w-footer-link">{t("Home")}</a>
-          <a href="/history" className="w-footer-link">{t("Our Story")}</a>
-          <a href="/#contact" className="w-footer-link">{t("Contact")}</a>
+          <Link href="/" className="w-footer-link">{t("Home")}</Link>
+          <Link href="/history" className="w-footer-link">{t("Our Story")}</Link>
+          <Link href="/#contact" className="w-footer-link">{t("Contact")}</Link>
         </div>
       </footer>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { ArrowRightIcon, GlobalIcon, CpuIcon, Widget2Icon, StarIcon } from "@solar-icons/react/linear";
@@ -553,7 +554,7 @@ export default function HistoryPage() {
         >
           <h2 className="h-cta-title">{t("The next chapter")}<br />{t("is already underway.")}</h2>
           <p className="h-cta-sub">{t("Interested in building with us? We'd welcome the opportunity to discuss your project.")}</p>
-          <a href="/#contact" className="h-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></a>
+          <Link href="/#contact" className="h-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></Link>
         </motion.div>
       </div>
 
@@ -561,9 +562,9 @@ export default function HistoryPage() {
       <footer className="h-footer">
         <span className="h-footer-copy">{t("© 2026 Mega Devs. All rights reserved.")}</span>
         <div className="h-footer-links">
-          <a href="/" className="h-footer-link">{t("Home")}</a>
-          <a href="/works" className="h-footer-link">{t("Work")}</a>
-          <a href="/#contact" className="h-footer-link">{t("Contact")}</a>
+          <Link href="/" className="h-footer-link">{t("Home")}</Link>
+          <Link href="/works" className="h-footer-link">{t("Work")}</Link>
+          <Link href="/#contact" className="h-footer-link">{t("Contact")}</Link>
         </div>
       </footer>
     </div>

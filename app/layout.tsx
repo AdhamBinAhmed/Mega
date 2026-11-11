@@ -4,6 +4,7 @@ import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 import MotionProvider from "./components/MotionProvider";
+import SkipLink from "./components/SkipLink";
 import { LanguageProvider } from "./lib/i18n";
 
 const spaceGrotesk = Space_Grotesk({
@@ -82,9 +83,10 @@ export default function RootLayout({
         </noscript>
         <LanguageProvider>
           <MotionProvider>
+            <SkipLink />
             <LoadingScreen />
             <Navbar />
-            {children}
+            <div id="main-content">{children}</div>
           </MotionProvider>
         </LanguageProvider>
       </body>

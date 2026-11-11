@@ -3,11 +3,28 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const SESSION_KEY = "mega-loaded";
+// Hard ceiling: the intro may never hold the page hostage (perf budget §9).
+const MAX_MS = 900;
+
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
+  const [skipped, setSkipped] = useState(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // First visit per session only.
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem(SESSION_KEY) === "1";
+      sessionStorage.setItem(SESSION_KEY, "1");
+    } catch {}
+    if (seen) {
+      setSkipped(true);
+      setIsLoading(false);
+      return;
+    }
+
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
 
@@ -29,9 +46,10 @@ export default function LoadingScreen() {
       setTimeout(() => {
         setIsLoading(false);
         document.body.style.overflow = "";
-      }, 1200);
+      }, 250);
     };
 
+    const cap = setTimeout(finish, MAX_MS);
     if (document.readyState === "complete") {
       finish();
     } else {
@@ -40,6 +58,7 @@ export default function LoadingScreen() {
 
     return () => {
       clearInterval(interval);
+      clearTimeout(cap);
       window.removeEventListener("load", finish);
       document.body.style.overflow = "";
     };
@@ -48,6 +67,8 @@ export default function LoadingScreen() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  if (skipped) return null;
+
   if (!mounted) {
     return (
       <div
@@ -55,7 +76,7 @@ export default function LoadingScreen() {
           position: "fixed",
           inset: 0,
           zIndex: 99999,
-          background: "#0c0b0f",
+          background: "var(--paper)",
         }}
       />
     );
@@ -76,7 +97,7 @@ export default function LoadingScreen() {
             position: "fixed",
             inset: 0,
             zIndex: 99999,
-            background: "#0c0b0f",
+            background: "var(--paper)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -107,7 +128,7 @@ export default function LoadingScreen() {
                   fontSize: "clamp(2.4rem, 8vw, 4rem)",
                   fontWeight: 700,
                   letterSpacing: "-0.06em",
-                  color: "#f8f7fa",
+                  color: "var(--ink)",
                   display: "inline-block",
                 }}
               >
@@ -122,7 +143,7 @@ export default function LoadingScreen() {
                 width: "8px",
                 height: "8px",
                 borderRadius: "50%",
-                background: "#ef4444",
+                background: "var(--accent)",
                 display: "inline-block",
                 marginLeft: "4px",
                 marginBottom: "6px",
@@ -135,7 +156,7 @@ export default function LoadingScreen() {
             style={{
               width: "min(200px, 50vw)",
               height: "1px",
-              background: "rgba(255,255,255,0.08)",
+              background: "var(--rule)",
               position: "relative",
               overflow: "hidden",
             }}
@@ -144,7 +165,7 @@ export default function LoadingScreen() {
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "#ef4444",
+                background: "var(--accent)",
                 transformOrigin: "left",
               }}
               initial={{ scaleX: 0 }}

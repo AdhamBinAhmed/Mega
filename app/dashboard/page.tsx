@@ -7,6 +7,7 @@ import { collection, doc, getDoc, query, where, getDocs } from "firebase/firesto
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import PremiumProfileCard from "../components/PremiumProfileCard";
 import LiquidGlass from "../components/LiquidGlass";
 import ProProfile from "../components/ProProfile";
@@ -396,7 +397,7 @@ export default function DashboardPage() {
             {isLive && (
               <a href={`/${formData.subdomain.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="back-btn"><SquareArrowRightUpIcon size={14} className="icon-mirror" /> {t("View Live Site")}</a>
             )}
-            <a href="/builder" className="back-btn">{t("🎨 Website Builder")}</a>
+            <Link href="/builder" className="back-btn">{t("🎨 Website Builder")}</Link>
             <button className="theme-btn" onClick={() => signOut(auth)}>{t("Sign Out")}</button>
           </div>
 

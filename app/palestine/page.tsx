@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 
@@ -374,14 +375,14 @@ export default function PalestinePage() {
           <div className="pal-colophon-cols">
             <div className="pal-colophon-col">
               <h4>{t("Navigate")}</h4>
-              <a href="/">{t("Home")}</a>
-              <a href="/works">{t("Works")}</a>
-              <a href="/history">{t("Our Story")}</a>
+              <Link href="/">{t("Home")}</Link>
+              <Link href="/works">{t("Works")}</Link>
+              <Link href="/history">{t("Our Story")}</Link>
             </div>
             <div className="pal-colophon-col">
               <h4>{t("Stand With")}</h4>
               <span>#build_with_palestine</span>
-              <a href="/">{t("Standing for humanity")}</a>
+              <Link href="/">{t("Standing for humanity")}</Link>
             </div>
           </div>
         </div>
