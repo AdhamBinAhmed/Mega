@@ -11,10 +11,10 @@
   --accent2:  #ff7043;
   --accent3:  #ffd166;
   --green:    #2ecc71;
-  --font-display: var(--font-outfit,'Outfit'),sans-serif;
-  --font-ed:      var(--font-space-grotesk,'Space Grotesk'),sans-serif;
+  --font-display: var(--font-ui);
+  --font-ed:      var(--font-ui);
   --font-mono:    var(--font-jetbrains,'JetBrains Mono'),monospace;
-  --font-logo:    var(--font-logo,'Sora'),sans-serif;
+  /* --font-logo resolves from tokens.css (Space Grotesk since Sora's removal) */
 }
 [data-theme="light"] .create-root {
   --bg:       #f4f1e9;

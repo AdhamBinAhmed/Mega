@@ -1,0 +1,24 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MEGA DEVS — MOTION TOKENS
+   Durations + the four house easing curves. GSAP equivalents:
+   --ease-out ≈ power3.out · --ease-out-xl ≈ expo.out-ish · springs stay framer.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --dur-fast: 120ms;   /* press feedback, hovers in */
+  --dur-base: 200ms;   /* hovers out, small fades */
+  --dur-slow: 320ms;   /* entrances, panel moves */
+  --dur-reveal: 560ms; /* scroll reveals, big surfaces */
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);      /* THE brand curve */
+  --ease-out-xl: cubic-bezier(0.16, 1, 0.3, 1);    /* long decelerations */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);  /* only allowed overshoot */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);   /* symmetric moves */
+
+  /* Legacy alias (page.css & friends) */
+  --ease: var(--ease-out);
+}
+
+/* Motion grammar helpers */
+.pressable { transition: transform var(--dur-fast) var(--ease-out); }
+.pressable:active { transform: scale(0.97); }

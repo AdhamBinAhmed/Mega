@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MEGA DEVS — DESIGN TOKENS (single source of truth)
+   Brand values are LOCKED — moved verbatim from app/page.css.
+   Every stylesheet in the app consumes these; do not re-declare them locally.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Color — dark (default) ── */
+:root,
+[data-theme="dark"] {
+  --paper:    #0c0b0f;
+  --ink:      #f4f2ed;
+  --ink-soft: #a8a49e;
+  --ink-mute: #6a6862;
+  --rule:     rgba(244, 242, 236, 0.1);
+  --rule-2:   rgba(244, 242, 236, 0.18);
+  --panel:    #111015;
+  --panel-2:  #18171e;
+  --accent:   #ef4444;
+  --accent-ink: #ffffff;
+  --glow:     rgba(239, 68, 68, 0.08);
+  --shadow:   rgba(0, 0, 0, 0.5);
+  --nav-bg:   rgba(12, 11, 15, 0.78);
+  --ok:       #2ecc71;
+}
+
+/* ── Color — light ── */
+[data-theme="light"] {
+  --paper:    #f6f3ec;
+  --ink:      #111010;
+  --ink-soft: #57534b;
+  --ink-mute: #8a857b;
+  --rule:     rgba(17, 16, 16, 0.1);
+  --rule-2:   rgba(17, 16, 16, 0.2);
+  --panel:    #faf8f2;
+  --panel-2:  #ece7db;
+  --accent:   #d92b1f;
+  --accent-ink: #ffffff;
+  --glow:     rgba(217, 43, 31, 0.06);
+  --shadow:   rgba(0, 0, 0, 0.1);
+  --nav-bg:   rgba(244, 241, 233, 0.82);
+  --ok:       #1da955;
+}
+
+:root {
+  /* ── Interactive ── */
+  --focus: var(--accent);
+
+  /* ── Typography (4 global families) ── */
+  --font-ui:     var(--font-space-grotesk, 'Space Grotesk'), sans-serif;
+  --font-mono:   var(--font-jetbrains, 'JetBrains Mono'), monospace;
+  --font-accent: var(--font-serif, 'DM Serif Display'), serif;
+  /* --font-arabic comes from next/font (Cairo) on <body>. */
+
+  /* Legacy aliases — Outfit and Sora were removed from the bundle; every
+     var(--font-display/--font-ed/--font-logo/--font-outfit) consumer now
+     resolves to the brand UI face without per-file edits. */
+  --font-ed:      var(--font-ui);
+  --font-display: var(--font-ui);
+  --font-logo:    var(--font-ui);
+  --font-outfit:  var(--font-space-grotesk);
+  --font-serif-legacy: var(--font-accent);
+
+  /* ── Layout ── */
+  --gutter: 48px;
+  --maxw: 1260px;
+  --maxw-nav: 1320px;
+
+  /* ── Radii ── */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-2xl: 28px;
+  --r-pill: 999px;
+
+  /* ── Shadows (glass surfaces use --lg-shadow from the material instead) ── */
+  --sh-ambient: 0 2px 6px var(--shadow);
+  --sh-float: 0 16px 48px var(--shadow);
+  --sh-modal: 0 24px 80px var(--shadow);
+
+  /* ── Z scale (documents the app's stacking order) ── */
+  --z-badge: 0;
+  --z-content: 2;
+  --z-orb: 40;
+  --z-rail: 90;
+  --z-scrollbar: 200;
+  --z-nav: 500;
+  --z-menu: 510;
+  --z-palette: 520;
+  --z-toast: 530;
+}
+
+@media (max-width: 1024px) {
+  :root { --gutter: 28px; }
+}
+@media (max-width: 560px) {
+  :root { --gutter: 18px; }
+}

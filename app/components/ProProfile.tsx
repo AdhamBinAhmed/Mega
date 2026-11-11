@@ -6,6 +6,7 @@ import Nav from "./pro/Nav";
 import Hero from "./pro/Hero";
 import LinkCard from "./pro/LinkCard";
 import { buildIdentity, buildLinks, type Profile } from "./pro/proData";
+import { proFontClass } from "./pro/fonts";
 import "../[subdomain]/pro-design.css";
 
 export default function ProProfile({ profile, preview = false }: { profile: Profile; preview?: boolean }) {
@@ -21,7 +22,7 @@ export default function ProProfile({ profile, preview = false }: { profile: Prof
   }, [preview]);
 
   return (
-    <div className={preview ? "pro-root pro-preview" : "pro-root"} data-theme="dark">
+    <div className={`${preview ? "pro-root pro-preview" : "pro-root"} ${proFontClass}`} data-theme="dark">
       <main className="relative min-h-screen">
         <Aurora />
         <Nav identity={identity} github={(profile.github || "").trim() || undefined} />

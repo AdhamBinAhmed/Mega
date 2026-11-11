@@ -1,28 +1,24 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
+@import "./styles/liquid-glass.css";
+@import "./styles/motion.css";
+@import "./styles/base.css";
+
 /* Explicit recursive glob so every component (incl. app/components and the
    bracketed app/[subdomain] route) is scanned for utility classes. */
 @source "./**/*.{ts,tsx,js,jsx,mdx}";
 
-@theme {
-  --color-ink: #0c0b0f;
-  --color-surface: #0c0b0f;
-  --color-surface-raised: #13121a;
-  --color-surface-hover: #26252e;
-  --color-muted: #52515b;
-  --color-subtle: #71707a;
-  --color-text: #a1a0aa;
-  --color-text-strong: #f8f7fa;
-  --color-accent: #ef4444;
-  --color-accent-soft: rgba(239, 68, 68, 0.3);
-}
-
-/* === BASE RESET === */
-@layer base {
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+/* Tailwind theme mapped onto the design tokens (single source: tokens.css). */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-mute: var(--ink-mute);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-accent: var(--accent);
+  --font-ui: var(--font-ui);
+  --font-mono: var(--font-mono);
 }
 
 /* === Arabic / RTL support === */
@@ -30,7 +26,7 @@
    squeezes or spreads cursive letters until words overlap (worst on mobile), and
    uppercase is a no-op. Force a real Arabic font + normal spacing everywhere. */
 [lang="ar"] * {
-  font-family: var(--font-arabic), var(--font-outfit), system-ui, sans-serif !important;
+  font-family: var(--font-arabic), var(--font-ui), system-ui, sans-serif !important;
   letter-spacing: normal !important;
   text-transform: none !important;
 }
@@ -38,46 +34,3 @@
 [lang="ar"] .mnav-lang { font-weight: 700; }
 [dir="rtl"] .mnav-key,
 [dir="rtl"] .mnav-cmd-prompt { direction: ltr; }
-
-html { scroll-behavior: smooth; overflow-x: hidden; }
-
-body {
-  background-color: #0c0b0f;
-  color: #f8f7fa;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-/* Magnetic Hover Effect */
-.magnetic {
-  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Reveal Animation */
-.reveal {
-  opacity: 0;
-  transform: translateY(80px);
-  transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-::selection {
-  background-color: #ef4444;
-  color: #fafafa;
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track { background: #0c0b0f; }
-::-webkit-scrollbar-thumb {
-  background: #26252e;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover { background: #3e3d46; }

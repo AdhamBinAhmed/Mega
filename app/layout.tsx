@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk, JetBrains_Mono, Sora, Geist, Geist_Mono, Cairo, DM_Serif_Display } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono, Cairo, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
+import MotionProvider from "./components/MotionProvider";
 import { LanguageProvider } from "./lib/i18n";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -18,23 +14,6 @@ const spaceGrotesk = Space_Grotesk({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
-});
-
-const sora = Sora({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-logo",
-});
-
-// Fonts used by the Pro Design (about-me) layout — faithful match.
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
 });
 
 // Arabic webfont, applied when <html lang="ar">.
@@ -50,6 +29,10 @@ const dmSerif = DM_Serif_Display({
   style: ["normal", "italic"],
   variable: "--font-serif",
 });
+
+// Applies the stored theme (light | dark | system) before first paint so there
+// is no flash. Must stay tiny and synchronous.
+const THEME_SCRIPT = `(function(){try{var p=localStorage.getItem("theme");var t=p==="light"||p==="dark"?p:(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.megadevs.site"),
@@ -88,12 +71,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${sora.variable} ${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${dmSerif.variable}`}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cairo.variable} ${dmSerif.variable}`}>
+        <noscript>
+          {/* Scroll reveals start invisible until GSAP runs — never hide content without JS. */}
+          <style>{`.invisible{visibility:visible!important}`}</style>
+        </noscript>
         <LanguageProvider>
-          <LoadingScreen />
-          <Navbar />
-          {children}
+          <MotionProvider>
+            <LoadingScreen />
+            <Navbar />
+            {children}
+          </MotionProvider>
         </LanguageProvider>
       </body>
     </html>

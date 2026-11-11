@@ -54,9 +54,21 @@ export default function Navbar() {
   const switching = useRef(false);
 
   useEffect(() => {
-    const saved = (localStorage.getItem("theme") as "light" | "dark" | null) || "dark";
-    setTheme(saved);
-    document.documentElement.setAttribute("data-theme", saved);
+    // The blocking script in layout.tsx already applied the resolved theme
+    // (stored pref, or the system preference) before paint — just sync state.
+    const resolved = document.documentElement.getAttribute("data-theme");
+    setTheme(resolved === "light" ? "light" : "dark");
+    // Users without an explicit pref follow live system changes.
+    const stored = localStorage.getItem("theme");
+    if (stored === "light" || stored === "dark") return;
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    const onChange = (e: MediaQueryListEvent) => {
+      const next = e.matches ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      setTheme(next);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
 
   // Close overlays on route change

@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: #08080b;
   color: #ececf1;
-  font-family: var(--font-outfit, "Outfit"), system-ui, sans-serif;
+  font-family: var(--font-ui);
   display: flex;
   flex-direction: column;
 }

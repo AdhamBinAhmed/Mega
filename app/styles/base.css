@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MEGA DEVS — BASE
+   Reset, page ground, focus ring, scrollbar, shared editorial primitives.
+   (Moved out of page.css/globals.css so every route shares one foundation.)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-mute); }
+
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* Skip link (hidden until focused) */
+.skip-link {
+  position: fixed; top: 10px; inset-inline-start: 10px; z-index: 600;
+  padding: 10px 16px; border-radius: var(--r-sm);
+  background: var(--accent); color: var(--accent-ink);
+  font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus-visible { transform: translateY(0); }
+
+/* ── Shared editorial primitives ── */
+.kicker {
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent);
+}
+.meta {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-mute);
+}
+.rule { height: 1px; background: var(--rule); width: 100%; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* Light-mode legibility: small mono labels drop the (4.39:1) accent red for
+   soft ink — the brand hex itself is unchanged and stays on large text. */
+[data-theme="light"] .kicker { color: var(--ink-soft); }
+[data-theme="light"] .kicker::before { content: ""; display: inline-block; width: 14px; height: 2px; margin-inline-end: 8px; vertical-align: middle; background: var(--accent); }
+
+/* Magnetic hover effect (MagneticButton) */
+.magnetic { transition: transform 0.2s var(--ease-out); }
+
+/* Legacy scroll-reveal class (superseded by AnimatedContent; kept for safety) */
+.reveal { opacity: 0; transform: translateY(80px); transition: all 1.2s var(--ease-out); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+/* Theme-switch dissolve helpers */
+html.theming .paper-glow { animation-play-state: paused; }
+html.theming .noise { display: none; }
+
+/* Reduced motion: hard global guarantee (pre-existing contract — keep) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -60,7 +60,7 @@ export default function LoginPage() {
           min-height: 100vh;
           background: #050507;
           color: #f0f0f2;
-          font-family: var(--font-outfit, 'Outfit'), sans-serif;
+          font-family: var(--font-ui);
           display: flex; align-items: center; justify-content: center;
           position: relative; overflow: hidden;
         }
