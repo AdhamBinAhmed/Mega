@@ -88,7 +88,7 @@ export default function PalestinePage() {
 
         /* MASTHEAD */
         .pal-masthead{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);
-          backdrop-filter:blur(14px) saturate(150%);-webkit-backdrop-filter:blur(14px) saturate(150%);border-bottom:1px solid var(--rule);}
+          border-bottom:1px solid var(--rule);}
         .pal-masthead-inner{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);height:66px;display:flex;align-items:center;justify-content:space-between;}
         .pal-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
         .pal-logo-img{height:34px;width:auto;display:block;}

@@ -8,6 +8,7 @@ import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 import PremiumProfileCard from "../components/PremiumProfileCard";
+import LiquidGlass from "../components/LiquidGlass";
 import ProProfile from "../components/ProProfile";
 import { useLang } from "../lib/i18n";
 import { SquareArrowRightUpIcon, CheckCircleIcon, AltArrowDownIcon, GalleryIcon } from "@solar-icons/react/linear";
@@ -952,11 +953,11 @@ export default function DashboardPage() {
                   </div>
                   <button type="button" className="preview-refresh" onClick={() => setPreviewKey((key) => key + 1)} title={t("Restart preview animations")}>↻</button>
                 </div>
-                <div className="browser-chrome glass-panel">
+                <LiquidGlass className="browser-chrome" variant="floating" radius={12}>
                   <div className="browser-dots"><span /><span /><span /></div>
                   <div className="browser-url">{(formData.subdomain || "yourname").toLowerCase()}.megadevs.site</div>
                   {isLive && <a className="preview-open" href={`https://${formData.subdomain.toLowerCase()}.megadevs.site`} target="_blank" rel="noopener noreferrer"><SquareArrowRightUpIcon size={14} className="icon-mirror" /></a>}
-                </div>
+                </LiquidGlass>
                 <div className={`preview-frame preview-frame--${previewDevice}`} data-theme="dark" key={previewKey}>
                   {formData.proDesign ? (
                     deferredPreviewProfile.name ? (
@@ -1009,14 +1010,14 @@ export default function DashboardPage() {
           </div>
 
           {/* ── SAVE BAR ── */}
-          <div className="save-bar glass-panel">
+          <LiquidGlass className="save-bar" variant="floating" radius={16}>
             <div className="save-bar-info">
               {isSubmitting ? t("Saving changes...") : isEditing ? t("Editing existing profile") : t("Ready to launch")}
             </div>
             <button type="submit" form="profile-form" className="submit-btn" disabled={isSubmitting}>
               {isSubmitting ? t("Saving...") : (isEditing ? t("Save Changes") : t("Launch Profile 🚀"))}
             </button>
-          </div>
+          </LiquidGlass>
         </motion.div>
       </div>
     </div>

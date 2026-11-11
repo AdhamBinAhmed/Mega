@@ -510,9 +510,9 @@ section[id] { scroll-margin-top: 80px; }
 
 /* Contact card — simplified, less "code file" theatrics */
 .contact-card {
-  background: var(--panel); border: 1px solid var(--rule-2); border-radius: 14px;
+  /* surface material: LiquidGlass (variant=subtle) */
   padding: 36px; font-family: var(--font-mono); font-size: 0.8rem;
-  line-height: 2; position: relative; overflow: hidden;
+  line-height: 2; overflow: hidden;
 }
 .contact-card::before { display: none; } /* removed "INQUIRY.TXT" label */
 .c-comment { color: var(--ink-mute); }

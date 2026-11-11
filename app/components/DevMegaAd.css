@@ -10,9 +10,7 @@
   gap: 32px;
   align-items: stretch;
   padding: 36px 40px;
-  background: var(--panel);
-  border: 1px solid var(--rule-2);
-  border-radius: 18px;
+  /* surface material: LiquidGlass (variant=floating) */
   text-decoration: none;
   color: inherit;
   overflow: hidden;
@@ -20,20 +18,8 @@
   transition: transform 0.28s var(--ease), border-color 0.28s var(--ease), box-shadow 0.28s var(--ease);
 }
 
-.devmega-card::before {
-  content: "";
-  position: absolute;
-  inset: auto -20% 40% auto;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
-  pointer-events: none;
-}
-
 .devmega-card:hover {
   transform: translateY(-3px);
-  border-color: var(--accent);
-  box-shadow: 0 16px 40px var(--shadow);
 }
 
 .devmega-copy { position: relative; z-index: 1; min-width: 0; }

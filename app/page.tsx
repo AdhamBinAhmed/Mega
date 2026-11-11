@@ -8,6 +8,7 @@ import DevMegaAd from "./components/DevMegaAd";
 import { useLang } from "./lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";
 import { GitHubLogo, TelegramLogo } from "./components/icons/brand";
+import LiquidGlass from "./components/LiquidGlass";
 import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -544,7 +545,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <motion.div className="contact-card" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
+            <LiquidGlass as={motion.div} variant="subtle" radius={14} className="contact-card" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
               <div><span className="c-comment">{t("# Ready to start?")}</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">email</span>: <span className="c-val">&quot;megatrondevs@gmail.com&quot;</span></div>
@@ -552,7 +553,7 @@ export default function Home() {
               <div><span className="c-key">subject</span>: <span className="c-val">&quot;New Project Inquiry&quot;</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">status</span>: <span className="c-val">&quot;awaiting_your_message&quot;</span><span className="c-cursor">_</span></div>
-            </motion.div>
+            </LiquidGlass>
           </div>
         </div>
       </section>

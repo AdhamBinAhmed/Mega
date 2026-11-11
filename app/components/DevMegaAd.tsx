@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { SquareArrowRightUpIcon } from "@solar-icons/react/linear";
+import LiquidGlass from "./LiquidGlass";
 import "./DevMegaAd.css";
 
 const TOOLS = [
@@ -24,7 +25,10 @@ export default function DevMegaAd() {
   return (
     <section id="tools" className="devmega-ad" aria-label={t("DevMega developer tools")}>
       <div className="wrap">
-        <motion.a
+        <LiquidGlass
+          as={motion.a}
+          variant="floating"
+          radius={18}
           href={HREF}
           target="_blank"
           rel="noopener noreferrer"
@@ -70,7 +74,7 @@ export default function DevMegaAd() {
               <span className="devmega-stat-l">{t("Private")}</span>
             </div>
           </aside>
-        </motion.a>
+        </LiquidGlass>
       </div>
     </section>
   );
