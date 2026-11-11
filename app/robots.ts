@@ -8,9 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: [
-      "https://megadevs.vercel.app/sitemap.xml",
-      "https://www.megadevs.site/sitemap.xml",
-    ],
+    sitemap: "https://www.megadevs.site/sitemap.xml",
   };
 }
