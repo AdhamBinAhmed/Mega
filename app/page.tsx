@@ -14,6 +14,7 @@ import HeroHeadline from "./components/hero/HeroHeadline";
 import StartNowButton from "./components/hero/StartNowButton";
 import StackLoop from "./components/StackLoop";
 import Reveal from "./components/Reveal";
+import Spotlight from "./components/Spotlight";
 import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -467,7 +468,7 @@ export default function Home() {
               <h2 className="sec-title">{t("Meet the ")}<em>{t("engineers")}</em></h2>
             </div>
           </div>
-          <Reveal stagger={0.08} className="team-grid">
+          <Spotlight className="spot-host"><Reveal stagger={0.08} className="team-grid">
             {developers.map((d, i) => (
               <div key={d.name} className="dev">
                 <span className="dev-bg-num">0{i + 1}</span>
@@ -484,7 +485,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </Reveal>
+          </Reveal></Spotlight>
         </div>
       </section>
 

@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import Reveal from "../components/Reveal";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { ArrowRightIcon, GlobalIcon, CpuIcon, Widget2Icon, StarIcon } from "@solar-icons/react/linear";
@@ -521,15 +522,11 @@ export default function HistoryPage() {
           <h2 className="h-sec-title">{t("Our vision for")}<br />{t("the decade ahead.")}</h2>
         </div>
 
-        <div className="h-bento">
+        <Reveal stagger={0.08} className="h-bento">
           {pillars.map((p, i) => (
-            <motion.div
+            <div
               key={p.title}
               className={`h-pillar ${p.span}`}
-              initial={{ opacity: 0, y: 22 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}
             >
               <div
                 className="h-pillar-glow"
@@ -540,22 +537,16 @@ export default function HistoryPage() {
               </span>
               <div className="h-pillar-title">{t(p.title)}</div>
               <p className="h-pillar-body">{t(p.body)}</p>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </Reveal>
 
         {/* CTA */}
-        <motion.div
-          className="h-cta"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", damping: 24, stiffness: 130 }}
-        >
+        <Reveal className="h-cta">
           <h2 className="h-cta-title">{t("The next chapter")}<br />{t("is already underway.")}</h2>
           <p className="h-cta-sub">{t("Interested in building with us? We'd welcome the opportunity to discuss your project.")}</p>
           <Link href="/#contact" className="h-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></Link>
-        </motion.div>
+        </Reveal>
       </div>
 
       {/* FOOTER */}

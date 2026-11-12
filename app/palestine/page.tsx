@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import Reveal from "../components/Reveal";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 
@@ -309,27 +310,26 @@ export default function PalestinePage() {
                 <h2 className="pal-sec-title">{t("Three things we will never ")}<em>{t("compromise")}</em></h2>
               </div>
             </div>
-            <div className="pal-values">
-              {values.map((v, i) => (
-                <motion.div key={v.title} className="pal-card" style={{ ["--card-color" as string]: v.color }}
-                  initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                  transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}>
+            <Reveal calm stagger={0.08} className="pal-values">
+              {values.map((v) => (
+                <div key={v.title} className="pal-card" style={{ ["--card-color" as string]: v.color }}>
                   <div className="pal-card-idx">{v.index}</div>
                   <div className="pal-card-bar" />
                   <div className="pal-card-title">{t(v.title)}</div>
                   <p className="pal-card-body">{t(v.body)}</p>
-                </motion.div>
+                </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* QUOTE */}
         <section className="pal-quote">
-          <motion.p className="pal-quote-text"
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-            &ldquo;{t("To exist is to resist. We build so that every ")}<b>{t("story is remembered")}</b>.&rdquo;
-          </motion.p>
+          <Reveal calm>
+            <p className="pal-quote-text">
+              &ldquo;{t("To exist is to resist. We build so that every ")}<b>{t("story is remembered")}</b>.&rdquo;
+            </p>
+          </Reveal>
           <span className="pal-quote-by">{t("— MEGA Devs · In Solidarity")}</span>
         </section>
 

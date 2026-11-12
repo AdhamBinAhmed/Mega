@@ -19,6 +19,7 @@ import { FONTS, FONT_CATEGORIES, googleFontsUrl } from "../lib/fonts";
 import { ElementContent, buttonStyleFromProps, buttonClassName, MobileFlow } from "../components/CanvasElementView";
 import { BUTTON_PRESETS, BUTTON_PRESET_CATEGORIES } from "../lib/buttonPresets";
 import { cleanSlug, isReservedSlug } from "../lib/reserved";
+import LiquidGlass from "../components/LiquidGlass";
 import { TextSquareIcon, BoxMinimalisticIcon, GalleryIcon, Widget2Icon, SmartphoneIcon, SquareArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";
 import { addQuotaWrite, newBatch } from "../lib/rateLimit";
 import "../[subdomain]/subdomain-bg.css";
@@ -352,7 +353,7 @@ export default function BuilderPage() {
   return (
     <div className="bld-root">
       {/* ── TOP BAR ── */}
-      <div className="bld-topbar">
+      <LiquidGlass variant="nav" radius={0} className="bld-topbar">
         <input
           className="bld-title-input"
           value={title}
@@ -383,7 +384,7 @@ export default function BuilderPage() {
         <button className="bld-btn primary" onClick={save} disabled={saving}>
           {saving ? "Saving…" : "Save & Publish"}
         </button>
-      </div>
+      </LiquidGlass>
 
       <div className="bld-body">
         {/* ── LEFT: add elements ── */}

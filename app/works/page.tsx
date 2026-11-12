@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import Reveal from "../components/Reveal";
+import Spotlight from "../components/Spotlight";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
@@ -560,18 +562,14 @@ export default function WorksPage() {
         </div>
 
         {/* PROJECTS */}
-        <div className="w-projects">
+        <Spotlight className="spot-host"><Reveal stagger={0.08} className="w-projects">
           {works.map((w, i) => {
             const isLive = w.status === "Live";
             return (
-              <motion.article
+              <article
                 key={w.num}
                 className={`w-project${i % 2 === 1 ? " rev" : ""}`}
                 style={{ ["--pa" as string]: w.accent }}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring", damping: 26, stiffness: 120 }}
               >
                 <WindowVisual work={w} />
                 <div className="w-info">
@@ -604,17 +602,17 @@ export default function WorksPage() {
                     <span className={`w-status ${w.status.toLowerCase()}`}>{t(w.status)}</span>
                   </div>
                 </div>
-              </motion.article>
+              </article>
             );
           })}
-        </div>
+        </Reveal></Spotlight>
 
         {/* CTA */}
-        <motion.div className="w-cta" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
+        <Reveal className="w-cta">
           <h2 className="w-cta-title">{t("Have something")}<br />{t("worth building?")}</h2>
           <p className="w-cta-sub">{t("We partner with teams to design and ship software that performs in production.")}</p>
           <Link href="/#contact" className="w-cta-btn">{t("Start a Project")} <ArrowRightIcon size="1em" className="icon-mirror" /></Link>
-        </motion.div>
+        </Reveal>
       </div>
 
       {/* FOOTER */}

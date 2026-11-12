@@ -61,6 +61,21 @@ body {
 .svc-arrow svg, .contact-link-arrow svg, .faq-icon svg, .dev-link svg,
 .devmega-cta svg, .btn-solid svg, .btn-line svg, .promo-link svg { vertical-align: -0.15em; }
 
+/* Interactive spotlight (#2) — the wrapped cards get --mx/--my from Spotlight.tsx.
+   Strength is intentionally tiny: decoration must never reduce text contrast. */
+.spot-host [data-spot] { position: relative; }
+.spot-host [data-spot]::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--accent) var(--spot-strength, 6%), transparent), transparent 70%);
+  z-index: 0;
+}
+[data-theme="light"] .spot-host [data-spot]::after { --spot-strength: 3%; }
+@media (prefers-reduced-motion: reduce) { .spot-host [data-spot]::after { display: none; } }
+
 /* Magnetic hover effect (MagneticButton) */
 .magnetic { transition: transform 0.2s var(--ease-out); }
 
