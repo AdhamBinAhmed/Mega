@@ -432,8 +432,17 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       Array.from(
         panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
       );
-    // Move focus to the first menu item once the panel is interactive.
-    const focusTimer = window.setTimeout(() => focusables()[0]?.focus(), 80);
+    // Move focus to the first menu item only after the slide-in has landed —
+    // focusing mid-animation makes the browser scroll-jump the panel and the
+    // whole entrance looks broken. preventScroll keeps GSAP in charge.
+    const focusTimer = window.setTimeout(() => {
+      panel.scrollTop = 0;
+      try {
+        focusables()[0]?.focus({ preventScroll: true });
+      } catch {
+        focusables()[0]?.focus();
+      }
+    }, 750);
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -462,7 +471,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       window.clearTimeout(focusTimer);
       document.removeEventListener('keydown', onKeyDown, true);
       document.body.style.overflow = prevOverflow;
-      prevFocus?.focus?.();
+      try { prevFocus?.focus?.({ preventScroll: true }); } catch { prevFocus?.focus?.(); }
     };
   }, [open, closeMenu]);
 
