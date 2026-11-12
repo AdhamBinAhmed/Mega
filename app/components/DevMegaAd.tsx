@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { SquareArrowRightUpIcon } from "@solar-icons/react/linear";
 import LiquidGlass from "./LiquidGlass";
@@ -26,17 +25,13 @@ export default function DevMegaAd() {
     <section id="tools" className="devmega-ad" aria-label={t("DevMega developer tools")}>
       <div className="wrap">
         <LiquidGlass
-          as={motion.a}
+          as="a"
           variant="floating"
           radius={18}
           href={HREF}
           target="_blank"
           rel="noopener noreferrer"
           className="devmega-card"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", damping: 24, stiffness: 130 }}
         >
           <div className="devmega-copy">
             <div className="devmega-kicker-row">

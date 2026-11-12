@@ -10,6 +10,10 @@ import { useLang } from "./lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";
 import { GitHubLogo, TelegramLogo } from "./components/icons/brand";
 import LiquidGlass from "./components/LiquidGlass";
+import HeroHeadline from "./components/hero/HeroHeadline";
+import StartNowButton from "./components/hero/StartNowButton";
+import StackLoop from "./components/StackLoop";
+import Reveal from "./components/Reveal";
 import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -272,13 +276,7 @@ export default function Home() {
           <span className="meta">{t("Est. 2022")}</span>
         </div>
 
-        <motion.h1 className="hero-title"
-          variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.1 } } }}
-          initial="hidden" animate="show">
-          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }}>{t("We Ship.")}</motion.span>
-          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="accent">{t("Fast.")}</motion.span>
-          <motion.span variants={{ hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { type: "spring", damping: 22, stiffness: 120 } } }} className="outline">{t("Always.")}</motion.span>
-        </motion.h1>
+        <HeroHeadline />
 
         <div className="hero-mid">
           <motion.p className="hero-dek" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }}>
@@ -290,7 +288,7 @@ export default function Home() {
           </motion.div>
           <motion.div className="hero-promo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>
             <span className="promo-text">{t("Make your first free portfolio website online")}</span>
-            <a href="https://megadevs.site/login" className="promo-link">{t("Start Now")} <ArrowRightIcon size={14} className="icon-mirror" /></a>
+            <StartNowButton />
           </motion.div>
         </div>
 
@@ -310,16 +308,16 @@ export default function Home() {
       </div>
 
       {/* ═══ STATS ═══ */}
-      <div className="stats">
-        {stats.map((s, i) => (
-          <motion.div key={s.label} className="stat" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+      <Reveal stagger={0.08} className="stats">
+        {stats.map((s) => (
+          <div key={s.label} className="stat">
             <div className="stat-num">{s.value}</div>
-            <div className="stat-label">{s.label}</div>
-          </motion.div>
+            <div className="stat-label">{t(s.label)}</div>
+          </div>
         ))}
-      </div>
+      </Reveal>
 
-      <DevMegaAd />
+      <Reveal><DevMegaAd /></Reveal>
 
 
       {/* ═══ SERVICES ═══ */}
@@ -331,11 +329,9 @@ export default function Home() {
               <h2 className="sec-title">{t("Services that ")}<em>{t("scale")}</em></h2>
             </div>
           </div>
-          <div className="svc-list">
-            {services.map((s, i) => (
-              <motion.a key={s.num} href="#contact" className="svc"
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.05 }}>
+          <Reveal stagger={0.08} className="svc-list">
+            {services.map((s) => (
+              <a key={s.num} href="#contact" className="svc">
                 <span className="svc-num">{s.num}</span>
                 <div>
                   <div className="svc-name">{t(s.title)}</div>
@@ -347,9 +343,9 @@ export default function Home() {
                   <span className="svc-metric-lab">{t(s.metricLabel)}</span>
                   <span className="svc-arrow"><ArrowRightUpIcon size={16} className="icon-mirror" /></span>
                 </div>
-              </motion.a>
+              </a>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -362,15 +358,15 @@ export default function Home() {
               <h2 className="sec-title">{t("Built for ")}<em>{t("momentum")}</em></h2>
             </div>
           </div>
-          <div className="proc-grid">
-            {process.map((p, i) => (
-              <motion.div key={p.num} className="proc" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.06 }}>
+          <Reveal stagger={0.08} className="proc-grid">
+            {process.map((p) => (
+              <div key={p.num} className="proc">
                 <div className="proc-num">{p.num}</div>
                 <div className="proc-title">{t(p.title)}</div>
                 <div className="proc-desc">{t(p.desc)}</div>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -383,14 +379,12 @@ export default function Home() {
               <h2 className="sec-title">{t("Things we've ")}<em>{t("shipped")}</em></h2>
             </div>
           </div>
-          <div>
-            {works.map((w, i) => (
-              <motion.a key={w.num} href={w.link}
+          <Reveal stagger={0.08}>
+            {works.map((w) => (
+              <a key={w.num} href={w.link}
                 target={w.link.startsWith("http") ? "_blank" : undefined}
                 rel={w.link.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="work"
-                initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                transition={{ type: "spring", damping: 26, stiffness: 140, delay: i * 0.05 }}>
+                className="work">
                 <div>
                   <div className="work-cat">{t(w.category)}</div>
                   <div className="work-title">{w.title}</div>
@@ -398,9 +392,9 @@ export default function Home() {
                 </div>
                 <span className="work-year">{w.year}</span>
                 <span className={`work-status ${w.status.toLowerCase()}`}>{t(w.status)}</span>
-              </motion.a>
+              </a>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -430,14 +424,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <motion.div className="stack-grid" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-              {techStack.map((tech) => (
-                <div key={tech.name} className="stack-cell">
-                  <span className="stack-cell-name">{tech.name}</span>
-                  <span className="stack-cell-cat">{t(tech.cat)}</span>
-                </div>
-              ))}
-            </motion.div>
+            <StackLoop />
           </div>
         </div>
       </section>
@@ -451,7 +438,7 @@ export default function Home() {
               <h2 className="sec-title">{t("Frequently ")}<em>{t("asked")}</em></h2>
             </div>
           </div>
-          <div className="faq">
+          <Reveal stagger={0.08} className="faq">
             {faqs.map((f, i) => (
               <div key={f.q} className="faq-item">
                 <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
@@ -467,7 +454,7 @@ export default function Home() {
                 </AnimatePresence>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -480,9 +467,9 @@ export default function Home() {
               <h2 className="sec-title">{t("Meet the ")}<em>{t("engineers")}</em></h2>
             </div>
           </div>
-          <div className="team-grid">
+          <Reveal stagger={0.08} className="team-grid">
             {developers.map((d, i) => (
-              <motion.div key={d.name} className="dev" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130, delay: i * 0.08 }}>
+              <div key={d.name} className="dev">
                 <span className="dev-bg-num">0{i + 1}</span>
                 <div className="dev-top">
                   <span className="dev-tag">{t(d.tag)}</span>
@@ -495,9 +482,9 @@ export default function Home() {
                   <a href={d.telegram} target="_blank" rel="noopener noreferrer" className="dev-link"><TelegramLogo size={14} />{t("Telegram")}</a>
                   <a href={d.github} target="_blank" rel="noopener noreferrer" className="dev-link"><GitHubLogo size={14} />GitHub</a>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -546,7 +533,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <LiquidGlass as={motion.div} variant="subtle" radius={14} className="contact-card" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", damping: 24, stiffness: 130 }}>
+            <LiquidGlass variant="subtle" radius={14} className="contact-card">
               <div><span className="c-comment">{t("# Ready to start?")}</span></div>
               <div>&nbsp;</div>
               <div><span className="c-key">email</span>: <span className="c-val">&quot;megatrondevs@gmail.com&quot;</span></div>
