@@ -1,5 +1,11 @@
 # REDESIGN BLUEPRINT — MEGA Devs × Liquid Glass
 
+> **Status: implemented.** `IMPLEMENTATION_REPORT.md` records the as-built state.
+> Notable changes to this spec: phones use a bottom dock (not the top pill +
+> drawer), `/works` gained a CardSwap stack, the primary hero CTA is also a
+> SpecularButton, View Transitions were dropped (React version), and
+> MaskedHeading is wired but inactive pending an image asset.
+
 > The binding visual strategy for Stage 2. Where this document and the master prompt's **Phase 5B** disagree, **Phase 5B wins**. Section numbers §1/§3/§4/§5/§6 are referenced by the Stage 2 phase plan (`CLAUDE_REDESIGN_PROMPT.md`).
 
 **Design thesis.** The site already has a strong identity: a dark editorial "engineering magazine" — paper/ink, hairline rules, mono metadata, serif-italic accents, brand red. The redesign does not replace that identity; it adds a second physical layer above it: **floating glass instruments** (nav pill, palette, menu, toasts, hero button, drifting orb) rendered in the Liquid Glass material, while content stays print-flat. Two layers, clearly separated = spatial depth without glassmorphism soup.

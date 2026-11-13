@@ -1,5 +1,10 @@
 # CLAUDE_REDESIGN_PROMPT — Stage 2 Implementation Plan (audit-adjusted)
 
+> **Status: executed.** See `IMPLEMENTATION_REPORT.md` for what actually shipped,
+> the deviations agreed during implementation (phone bottom dock, CardSwap on
+> /works, SpecularButton on the primary CTA), the bugs found in QA, and the
+> open items. Where this plan and the report disagree, the report is current.
+
 Execute the MEGA Devs Liquid-Glass redesign in this repo (`C:\Users\adham\Desktop\Mega`). This document is self-sufficient: architecture facts come from `PROJECT_INTELLIGENCE_REPORT.md`, the visual spec from `REDESIGN_BLUEPRINT.md` (§1 tokens, §3 glass map, §4 primitives, §5 pages, §6 a11y), icons from `ICON_MIGRATION_MAP.md`, research rationale from `DESIGN_RESEARCH.md`. **Component source code: `APPENDIX_CODE.md` in this directory — copy each file exactly as written there.** Where anything disagrees, the Phase 5B specs (§5 below) win.
 
 ## 0. Ground rules (binding)
