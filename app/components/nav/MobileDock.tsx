@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HamburgerMenuIcon, CloseCircleIcon } from "@solar-icons/react/linear";
+import { HamburgerMenuIcon, CloseCircleIcon, HomeAngleIcon } from "@solar-icons/react/linear";
 import LiquidGlass from "../LiquidGlass";
 import ThemeToggle from "./ThemeToggle";
 import { useLang } from "../../lib/i18n";
@@ -9,7 +9,7 @@ import { useLang } from "../../lib/i18n";
 /**
  * Phone dock (< 768px) — replaces the top bar entirely.
  *
- * Layout:  [menu] [theme]  ( logo )  [Works] [History]
+ * Layout:  [menu] [theme] [home]  ( logo )  [Works] [History]
  * The menu button is pinned to the screen edge and doubles as the panel's
  * close control, so the dock stays above the open menu.
  * The centre logo sits in a raised "popped" frame that breaks the dock's top
@@ -41,6 +41,9 @@ export default function MobileDock({
           {menuOpen ? <CloseCircleIcon size={22} /> : <HamburgerMenuIcon size={20} />}
         </button>
         <ThemeToggle className="mdock-btn" />
+        <Link href="/" className="mdock-btn" aria-label={t("Home")}>
+          <HomeAngleIcon size={20} />
+        </Link>
       </div>
 
       <button
