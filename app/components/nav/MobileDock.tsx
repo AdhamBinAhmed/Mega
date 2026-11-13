@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HamburgerMenuIcon, CloseCircleIcon, HomeAngleIcon } from "@solar-icons/react/linear";
+import { HamburgerMenuIcon, CloseCircleIcon, HomeIcon } from "@solar-icons/react/linear";
 import LiquidGlass from "../LiquidGlass";
 import ThemeToggle from "./ThemeToggle";
 import { useLang } from "../../lib/i18n";
@@ -42,7 +42,7 @@ export default function MobileDock({
         </button>
         <ThemeToggle className="mdock-btn" />
         <Link href="/" className="mdock-btn" aria-label={t("Home")}>
-          <HomeAngleIcon size={20} />
+          <HomeIcon size={20} />
         </Link>
       </div>
 
