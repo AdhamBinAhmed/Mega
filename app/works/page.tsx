@@ -325,6 +325,24 @@ function WindowVisual({ work }: { work: Work }) {
 
 export default function WorksPage() {
   const { t } = useLang();
+  const stack = useStackSize();
+  const [frontCard, setFrontCard] = useState(0);
+  const [stillMotion, setStillMotion] = useState(false);
+
+  useEffect(() => {
+    setStillMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  // Only the front card navigates; clicking a back card brings it forward
+  // (handled inside CardSwap), so this fires on the already-front card.
+  const openProject = (index: number) => {
+    if (index !== frontCard) return;
+    const id = slugify(works[index].title);
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: stillMotion ? "auto" : "smooth" });
+    history.replaceState(null, "", `#${id}`);
+  };
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
   const rootRef = useRef<HTMLDivElement>(null);
@@ -377,6 +395,27 @@ export default function WorksPage() {
 
         /* HERO */
         .w-hero{padding:140px 0 60px;}
+        .w-hero-copy{min-width:0;}
+        /* Card stack: its own intro + scroll target; never inside a glass panel. */
+        .w-hero-stack{height:clamp(320px,42vw,520px);min-width:0;}
+        .w-card{display:flex;flex-direction:column;height:100%;padding:12px;gap:10px;}
+        .w-card-top{height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+        .w-card-cat{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.16em;
+          text-transform:uppercase;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .w-card-media{position:relative;flex:1;min-height:0;overflow:hidden;
+          border-radius:max(0px,calc(var(--swap-radius) - 6px));background:var(--surface);}
+        /* WindowVisual is built for the full-width list; scale it into the card. */
+        .w-card-media-fit{position:absolute;inset:0;display:grid;place-items:center;
+          transform:scale(.62);transform-origin:center;pointer-events:none;}
+        .w-card-foot{flex:none;display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+        .w-card-title{font-family:var(--font-ed);font-size:18px;font-weight:600;letter-spacing:-.02em;color:var(--text);}
+        .w-card-metric{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.1em;
+          text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+        .w-card-metric b{color:var(--accent);font-weight:700;}
+        @media (min-width:1024px){
+          .w-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);
+            gap:48px;align-items:center;}
+        }
         .w-eyebrow{font-family:var(--font-mono);font-size:.64rem;color:var(--accent);
           letter-spacing:.22em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:12px;}
         .w-eyebrow::before{content:'';width:32px;height:1px;background:var(--accent);}
@@ -564,6 +603,7 @@ export default function WorksPage() {
       <div className="w-content">
         {/* HERO */}
         <section className="w-hero">
+          <div className="w-hero-copy">
           <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", damping: 24, stiffness: 120 }}>
             <div className="w-eyebrow">{t("Selected Work")}</div>
             <h1 className="w-headline">{t("Work we're")}<br /><em>{t("proud of")}</em></h1>
@@ -579,6 +619,57 @@ export default function WorksPage() {
               </div>
             ))}
           </motion.div>
+          </div>
+
+          {/* 3D index into the list below — CardSwap brings its own intro, so
+              it is deliberately NOT wrapped in AnimatedContent. */}
+          <div className="w-hero-stack">
+            <CardSwap
+              ariaLabel={t("Selected projects")}
+              width={stack.width}
+              height={stack.height}
+              visibleCards={stack.visibleCards}
+              parallax={stack.parallax}
+              hoverSpread={stack.hoverSpread}
+              cardDistance={56}
+              verticalDistance={64}
+              depth={90}
+              skewAmount={6}
+              delay={4500}
+              autoplay={!stillMotion}
+              pauseOnHover
+              draggable
+              speed={1}
+              bounce={0.3}
+              dim={0.5}
+              cardRadius={16}
+              intro
+              onChange={setFrontCard}
+              onCardClick={openProject}
+            >
+              {works.map((w) => (
+                <Card key={w.title}>
+                  <div className="w-card">
+                    <div className="w-card-top">
+                      <span className="w-card-cat">{t(w.category)}</span>
+                      <span className={`w-status ${w.status.toLowerCase()}`}>{t(w.status)}</span>
+                    </div>
+                    <div className="w-card-media">
+                      <div className="w-card-media-fit">
+                        <WindowVisual work={w} />
+                      </div>
+                    </div>
+                    <div className="w-card-foot">
+                      <span className="w-card-title">{w.title}</span>
+                      <span className="w-card-metric">
+                        <b>{w.metrics[0].k}</b> {t(w.metrics[0].v)}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </CardSwap>
+          </div>
         </section>
 
         {/* SECTION HEAD */}
@@ -594,6 +685,7 @@ export default function WorksPage() {
             return (
               <article
                 key={w.num}
+                id={slugify(w.title)}
                 className={`w-project${i % 2 === 1 ? " rev" : ""}`}
                 style={{ ["--pa" as string]: w.accent }}
               >
