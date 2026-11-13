@@ -61,6 +61,52 @@ body {
 .svc-arrow svg, .contact-link-arrow svg, .faq-icon svg, .dev-link svg,
 .devmega-cta svg, .btn-solid svg, .btn-line svg, .promo-link svg { vertical-align: -0.15em; }
 
+/* ── CUSTOM CURSOR ──
+   The native cursor is hidden ONLY while CustomCursor is mounted and has seen
+   a pointer (it stamps data-cursor/data-cursor-on on <html>), so touch,
+   reduced-motion and JS-off never end up with an invisible pointer. */
+html[data-cursor="custom"],
+html[data-cursor="custom"] body,
+html[data-cursor="custom"] a,
+html[data-cursor="custom"] button,
+html[data-cursor="custom"] [role="button"] { cursor: none; }
+/* Text entry keeps a real caret — you cannot aim a caret with a dot. */
+html[data-cursor="custom"] input,
+html[data-cursor="custom"] textarea,
+html[data-cursor="custom"] select,
+html[data-cursor="custom"] [contenteditable="true"] { cursor: auto; }
+
+.mcursor-dot, .mcursor-ring {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+  will-change: transform;
+}
+html[data-cursor-on] .mcursor-dot,
+html[data-cursor-on] .mcursor-ring { opacity: 1; }
+
+.mcursor-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+.mcursor-ring {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--rule-2);
+  transition: opacity var(--dur-base) var(--ease-out),
+              width var(--dur-base) var(--ease-out),
+              height var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out),
+              background-color var(--dur-base) var(--ease-out);
+}
+/* Over something clickable: the ring opens up and takes the brand tint. */
+.mcursor-ring[data-hot] {
+  width: 44px; height: 44px;
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 8%, transparent);
+}
+.mcursor-ring[data-press] { width: 22px; height: 22px; }
+
 /* Interactive spotlight (#2) — the wrapped cards get --mx/--my from Spotlight.tsx.
    Strength is intentionally tiny: decoration must never reduce text contrast. */
 .spot-host [data-spot] { position: relative; }

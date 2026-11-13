@@ -51,9 +51,8 @@ export default function PalestinePage() {
           --nav-bg:rgba(244,241,233,0.82);
         }
         .pal-root {
-          --font-ed:var(--font-space-grotesk,'Space Grotesk'),sans-serif;
-          --font-display:var(--font-outfit,'Outfit'),sans-serif;
-          --font-mono:var(--font-jetbrains,'JetBrains Mono'),monospace;
+          --font-ed:var(--font-ui);
+          --font-display:var(--font-ui);
           --ease:cubic-bezier(0.22,1,0.36,1);
           --gutter:48px; --maxw:1180px;
         }

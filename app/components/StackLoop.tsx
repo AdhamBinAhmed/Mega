@@ -64,7 +64,7 @@ export default function StackLoop() {
     ),
     title: name,
     ariaLabel: name,
-    hoverColor: brand?.accent || "#ef4444",
+    hoverColor: brand.accent,
   }));
 
   return (

@@ -558,7 +558,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "linear-gradient(120deg, #a78bfa, #5eead4)",
+              background: "linear-gradient(120deg, var(--accent), var(--panel-2))",
             }}
           >
             <motion.span
@@ -567,12 +567,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3 }}
               style={{
-                fontFamily: wipe === "ar"
-                  ? "var(--font-arabic), sans-serif"
-                  : "var(--font-logo), var(--font-outfit), sans-serif",
+                fontFamily: wipe === "ar" ? "var(--font-arabic), sans-serif" : "var(--font-ui)",
                 fontSize: "clamp(1.8rem, 8vw, 3rem)",
                 fontWeight: 800,
-                color: "#0a0714",
+                color: "var(--accent-ink)",
                 letterSpacing: "-0.02em",
               }}
             >

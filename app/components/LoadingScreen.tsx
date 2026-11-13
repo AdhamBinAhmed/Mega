@@ -124,7 +124,7 @@ export default function LoadingScreen() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{
-                  fontFamily: "var(--font-space-grotesk, 'Space Grotesk'), sans-serif",
+                  fontFamily: "var(--font-ui)",
                   fontSize: "clamp(2.4rem, 8vw, 4rem)",
                   fontWeight: 700,
                   letterSpacing: "-0.06em",

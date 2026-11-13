@@ -6,19 +6,11 @@
 
 /* Theme/font/motion tokens live in app/styles/tokens.css + motion.css */
 
-@media (hover: hover) and (pointer: fine) { body, a, button { cursor: none; } }
 
 
 .root { position: relative; }
 
-/* ── CURSOR ── */
-.cursor {
-  position: fixed; z-index: 9999; top: 0; left: 0;
-  width: 10px; height: 10px; background: var(--accent);
-  border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
-}
-@media (hover: none), (pointer: coarse) { .cursor { display: none; } }
+/* Cursor: see CustomCursor.tsx + app/styles/base.css (global, all routes). */
 
 /* ── SCROLL BAR ── */
 .scroll-bar {
@@ -129,12 +121,12 @@ section[id] { scroll-margin-top: 80px; }
 
 .btn-solid {
   display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px;
-  background: var(--accent); color: #fff; font-family: var(--font-ed);
+  background: var(--accent); color: var(--accent-ink); font-family: var(--font-ed);
   font-weight: 600; font-size: 0.88rem; letter-spacing: 0.02em;
   text-decoration: none; border: none; border-radius: 10px;
   transition: all 0.25s var(--ease); position: relative; overflow: hidden;
 }
-.btn-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(239,68,68,0.25); }
+.btn-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 25%, transparent); }
 .btn-solid > * { position: relative; z-index: 1; }
 
 .btn-line {
@@ -165,7 +157,7 @@ section[id] { scroll-margin-top: 80px; }
 .hero-status { display: flex; gap: 20px; margin-top: 24px; flex-wrap: wrap; }
 .hero-status > div { display: flex; align-items: center; gap: 8px; }
 .status-live {
-  width: 6px; height: 6px; border-radius: 50%; background: #2ecc71;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--ok);
   animation: pulse 2.5s ease-in-out infinite; flex-shrink: 0;
 }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
@@ -340,8 +332,8 @@ section[id] { scroll-margin-top: 80px; }
   letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px;
   border-radius: 999px; white-space: nowrap;
 }
-.work-status.live { color: #2ecc71; background: rgba(46,204,113,0.1); }
-.work-status.private { color: var(--accent); background: rgba(239,68,68,0.1); }
+.work-status.live { color: var(--ok); background: color-mix(in oklab, var(--ok) 10%, transparent); }
+.work-status.private { color: var(--accent); background: color-mix(in oklab, var(--accent) 10%, transparent); }
 
 /* ═══ STACK ═══ */
 .stack { display: grid; grid-template-columns: 1fr 1.8fr; gap: 56px; align-items: start; }
@@ -511,7 +503,7 @@ section[id] { scroll-margin-top: 80px; }
   text-transform: uppercase; color: var(--ink-mute);
 }
 .contact-meta-v { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--ink); }
-.contact-meta-v.green { color: #2ecc71; }
+.contact-meta-v.green { color: var(--ok); }
 
 /* Contact card — simplified, less "code file" theatrics */
 .contact-card {

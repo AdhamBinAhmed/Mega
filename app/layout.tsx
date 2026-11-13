@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import MotionProvider from "./components/MotionProvider";
 import SkipLink from "./components/SkipLink";
 import ChromeExtras from "./components/ChromeExtras";
+import CustomCursor from "./components/CustomCursor";
 import { RevealRefresher } from "./components/Reveal";
 import { LanguageProvider } from "./lib/i18n";
 
@@ -89,6 +90,7 @@ export default function RootLayout({
             <LoadingScreen />
             <Navbar />
             <ChromeExtras />
+            <CustomCursor />
             <RevealRefresher />
             <div id="main-content">{children}</div>
           </MotionProvider>

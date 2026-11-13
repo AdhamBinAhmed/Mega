@@ -56,7 +56,8 @@
   min-width: 28px; height: 28px; border-radius: var(--r-sm);
   padding: 0 8px; gap: 5px;
   background: var(--panel-2); border: 1px solid var(--rule-2);
-  color: var(--ink-mute); font-family: var(--mnav-mono); font-size: 0.72rem;
+  /* --ink-mute measures 3.2:1 here — too low for 0.72rem text (WCAG 1.4.3). */
+  color: var(--ink-soft); font-family: var(--mnav-mono); font-size: 0.72rem;
   transition: all var(--dur-base);
 }
 .mnav-index:hover .mnav-key { border-color: var(--accent); color: var(--accent); }
@@ -92,11 +93,13 @@ html.theming .mnav-bar { backdrop-filter: none !important; -webkit-backdrop-filt
   font-family: var(--mnav-font); font-size: 1rem; font-weight: 500;
 }
 .mnav-cmd-esc {
-  font-family: var(--mnav-mono); font-size: 0.56rem; color: var(--ink-mute);
+  font-family: var(--mnav-mono); font-size: 0.56rem; color: var(--ink-soft);
   border: 1px solid var(--rule-2); border-radius: 5px; padding: 3px 8px;
 }
+/* Group headings sit on modal glass: ink-mute is 3.5:1 (dark) / 2.5:1 (light)
+   against the worst-case pane, ink-soft is 7.9:1 / 5.2:1. */
 .mnav-cmd-label {
-  font-family: var(--mnav-mono); font-size: 0.56rem; color: var(--ink-mute);
+  font-family: var(--mnav-mono); font-size: 0.56rem; color: var(--ink-soft);
   letter-spacing: 0.14em; text-transform: uppercase; padding: 14px 20px 6px;
 }
 .mnav-cmd-item {

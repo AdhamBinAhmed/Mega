@@ -74,7 +74,7 @@ export default function HeroHeadline() {
               text={t("Fast.")}
               color="currentColor"
               /* Frame/specks must read against the red fill → use ink. */
-              accentColor={brand?.ink || "#f4f2ed"}
+              accentColor={brand.ink}
               fontFamily=""
               fontWeight={700}
               fontSize={208}

@@ -32,10 +32,10 @@ export default function StartNowButton() {
         proximity={220}
         blur={0}
         /* Resolved hex only — the shader converts colors through canvas fillStyle. */
-        lineColor={brand?.accent || "#ef4444"}
-        baseColor={brand?.rule2 || "rgba(244,242,236,0.18)"}
-        textColor={brand?.ink || "#f4f2ed"}
-        tint={brand?.accent || "#ef4444"}
+        lineColor={brand.accent}
+        baseColor={brand.rule2}
+        textColor={brand.ink}
+        tint={brand.accent}
         tintOpacity={0.08}
         className="promo-specular"
       >

@@ -170,8 +170,6 @@ export default function HistoryPage() {
         }
 
         /* NAV — uses global navbar now */
-        .h-nav { display: none !important; }
-        [data-theme="light"] .history-root .h-nav { background: rgba(250,248,245,0.72); }
         .h-logo {
           font-family: var(--font-logo); font-size: 1.15rem; font-weight: 800;
           color: var(--text); text-decoration: none; letter-spacing: -0.01em;
@@ -182,7 +180,6 @@ export default function HistoryPage() {
           width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
           animation: pulse 2s ease-in-out infinite;
         }
-        .h-nav-right { display: flex; align-items: center; gap: 14px; }
         .h-back, .h-theme-btn {
           font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
           border: 1px solid var(--border2); padding: 8px 16px; background: none;
@@ -399,7 +396,6 @@ export default function HistoryPage() {
         /* ── RESPONSIVE ── */
         @media (max-width: 1160px) { .h-rail { display: none; } }
         @media (max-width: 860px) {
-          .h-nav { padding: 0 20px; }
           .h-content { padding: 0 20px; }
           .h-footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
           .h-stats { grid-template-columns: repeat(2, 1fr); }
@@ -421,7 +417,6 @@ export default function HistoryPage() {
           .h-back span:last-child { display: none; }
         }
         @media (hover: none) and (pointer: coarse) {
-          .h-nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg); }
         }
 
         ::selection { background: var(--accent); color: #fff; }

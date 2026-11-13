@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import MagneticButton from "./components/MagneticButton";
 import DevMegaAd from "./components/DevMegaAd";
@@ -181,10 +181,6 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  const springX = useSpring(cursorX, { stiffness: 750, damping: 38 });
-  const springY = useSpring(cursorY, { stiffness: 750, damping: 38 });
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll();
   const heroOpacityRaw = useTransform(scrollYProgress, [0, 0.16], [1, 0]);
@@ -199,13 +195,6 @@ export default function Home() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
-  useEffect(() => {
-    if (isMobile) return;
-    const move = (e: MouseEvent) => { cursorX.set(e.clientX); cursorY.set(e.clientY); };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
-  }, [cursorX, cursorY, isMobile]);
 
   useEffect(() => {
     const update = () => {
@@ -254,7 +243,6 @@ export default function Home() {
 
   return (
     <div className="root">
-      <motion.div className="cursor" style={{ x: springX, y: springY }} />
       <div className="scroll-bar" style={isMobile ? undefined : { width: `${scrollPct * 100}%` }} />
 
       {/* FIXED SIDE-RAIL */}
