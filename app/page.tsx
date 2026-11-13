@@ -12,6 +12,7 @@ import { GitHubLogo, TelegramLogo } from "./components/icons/brand";
 import LiquidGlass from "./components/LiquidGlass";
 import HeroHeadline from "./components/hero/HeroHeadline";
 import StartNowButton from "./components/hero/StartNowButton";
+import StartProjectButton from "./components/hero/StartProjectButton";
 import StackLoop from "./components/StackLoop";
 import Reveal from "./components/Reveal";
 import Spotlight from "./components/Spotlight";
@@ -272,7 +273,7 @@ export default function Home() {
             {t("Two engineers from Cairo building ")}<strong>{t("high-performance web apps")}</strong>{t(", custom Android ROMs, and production-grade AI systems for clients across the Middle East and beyond.")}
           </motion.p>
           <motion.div className="hero-cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}>
-            <MagneticButton href="#contact" className="btn-solid"><span>{t("Start a Project")}</span><ArrowRightIcon size={16} className="icon-mirror" /></MagneticButton>
+            <StartProjectButton />
             <Link href="/works" className="btn-line"><span>{t("Our Works")}</span></Link>
           </motion.div>
           <motion.div className="hero-promo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.45 }}>

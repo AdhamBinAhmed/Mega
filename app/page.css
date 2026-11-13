@@ -100,7 +100,27 @@ section[id] { scroll-margin-top: 80px; }
 
 /* TechText canvas lines: the component resolves ink from the wrapper's
    computed `color`, so the brand tokens live here (never inside the canvas). */
+/* TechText centres each line's INK box inside its canvas, so a line with a
+   descender ("We Ship.") and one without ("Fast.") sit at different heights.
+   The shared negative margin restores the 0.88 line-height rhythm; the accent
+   line gets an extra pull to cancel its taller top padding. */
 .hero-tt { display: block; height: 1.4em; margin-block: -0.26em; }
+.hero-tt--accent { margin-block-start: -0.56em; }
+
+/* Arabic keeps real text (TechText would break letter joining) but gets the
+   same outline -> ink reveal, animated on the whole run so shaping survives. */
+.hero-ar {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ink-soft);
+  animation: heroInk 0.9s var(--ease-out) forwards;
+}
+.hero-ar--accent { animation-name: heroInkAccent; animation-delay: 0.14s; }
+@keyframes heroInk {
+  to { color: var(--ink); -webkit-text-stroke-color: transparent; }
+}
+@keyframes heroInkAccent {
+  to { color: var(--accent); -webkit-text-stroke-color: transparent; }
+}
 .hero-tt--ink { color: var(--ink); }
 .hero-tt--accent { color: var(--accent); }
 /* The canvas draws solid letters — the serif-italic treatment of the CSS
@@ -128,6 +148,16 @@ section[id] { scroll-margin-top: 80px; }
 }
 .btn-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 25%, transparent); }
 .btn-solid > * { position: relative; z-index: 1; }
+
+/* Primary CTA as a SpecularButton: identical metrics to .btn-solid, so the
+   only visual change is the travelling specular edge the shader adds. */
+.btn-specular {
+  padding: 14px 28px;
+  font-family: var(--font-ed); font-weight: 600; font-size: 0.88rem; letter-spacing: 0.02em;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.btn-specular:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 25%, transparent); }
+.btn-specular svg { vertical-align: -0.15em; }
 
 .btn-line {
   display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px;
@@ -613,7 +643,17 @@ section[id] { scroll-margin-top: 80px; }
   .faq-q { padding: 22px 0; }
   .contact-card { padding: 24px 16px; font-size: 0.72rem; overflow-x: auto; }
   .section { padding: 64px 0; }
-  .btn-solid, .btn-line { flex: 1; justify-content: center; }
+  .btn-solid, /* Primary CTA as a SpecularButton: identical metrics to .btn-solid, so the
+   only visual change is the travelling specular edge the shader adds. */
+.btn-specular {
+  padding: 14px 28px;
+  font-family: var(--font-ed); font-weight: 600; font-size: 0.88rem; letter-spacing: 0.02em;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.btn-specular:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 25%, transparent); }
+.btn-specular svg { vertical-align: -0.15em; }
+
+.btn-line { flex: 1; justify-content: center; }
   .hero-cta { width: 100%; }
 }
 

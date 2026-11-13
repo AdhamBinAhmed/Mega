@@ -20,8 +20,9 @@ const wrapper = {
  * Hero headline (5B.2.3).
  *  EN: lines 1–2 are TechText canvases (same font/weight/tracking/colors as the
  *      CSS headline); line 3 keeps the CSS outline treatment TechText can't draw.
- *  AR: all three lines render as the original spans — TechText splits text per
- *      character, which breaks Arabic letter joining.
+ *  AR: all three lines stay real text (TechText splits per character, which
+ *      breaks Arabic letter joining) and get an equivalent CSS outline→ink
+ *      reveal that animates the whole run, so shaping is preserved.
  * The real headline text always exists for SEO/screen readers in an sr-only span.
  * Each canvas wrapper is aria-hidden, which also removes TechText's internal
  * role="img"/aria-label from the a11y tree (no duplicate headline announced),
@@ -97,8 +98,10 @@ export default function HeroHeadline() {
         </>
       ) : (
         <>
-          <motion.span variants={line} aria-hidden="true">{t("We Ship.")}</motion.span>
-          <motion.span variants={line} className="accent" aria-hidden="true">{t("Fast.")}</motion.span>
+          {/* Arabic: same entrance + outline→ink reveal, but the text stays a
+              single shaped run so letters keep joining. */}
+          <motion.span variants={line} className="hero-ar" aria-hidden="true">{t("We Ship.")}</motion.span>
+          <motion.span variants={line} className="hero-ar hero-ar--accent" aria-hidden="true">{t("Fast.")}</motion.span>
         </>
       )}
 
