@@ -18,9 +18,20 @@ export default function ChromeExtras() {
   const pathname = usePathname();
   const [idle, setIdle] = useState(false);
   const [onAppHost, setOnAppHost] = useState(false);
+  const [phone, setPhone] = useState(false);
 
   useEffect(() => {
     setOnAppHost(!isSubdomainHost(window.location.hostname));
+  }, []);
+
+  // The orb is desktop-only decoration: on phones it costs a WebGL context
+  // and competes with the dock for the same corner.
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setPhone(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   useEffect(() => {
@@ -43,7 +54,7 @@ export default function ChromeExtras() {
   return (
     <>
       {BADGE_SEGMENTS.has(seg) && <BackgroundBadge />}
-      {idle && ORB_SEGMENTS.has(seg) && <SwimmingGlass />}
+      {idle && !phone && ORB_SEGMENTS.has(seg) && <SwimmingGlass />}
     </>
   );
 }

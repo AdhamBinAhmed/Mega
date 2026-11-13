@@ -49,6 +49,7 @@ const AR: Record<string, string> = {
   "Theme: system": "المظهر: تلقائي",
   "Skip to content": "تخطَّ إلى المحتوى",
   "History": "التاريخ",
+  "Selected projects": "مشاريع مختارة",
   "Login terminated for 20 minutes for security reasons.": "تم إيقاف تسجيل الدخول 20 دقيقة لأسباب أمنية.",
   "Unable to verify login availability. Please try again shortly.": "تعذّر التحقق من إمكانية تسجيل الدخول. يُرجى المحاولة بعد قليل.",
 

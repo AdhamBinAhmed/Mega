@@ -610,6 +610,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
           aria-label={menuLabel}
         >
           <div className="sm-panel-inner flex-1 flex flex-col gap-5">
+            <button type="button" className="sm-close" onClick={closeMenu} aria-label={closeLabel} title={closeLabel}>
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
             <ul
               className="sm-panel-list list-none m-0 p-0 flex flex-col gap-2"
               role="list"
@@ -697,6 +702,15 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
 .sm-scope .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; transform: translateX(0); }
 .sm-scope .sm-panel-inner { flex: 1; display: flex; flex-direction: column; gap: 1.25rem; }
+.sm-scope .sm-close {
+  position: absolute; top: 1.1em; inset-inline-end: 1.2em; z-index: 3;
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--rule-2); border-radius: 999px;
+  color: var(--ink); cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.sm-scope .sm-close:hover { border-color: var(--sm-accent, var(--accent)); color: var(--sm-accent, var(--accent)); }
+.sm-scope .sm-close:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .sm-scope .sm-extra { display: flex; align-items: center; gap: 10px; padding-top: 1rem; border-top: 1px solid var(--rule); }
 .sm-scope .sm-socials { margin-top: auto; padding-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .sm-scope .sm-socials-title { margin: 0; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--sm-accent, var(--accent)); }

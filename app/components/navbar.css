@@ -92,10 +92,14 @@ html.theming .mnav-bar { backdrop-filter: none !important; -webkit-backdrop-filt
   flex: 1; background: transparent; border: none; outline: none; color: var(--ink);
   font-family: var(--mnav-font); font-size: 1rem; font-weight: 500;
 }
-.mnav-cmd-esc {
-  font-family: var(--mnav-mono); font-size: 0.56rem; color: var(--ink-soft);
-  border: 1px solid var(--rule-2); border-radius: 5px; padding: 3px 8px;
+.mnav-cmd-close {
+  flex: none; width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--rule-2); border-radius: 999px;
+  color: var(--ink-soft); cursor: pointer;
+  transition: border-color var(--dur-base), color var(--dur-base);
 }
+.mnav-cmd-close:hover { border-color: var(--accent); color: var(--accent); }
 /* Group headings sit on modal glass: ink-mute is 3.5:1 (dark) / 2.5:1 (light)
    against the worst-case pane, ink-soft is 7.9:1 / 5.2:1. */
 .mnav-cmd-label {

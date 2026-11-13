@@ -13,6 +13,7 @@ import {
   UserCircleIcon,
   Widget2Icon,
   Logout2Icon,
+  CloseCircleIcon,
 } from "@solar-icons/react/linear";
 import { GitHubLogo } from "../icons/brand";
 import LiquidGlass from "../LiquidGlass";
@@ -200,7 +201,15 @@ export default function CommandPalette({
                   placeholder={t("Navigate or run a command...")}
                   className="mnav-cmd-input"
                 />
-                <span className="mnav-cmd-esc" aria-hidden="true">{t("ESC")}</span>
+                <button
+                  type="button"
+                  className="mnav-cmd-close"
+                  onClick={onClose}
+                  aria-label={t("Close")}
+                  title={t("Close")}
+                >
+                  <CloseCircleIcon size={20} />
+                </button>
               </div>
               <div className="mnav-cmd-body" ref={listRef} role="listbox" id="mnav-cmd-listbox" aria-label={t("Sections")}>
                 {matches.length === 0 && (

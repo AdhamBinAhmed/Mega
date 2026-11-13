@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Reveal from "../components/Reveal";
 import Spotlight from "../components/Spotlight";
+import CardSwap, { Card } from "../components/reactbits/CardSwap";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useLang } from "../lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
@@ -182,6 +183,31 @@ const stats = [
   { k: "100%", v: "Shipped to Production" },
   { k: "847+", v: "Days Max Uptime" },
 ];
+
+/** Stable DOM id per project so the card stack can scroll to its section. */
+const slugify = (title: string) => "work-" + title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+/** Desktop values are the SSR default so the markup hydrates identically. */
+function useStackSize() {
+  const [size, setSize] = useState({ width: 460, height: 340, visibleCards: 4, parallax: 0.4, hoverSpread: 0.1 });
+  useEffect(() => {
+    const phone = window.matchMedia("(max-width: 767px)");
+    const tablet = window.matchMedia("(min-width: 768px) and (max-width: 1023px)");
+    const update = () => {
+      if (phone.matches) setSize({ width: 300, height: 240, visibleCards: 3, parallax: 0, hoverSpread: 0 });
+      else if (tablet.matches) setSize({ width: 400, height: 300, visibleCards: 4, parallax: 0.4, hoverSpread: 0.1 });
+      else setSize({ width: 460, height: 340, visibleCards: 4, parallax: 0.4, hoverSpread: 0.1 });
+    };
+    update();
+    phone.addEventListener("change", update);
+    tablet.addEventListener("change", update);
+    return () => {
+      phone.removeEventListener("change", update);
+      tablet.removeEventListener("change", update);
+    };
+  }, []);
+  return size;
+}
 
 function WindowVisual({ work }: { work: Work }) {
   const [failed, setFailed] = useState(false);
