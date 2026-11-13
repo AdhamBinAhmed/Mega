@@ -44,6 +44,11 @@ export interface StaggeredMenuProps {
   closeLabel?: string;
   socialsLabel?: string;
   extra?: React.ReactNode;
+  /** Controlled mode: drive open state from outside (e.g. a dock button). */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Hide the component's own logo+toggle header when another bar owns it. */
+  hideHeader?: boolean;
   onMenuOpen?: () => void;
   onMenuClose?: () => void;
 }
@@ -70,11 +75,22 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   closeLabel = 'Close',
   socialsLabel = 'Socials',
   extra,
+  open: controlledOpen,
+  onOpenChange,
+  hideHeader = false,
   onMenuOpen,
   onMenuClose
 }: StaggeredMenuProps) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
   const openRef = useRef(false);
+  const controlled = controlledOpen !== undefined;
+  const setOpen = useCallback(
+    (next: boolean) => {
+      setOpenState(next);
+      onOpenChange?.(next);
+    },
+    [onOpenChange]
+  );
 
   const panelRef = useRef<HTMLElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
@@ -394,6 +410,23 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     }
   }, [playClose, animateIcon, animateColor, animateText, onMenuClose]);
 
+  // Controlled mode: run the same open/close choreography the toggle would.
+  React.useEffect(() => {
+    if (!controlled || controlledOpen === openRef.current) return;
+    openRef.current = controlledOpen;
+    setOpenState(controlledOpen);
+    if (controlledOpen) {
+      onMenuOpen?.();
+      playOpen();
+    } else {
+      onMenuClose?.();
+      playClose();
+    }
+    animateIcon(controlledOpen);
+    animateColor(controlledOpen);
+    animateText(controlledOpen);
+  }, [controlled, controlledOpen, playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
+
   React.useEffect(() => {
     if (!closeOnClickAway || !open) return;
 
@@ -514,6 +547,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
         <header
           className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-between p-[1.1em_1.2em] bg-transparent pointer-events-none z-20"
+          style={hideHeader ? { display: 'none' } : undefined}
         >
           <div className="sm-logo flex items-center select-none pointer-events-auto">
             <Link href="/" aria-label="MEGA Devs — home" onClick={closeMenu}>

@@ -7,16 +7,18 @@ import LangToggle from "./LangToggle";
 import { useLang } from "../../lib/i18n";
 
 /**
- * Phone navigation (< 768px) — StaggeredMenu replaces the old slide-in drawer.
- * The menu's own fixed header carries the logo + Menu/Close toggle, so the
- * desktop pill is hidden at this breakpoint (navbar.css).
+ * Phone navigation (< 768px) — the StaggeredMenu panel, opened from the dock.
+ * The component's own logo+toggle header is hidden: the dock is the only bar
+ * on phones, so the menu is driven in controlled mode.
  */
 export default function MobileMenu({
   signedIn,
-  onFirstOpen,
+  open,
+  onOpenChange,
 }: {
   signedIn: boolean | null;
-  onFirstOpen: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   const { t, dir } = useLang();
   const [isPhone, setIsPhone] = useState(false);
@@ -53,6 +55,9 @@ export default function MobileMenu({
   return (
     <StaggeredMenu
       isFixed
+      hideHeader
+      open={open}
+      onOpenChange={onOpenChange}
       position={dir === "rtl" ? "left" : "right"}
       colors={["var(--panel-2)", "var(--accent)"]}
       accentColor="var(--accent)"
@@ -73,7 +78,6 @@ export default function MobileMenu({
           <LangToggle className="mnav-icon mnav-lang" />
         </>
       }
-      onMenuOpen={onFirstOpen}
     />
   );
 }

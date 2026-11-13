@@ -23,7 +23,7 @@ export default function StartNowButton() {
         size="md"
         radius={999}
         intensity={1}
-        idleIntensity={0.35}
+        idleIntensity={0.5}
         shineSize={10}
         shineFade={34}
         thickness={1.2}
@@ -32,11 +32,11 @@ export default function StartNowButton() {
         proximity={220}
         blur={0}
         /* Resolved hex only — the shader converts colors through canvas fillStyle. */
-        lineColor={brand.accent}
-        baseColor={brand.rule2}
-        textColor={brand.ink}
+        lineColor={brand.ink}
+        baseColor={brand.accent}
+        textColor="#ffffff"
         tint={brand.accent}
-        tintOpacity={0.08}
+        tintOpacity={1}
         className="promo-specular"
       >
         {t("Start Now")}

@@ -7,6 +7,7 @@ import { CommandIcon } from "@solar-icons/react/linear";
 import LiquidGlass from "../LiquidGlass";
 import CommandPalette from "./CommandPalette";
 import MobileMenu from "./MobileMenu";
+import MobileDock from "./MobileDock";
 import ThemeToggle from "./ThemeToggle";
 import LangToggle from "./LangToggle";
 import Toast from "./Toast";
@@ -23,6 +24,8 @@ export default function Navbar() {
   const { t } = useLang();
   const [cmdOpen, setCmdOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isPhone, setIsPhone] = useState(false);
   // Firebase loads only after the palette or menu is first used.
   const [authWanted, setAuthWanted] = useState(false);
   const { signedIn } = useLazyAuth(authWanted);
@@ -32,9 +35,18 @@ export default function Navbar() {
     setIsApple(/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent));
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsPhone(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   // Close overlays on route change.
   useEffect(() => {
     setCmdOpen(false);
+    setMenuOpen(false);
   }, [pathname]);
 
   // ⌘K / Ctrl+K / "/" open the palette; Esc closes (palette traps its own keys).
@@ -121,8 +133,22 @@ export default function Navbar() {
         </div>
       </LiquidGlass>
 
-      {/* ── PHONE MENU (StaggeredMenu, <768px) ── */}
-      <MobileMenu signedIn={signedIn} onFirstOpen={() => setAuthWanted(true)} />
+      {/* ── PHONE DOCK + MENU (<768px) ── */}
+      {isPhone && (
+        <>
+          <MobileDock
+            onOpenPalette={() => {
+              setAuthWanted(true);
+              setCmdOpen(true);
+            }}
+            onOpenMenu={() => {
+              setAuthWanted(true);
+              setMenuOpen(true);
+            }}
+          />
+          <MobileMenu signedIn={signedIn} open={menuOpen} onOpenChange={setMenuOpen} />
+        </>
+      )}
 
       {/* ── COMMAND PALETTE ── */}
       <CommandPalette

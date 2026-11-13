@@ -66,7 +66,8 @@ export default function HeroHeadline() {
               draggable
               guides={false}
               sweep
-              labels
+              labels={false}
+              selection={false}
             />
           </motion.span>
           <motion.span variants={line} className="hero-tt hero-tt--accent" aria-hidden="true">
@@ -89,7 +90,8 @@ export default function HeroHeadline() {
               draggable
               guides={false}
               sweep
-              labels
+              labels={false}
+              selection={false}
             />
           </motion.span>
         </>
