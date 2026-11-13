@@ -126,26 +126,29 @@ html.theming .mnav-bar { backdrop-filter: none !important; -webkit-backdrop-filt
 
 /* ── PHONE DOCK (<768px) ── */
 .mdock {
-  position: fixed; z-index: var(--z-nav);
+  /* Above the menu panel (z-menu) so the close control is always reachable,
+     still below the command palette. */
+  position: fixed; z-index: calc(var(--z-menu) + 1);
   left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  height: 58px; padding: 0 14px;
+  height: 58px; padding: 0 10px;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
-.mdock-side { display: flex; align-items: center; gap: 4px; flex: 1; }
+.mdock-side { display: flex; align-items: center; gap: 2px; flex: 1 1 0; min-width: 0; }
 .mdock-side:last-child { justify-content: flex-end; }
 
 .mdock-btn {
-  height: 44px; min-width: 44px; display: inline-flex;
+  height: 44px; min-width: 40px; display: inline-flex;
   align-items: center; justify-content: center;
   background: transparent; border: none; border-radius: var(--r-sm);
   color: var(--ink-soft); cursor: pointer;
   transition: color var(--dur-base) var(--ease-out);
 }
 .mdock-btn:active { color: var(--accent); }
+.mdock-btn[aria-expanded="true"] { color: var(--accent); }
 
 .mdock-link {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px;
-  font-family: var(--mnav-font); font-size: 0.72rem; font-weight: 500;
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px;
+  font-family: var(--mnav-font); font-size: 0.7rem; font-weight: 500;
   letter-spacing: 0.04em; color: var(--ink-soft); text-decoration: none;
   white-space: nowrap;
 }

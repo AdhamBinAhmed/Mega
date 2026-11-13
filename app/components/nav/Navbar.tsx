@@ -141,9 +141,10 @@ export default function Navbar() {
               setAuthWanted(true);
               setCmdOpen(true);
             }}
-            onOpenMenu={() => {
+            menuOpen={menuOpen}
+            onToggleMenu={(next) => {
               setAuthWanted(true);
-              setMenuOpen(true);
+              setMenuOpen(next);
             }}
           />
           <MobileMenu signedIn={signedIn} open={menuOpen} onOpenChange={setMenuOpen} />

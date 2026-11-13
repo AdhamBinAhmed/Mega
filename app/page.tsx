@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import MagneticButton from "./components/MagneticButton";
 import DevMegaAd from "./components/DevMegaAd";
 import { useLang } from "./lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";

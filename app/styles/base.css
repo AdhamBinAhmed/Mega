@@ -66,6 +66,19 @@
 .svc-arrow svg, .contact-link-arrow svg, .faq-icon svg, .dev-link svg,
 .devmega-cta svg, .btn-solid svg, .btn-line svg, .promo-link svg { vertical-align: -0.15em; }
 
+/* ── PHONE: no top bar ──
+   The chrome moved to a bottom dock, so the top clearance every page kept for
+   the old fixed navbar becomes dead space. Anchor offsets shrink to match. */
+@media (max-width: 767px) {
+  .hero { padding-top: 24px !important; }
+  .w-hero { padding-top: 24px !important; }
+  .pal-hero { padding-top: 24px !important; }
+  .h-hero { padding-top: 24px !important; }
+  .login-root { padding-top: 32px !important; }
+  .create-root .content { padding-top: 32px !important; }
+  section[id] { scroll-margin-top: 16px; }
+}
+
 /* ── CUSTOM CURSOR ──
    The native cursor is hidden ONLY while CustomCursor is mounted and has seen
    a pointer (it stamps data-cursor/data-cursor-on on <html>), so touch,
