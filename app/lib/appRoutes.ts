@@ -3,7 +3,7 @@
 
 // Top-level routes that belong to the MEGA Devs app itself and keep the navbar.
 // Anything else at the root (e.g. /adham) is a user profile/site and hides it.
-export const APP_SEGMENTS = new Set(["", "works", "history", "dashboard", "login", "palestine"]);
+export const APP_SEGMENTS = new Set(["", "works", "history", "dashboard", "login", "palestine", "new-era"]);
 
 export function isSubdomainHost(host: string): boolean {
   const h = host.split(":")[0];

@@ -12,6 +12,19 @@ export const RESERVED_SLUGS = new Set<string>([
   "history",
   "palestine",
   "site",
+  "new-era",
+  "newera",
+  // Real MEGA platforms on their own subdomains. A profile claiming one of
+  // these shadows the live platform if DNS ever falls through to this
+  // deployment's wildcard, and makes a convincing phishing target in the
+  // dashboard preview and in shared links.
+  "cyber",
+  "tools",
+  "roms",
+  "dev",
+  "kira",
+  "infokira",
+  "gitcv",
   // Infra / common
   "www",
   "api",
