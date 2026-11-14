@@ -50,6 +50,25 @@ const AR: Record<string, string> = {
   "Skip to content": "تخطَّ إلى المحتوى",
   "History": "التاريخ",
   "Selected projects": "مشاريع مختارة",
+
+  // ── Launch: "Introducing the new MEGA Devs" ──
+  "Introducing the new MEGA Devs": "نقدّم لكم MEGA Devs الجديدة",
+  "A New Era.": "عصر جديد.",
+  "A New MEGA.": "MEGA جديدة.",
+  "Same two engineers from Cairo. A faster, sharper studio — rebuilt from the ground up.":
+    "نفس المهندسَين من القاهرة. استوديو أسرع وأدق — أُعيد بناؤه من الصفر.",
+  "See what's new": "اكتشف الجديد",
+  "Skip": "تخطي",
+  "What's new": "ما الجديد",
+  "New design": "تصميم جديد",
+  "A glass interface with light and dark themes.": "واجهة زجاجية مع مظهر فاتح وداكن.",
+  "Command palette": "لوحة الأوامر",
+  "Jump anywhere with ⌘K — search, navigate, run actions.":
+    "تنقّل إلى أي مكان بـ ⌘K — بحث، تنقّل، وتنفيذ إجراءات.",
+  "Free portfolio builder": "منشئ بورتفوليو مجاني",
+  "Claim a subdomain and publish your profile.": "احجز نطاقك الفرعي وانشر ملفك.",
+  "Arabic & English": "العربية والإنجليزية",
+  "Every page, fully translated and right-to-left.": "كل صفحة، مترجمة بالكامل ومن اليمين لليسار.",
   "Login terminated for 20 minutes for security reasons.": "تم إيقاف تسجيل الدخول 20 دقيقة لأسباب أمنية.",
   "Unable to verify login availability. Please try again shortly.": "تعذّر التحقق من إمكانية تسجيل الدخول. يُرجى المحاولة بعد قليل.",
 

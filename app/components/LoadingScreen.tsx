@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { isFirstEverVisit } from "../lib/firstVisit";
 
 const SESSION_KEY = "mega-loaded";
 // Hard ceiling: the intro may never hold the page hostage (perf budget §9).
@@ -13,12 +14,14 @@ export default function LoadingScreen() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // First visit per session only.
+    // First visit per session only. The launch intro owns the first-ever
+    // visit, so the loader stands down then (shared, order-independent flag).
     let seen = false;
     try {
       seen = sessionStorage.getItem(SESSION_KEY) === "1";
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {}
+    if (isFirstEverVisit()) seen = true;
     if (seen) {
       setSkipped(true);
       setIsLoading(false);

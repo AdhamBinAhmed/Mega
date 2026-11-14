@@ -6,6 +6,12 @@ import { usePathname } from "next/navigation";
 import BackgroundBadge from "./BackgroundBadge";
 import { BADGE_SEGMENTS, ORB_SEGMENTS, isSubdomainHost } from "../lib/appRoutes";
 
+/**
+ * Paused on request. The orb and all of its code stay in the tree —
+ * flip this to `true` to bring it back exactly as it was.
+ */
+const ORB_ENABLED = false;
+
 // WebGL orb: client-only, loaded after the page is idle (never on the critical path).
 const SwimmingGlass = dynamic(() => import("./SwimmingGlass"), { ssr: false });
 
@@ -54,7 +60,7 @@ export default function ChromeExtras() {
   return (
     <>
       {BADGE_SEGMENTS.has(seg) && <BackgroundBadge />}
-      {idle && !phone && ORB_SEGMENTS.has(seg) && <SwimmingGlass />}
+      {ORB_ENABLED && idle && !phone && ORB_SEGMENTS.has(seg) && <SwimmingGlass />}
     </>
   );
 }

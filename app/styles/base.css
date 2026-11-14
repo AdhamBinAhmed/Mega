@@ -158,3 +158,121 @@ html.theming .noise { display: none; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAUNCH — "Introducing the new MEGA Devs"
+   Appears in exactly three places: the first-visit intro, the hero pill and
+   the #new-era section. Brand tokens only; no new colors or fonts.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Shared pulse dot (same rhythm as the navbar logo dot). */
+.launch-dot {
+  width: 6px; height: 6px; flex: none; border-radius: 50%;
+  background: var(--accent);
+  animation: launch-pulse 2.5s ease-in-out infinite;
+}
+@keyframes launch-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+/* The launch line: "A New Era." / "A New MEGA." */
+.launch-line { display: block; }
+.launch-line em {
+  font-family: var(--font-accent);
+  font-style: italic; font-weight: 400;
+  color: var(--accent);
+  text-transform: none;
+}
+
+/* ── 1. First-visit intro ── */
+.launch-intro {
+  position: fixed; inset: 0; z-index: 99998;
+  background: var(--paper);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+.launch-intro-mesh { opacity: 1; }
+.launch-intro-body {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 22px;
+  text-align: center; max-width: 900px;
+}
+.launch-intro-logo { width: 72px; height: auto; border-radius: 14px; display: block; }
+.launch-intro-kicker {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-mute);
+}
+.launch-intro-line {
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: clamp(2.2rem, 7vw, 4.6rem); line-height: 1.02;
+  letter-spacing: -0.04em; color: var(--ink);
+}
+/* A single red sweep under MEGA once the line has risen. */
+.launch-line-sweep .launch-line:last-child em {
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  animation: launch-underline 0.55s var(--ease-out) 1.45s forwards;
+}
+[dir="rtl"] .launch-line-sweep .launch-line:last-child em { background-position: 100% 100%; }
+@keyframes launch-underline { to { background-size: 100% 2px; } }
+
+.launch-skip {
+  position: absolute; z-index: 2;
+  inset-block-end: 24px; inset-inline-end: 24px;
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 18px;
+  border: none; cursor: pointer;
+  font-family: var(--font-mono); font-size: 0.68rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft);
+}
+.launch-skip:hover { color: var(--accent); }
+
+/* ── 2. Hero pill ── */
+.launch-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; padding: 9px 16px;
+  border: none; cursor: pointer;
+  font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+  transition: color var(--dur-base) var(--ease-out);
+}
+.launch-pill:hover { color: var(--ink); }
+.launch-pill svg { vertical-align: -0.15em; }
+
+/* ── 3. #new-era section ── */
+.new-era-title { display: block; }
+.new-era-dek {
+  margin-top: 14px; max-width: 52ch;
+  font-size: clamp(0.95rem, 1.3vw, 1.08rem); line-height: 1.65; color: var(--ink-soft);
+}
+.new-era-bento {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
+}
+.new-era-tile {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 26px 22px; min-height: 190px;
+  text-decoration: none; color: inherit;
+}
+.new-era-tile-icon { color: var(--accent); line-height: 0; }
+.new-era-tile-title {
+  font-family: var(--font-ui); font-weight: 600; font-size: 1.02rem;
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.new-era-tile-body { font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); }
+.new-era-tile.is-link { transition: transform var(--dur-base) var(--ease-out); }
+.new-era-tile.is-link:hover { transform: translateY(-3px); }
+.new-era-cta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
+
+@media (max-width: 1023px) {
+  .new-era-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .new-era-bento { grid-template-columns: 1fr; }
+  .new-era-tile { min-height: 0; padding: 22px 18px; }
+  .launch-pill { font-size: 10px; letter-spacing: 0.08em; padding: 8px 14px; }
+  .launch-skip { inset-block-end: 16px; inset-inline-end: 16px; }
+  .new-era-cta > * { flex: 1 1 100%; }
+}

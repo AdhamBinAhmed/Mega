@@ -7,6 +7,7 @@ import MotionProvider from "./components/MotionProvider";
 import SkipLink from "./components/SkipLink";
 import ChromeExtras from "./components/ChromeExtras";
 import CustomCursor from "./components/CustomCursor";
+import LaunchIntro from "./components/launch/LaunchIntro";
 import { RevealRefresher } from "./components/Reveal";
 import { LanguageProvider } from "./lib/i18n";
 
@@ -48,8 +49,9 @@ export const metadata: Metadata = {
   keywords: ["web development", "Android ROM", "Next.js", "React", "AI", "Cairo", "Egypt"],
   authors: [{ name: "MEGA Devs" }],
   openGraph: {
-    title: "MEGA Devs — Engineering Studio",
-    description: "Two-person dev shop. High-performance web apps, Android ROMs, backends, and AI systems.",
+    title: "Introducing the new MEGA Devs — A New Era. A New MEGA.",
+    description:
+      "The studio has been rebuilt: a glass interface with light and dark themes, a ⌘K command palette, and a free portfolio builder — in Arabic and English.",
     url: "https://www.megadevs.site",
     siteName: "MEGA Devs",
     locale: "en_US",
@@ -57,8 +59,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MEGA Devs — Engineering Studio",
-    description: "Two-person dev shop. High-performance web apps, Android ROMs, backends, and AI systems.",
+    title: "Introducing the new MEGA Devs — A New Era. A New MEGA.",
+    description:
+      "The studio has been rebuilt: a glass interface with light and dark themes, a ⌘K command palette, and a free portfolio builder — in Arabic and English.",
   },
   robots: {
     index: true,
@@ -88,6 +91,7 @@ export default function RootLayout({
           <MotionProvider>
             <SkipLink />
             <LoadingScreen />
+            <LaunchIntro />
             <Navbar />
             <ChromeExtras />
             <CustomCursor />

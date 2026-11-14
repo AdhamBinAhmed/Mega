@@ -16,7 +16,15 @@ import { useBrandColors } from "../../lib/useBrandColors";
  * (never a <button> nested in an <a>). The 5px magnetic pull from
  * MagneticButton is reproduced on a wrapper so the feel is unchanged.
  */
-export default function StartProjectButton() {
+export default function StartProjectButton({
+  target = "contact",
+  label,
+}: {
+  /** id of the section to scroll to. */
+  target?: string;
+  /** Defaults to the hero CTA label. */
+  label?: string;
+} = {}) {
   const { t } = useLang();
   const brand = useBrandColors();
   const ref = useRef<HTMLDivElement>(null);
@@ -39,12 +47,12 @@ export default function StartProjectButton() {
     ref.current.style.transform = "translate(0, 0)";
   };
 
-  const goToContact = () => {
-    const target = document.getElementById("contact");
-    if (!target) return;
+  const goToSection = () => {
+    const el = document.getElementById(target);
+    if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-    history.replaceState(null, "", "#contact");
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    history.replaceState(null, "", `#${target}`);
   };
 
   return (
@@ -56,7 +64,7 @@ export default function StartProjectButton() {
       <div ref={ref} className="magnetic" onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
         <SpecularButton
           type="button"
-          onClick={goToContact}
+          onClick={goToSection}
           size="md"
           radius={10}
           /* Resolved hex only — the shader converts colors via canvas fillStyle. */
@@ -77,7 +85,7 @@ export default function StartProjectButton() {
           autoAnimate={false}
           className="btn-specular"
         >
-          {t("Start a Project")}
+          {label ?? t("Start a Project")}
           <ArrowRightIcon size={20} className="icon-mirror" />
         </SpecularButton>
       </div>

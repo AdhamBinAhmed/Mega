@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import DevMegaAd from "./components/DevMegaAd";
 import { useLang } from "./lib/i18n";
 import { ArrowRightIcon, ArrowRightUpIcon, AddCircleIcon } from "@solar-icons/react/linear";
 import { GitHubLogo, TelegramLogo } from "./components/icons/brand";
@@ -15,6 +14,8 @@ import StartProjectButton from "./components/hero/StartProjectButton";
 import StackLoop from "./components/StackLoop";
 import Reveal from "./components/Reveal";
 import Spotlight from "./components/Spotlight";
+import NewEraSection from "./components/launch/NewEraSection";
+import LaunchPill from "./components/launch/LaunchPill";
 import "./page.css";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -161,7 +162,6 @@ const faqs = [
 const nav = [
   { l: "Services", h: "#services" },
   { l: "Process", h: "#process" },
-  { l: "Tools", h: "#tools" },
   { l: "Works", h: "/works" },
   { l: "Our Story", h: "/history" },
   { l: "Stack", h: "#stack" },
@@ -232,8 +232,7 @@ export default function Home() {
   const sectionLabels: Record<string, string> = {
     services: "Services",
     process: "Process",
-    tools: "Tools",
-    works: "Works",
+      works: "Works",
     stack: "Stack",
     faq: "FAQ",
     developers: "Team",
@@ -265,6 +264,8 @@ export default function Home() {
           </div>
           <span className="meta">{t("Est. 2022")}</span>
         </div>
+
+        <LaunchPill />
 
         <HeroHeadline />
 
@@ -307,7 +308,8 @@ export default function Home() {
         ))}
       </Reveal>
 
-      <Reveal><DevMegaAd /></Reveal>
+      {/* ═══ LAUNCH ═══ (replaces the DevMega ad slot) */}
+      <NewEraSection />
 
 
       {/* ═══ SERVICES ═══ */}
