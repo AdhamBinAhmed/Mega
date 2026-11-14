@@ -32,13 +32,22 @@ export default function HeroHeadline() {
   const { t, lang, dir } = useLang();
   const brand = useBrandColors();
   const [canCanvas, setCanCanvas] = useState(false);
+  const [phone, setPhone] = useState(false);
 
   useEffect(() => {
     // Canvas text is an enhancement: only swap in after mount (never during SSR).
     setCanCanvas(true);
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setPhone(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
-  const useTech = canCanvas && lang !== "ar";
+  // Phones get the CSS outline→ink reveal instead: two full-width canvases
+  // with the autonomous lens sweep repaint continuously and are the single
+  // biggest frame cost on mid-range phones.
+  const useTech = canCanvas && lang !== "ar" && !phone;
 
   return (
     <motion.h1 className="hero-title" variants={wrapper} initial="hidden" animate="show">
@@ -50,7 +59,8 @@ export default function HeroHeadline() {
         <>
           <motion.span variants={line} className="hero-tt hero-tt--ink" aria-hidden="true">
             <TechText
-              text={t("We Ship.")}
+              /* .hero-title is uppercase; a canvas cannot inherit text-transform. */
+              text={t("We Ship.").toUpperCase()}
               color="currentColor"
               accentColor="currentColor"
               fontFamily=""
@@ -73,7 +83,7 @@ export default function HeroHeadline() {
           </motion.span>
           <motion.span variants={line} className="hero-tt hero-tt--accent" aria-hidden="true">
             <TechText
-              text={t("Fast.")}
+              text={t("Fast.").toUpperCase()}
               color="currentColor"
               /* Frame/specks must read against the red fill → use ink. */
               accentColor={brand.ink}
@@ -98,8 +108,8 @@ export default function HeroHeadline() {
         </>
       ) : (
         <>
-          {/* Arabic: same entrance + outline→ink reveal, but the text stays a
-              single shaped run so letters keep joining. */}
+          {/* Arabic + phones: same entrance + outline→ink reveal on real text
+              (keeps Arabic shaping; saves two live canvases on phones). */}
           <motion.span variants={line} className="hero-ar" aria-hidden="true">{t("We Ship.")}</motion.span>
           <motion.span variants={line} className="hero-ar hero-ar--accent" aria-hidden="true">{t("Fast.")}</motion.span>
         </>

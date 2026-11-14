@@ -71,7 +71,12 @@ function supportsRefraction(): boolean {
   const reduce =
     window.matchMedia('(prefers-reduced-transparency: reduce)').matches ||
     window.matchMedia('(prefers-contrast: more)').matches;
-  supportCache = Boolean(chromium && css && !reduce);
+  // Touch devices fall back to plain blur: building the displacement map is a
+  // per-pixel canvas pass, and re-filtering the backdrop each frame while the
+  // page scrolls is the single most expensive thing a glass surface can do on
+  // a phone GPU. The blur fallback is visually close and composites cheaply.
+  const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  supportCache = Boolean(chromium && css && !reduce && !coarse);
   return supportCache;
 }
 

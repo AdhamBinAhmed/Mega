@@ -33,7 +33,7 @@ export default function BackgroundBadge() {
       aria-hidden="true"
       style={{
         position: "fixed",
-        top: phone ? 20 : 96,
+        top: phone ? 128 : 96,
         insetInlineEnd: phone ? 10 : 24,
         zIndex: "var(--z-badge, 0)" as unknown as number,
         pointerEvents: "none",

@@ -171,12 +171,29 @@ const nav = [
 ];
 
 
+// Isolated so the 1-second tick re-renders this span only — previously the
+// clock state lived in Home and re-rendered the entire page every second.
+function LocalClock() {
+  const [now, setNow] = useState("");
+  useEffect(() => {
+    const update = () =>
+      setNow(
+        new Date().toLocaleString("en-GB", {
+          timeZone: "Africa/Cairo",
+          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
+        })
+      );
+    update();
+    const iv = setInterval(update, 1000);
+    return () => clearInterval(iv);
+  }, []);
+  return <>{now}</>;
+}
+
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
 export default function Home() {
   const { t } = useLang();
-  const [currentTime, setCurrentTime] = useState("");
-  const [scrollPct, setScrollPct] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -185,6 +202,8 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const heroOpacityRaw = useTransform(scrollYProgress, [0, 0.16], [1, 0]);
   const heroYRaw = useTransform(scrollYProgress, [0, 0.16], [0, -50]);
+  // On phones the hero is static, so the transforms are never applied — but
+  // feeding them keeps a scroll subscription alive for nothing.
   const heroOpacity = isMobile ? 1 : heroOpacityRaw;
   const heroY = isMobile ? 0 : heroYRaw;
 
@@ -195,25 +214,6 @@ export default function Home() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
-  useEffect(() => {
-    const update = () => {
-      setCurrentTime(
-        new Date().toLocaleString("en-GB", {
-          timeZone: "Africa/Cairo",
-          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
-        })
-      );
-    };
-    update();
-    const iv = setInterval(update, 1000);
-    return () => clearInterval(iv);
-  }, []);
-
-  useEffect(() => {
-    const unsub = scrollYProgress.on("change", (v) => setScrollPct(v));
-    return () => unsub();
-  }, [scrollYProgress]);
 
   useEffect(() => {
     const ids = nav.filter((n) => n.h.startsWith("#")).map((n) => n.h.slice(1));
@@ -243,7 +243,8 @@ export default function Home() {
 
   return (
     <div className="root">
-      <div className="scroll-bar" style={isMobile ? undefined : { width: `${scrollPct * 100}%` }} />
+      {/* Driven as a motion value: framer writes the transform directly, no re-render per frame. */}
+      <motion.div className="scroll-bar" style={{ scaleX: scrollYProgress }} />
 
       {/* FIXED SIDE-RAIL */}
       <div className="side-rail" aria-hidden="true">
@@ -283,7 +284,7 @@ export default function Home() {
 
         <motion.div className="hero-status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
           <div className="meta"><span className="status-live" />{t("Systems Nominal")}</div>
-          <div className="meta">{t("Cairo")} · {currentTime}</div>
+          <div className="meta">{t("Cairo")} · <LocalClock /></div>
         </motion.div>
       </motion.section>
 
@@ -563,7 +564,7 @@ export default function Home() {
             </div>
             <div className="colophon-col">
               <h4>{t("Studio")}</h4>
-              <span>{t("Cairo")} · {currentTime}</span>
+              <span>{t("Cairo")} · <LocalClock /></span>
               <span>{t("UTC+3")}</span>
               <span>{t("● Open to Work")}</span>
             </div>

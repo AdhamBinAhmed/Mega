@@ -14,19 +14,11 @@
 
 /* ── SCROLL BAR ── */
 .scroll-bar {
-  position: fixed; top: 0; left: 0; height: 2px;
+  position: fixed; top: 0; left: 0; height: 2px; width: 100%;
   background: var(--accent); z-index: 200; pointer-events: none;
-  transition: width 0.1s linear;
+  transform-origin: left; transform: scaleX(0);
 }
-@supports (animation-timeline: scroll()) {
-  @media (hover: none) and (pointer: coarse) {
-    .scroll-bar {
-      width: 100% !important; transform-origin: left; transform: scaleX(0);
-      animation: scroll-progress linear both; animation-timeline: scroll(root block); transition: none;
-    }
-    @keyframes scroll-progress { to { transform: scaleX(1); } }
-  }
-}
+[dir="rtl"] .scroll-bar { transform-origin: right; }
 
 /* ── BACKGROUND ── */
 /* Single subtle noise texture — real studios use one signature, not three stacked */

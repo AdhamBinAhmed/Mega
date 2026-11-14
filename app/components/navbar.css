@@ -186,4 +186,13 @@ html.theming .mnav-bar { backdrop-filter: none !important; -webkit-backdrop-filt
 @media (min-width: 768px) {
   .mdock { display: none; }
 }
+@media (max-width: 767px) {
+  /* A fixed refracting surface re-filters everything scrolling behind it each
+     frame; !important beats the component's inline url() filter. The dock
+     stays glassy via plain blur, which mobile GPUs composite cheaply. */
+  .mdock {
+    backdrop-filter: blur(14px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+  }
+}
 @media (prefers-reduced-motion: reduce) { .mega-nav *, .mega-nav *::before, .mega-nav *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
