@@ -13,6 +13,7 @@ import LangToggle from "./LangToggle";
 import Toast from "./Toast";
 import { useLang } from "../../lib/i18n";
 import { APP_SEGMENTS, essentials, isSubdomainHost } from "../../lib/appRoutes";
+import { NEW_ERA } from "../../new-era/content";
 import { useLazyAuth } from "../../lib/useLazyAuth";
 import { applyResolved, currentResolved } from "../../lib/theme";
 import "../navbar.css";
@@ -110,6 +111,9 @@ export default function Navbar() {
               ) : (
                 <Link key={n.l} href={n.h} className={`mnav-link${pathname === n.h ? " active" : ""}`}>
                   {t(n.l)}
+                  {n.h === "/new-era" && NEW_ERA.showNavBadge ? (
+                    <span className="mnav-badge" aria-hidden="true" />
+                  ) : null}
                 </Link>
               );
             })}

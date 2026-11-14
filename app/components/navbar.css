@@ -196,3 +196,11 @@ html.theming .mnav-bar { backdrop-filter: none !important; -webkit-backdrop-filt
   }
 }
 @media (prefers-reduced-motion: reduce) { .mega-nav *, .mega-nav *::before, .mega-nav *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+/* "New Era" badge — a small red dot next to the nav link while the launch is current. */
+.mnav-link { position: relative; }
+.mnav-badge {
+  position: absolute; top: -2px; inset-inline-end: -9px;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  animation: mnav-blink 2.5s ease-in-out infinite;
+}

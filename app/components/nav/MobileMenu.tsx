@@ -35,6 +35,7 @@ export default function MobileMenu({
 
   const items = [
     { label: t("Home"), ariaLabel: t("Home"), link: "/" },
+    { label: t("New Era"), ariaLabel: t("New Era"), link: "/new-era" },
     { label: t("Services"), ariaLabel: t("Services"), link: "/#services" },
     { label: t("Works"), ariaLabel: t("Works"), link: "/works" },
     { label: t("Our Story"), ariaLabel: t("Our Story"), link: "/history" },
@@ -48,7 +49,8 @@ export default function MobileMenu({
   const socials = [
     { label: "GitHub", link: "https://github.com/AdhamBinAhmed" },
     { label: "Telegram", link: "https://t.me/llxcd_EG" },
-    { label: "DevMega", link: "https://dev.megadevs.site" },
+    { label: "MEGA Tools", link: "https://tools.megadevs.site" },
+    { label: "MEGA Cyber", link: "https://cyber.megadevs.site" },
     { label: t("Email"), link: "mailto:megatrondevs@gmail.com" },
   ];
 

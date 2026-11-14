@@ -7,7 +7,7 @@ import MotionProvider from "./components/MotionProvider";
 import SkipLink from "./components/SkipLink";
 import ChromeExtras from "./components/ChromeExtras";
 import CustomCursor from "./components/CustomCursor";
-import LaunchIntro from "./components/launch/LaunchIntro";
+import IntroGate from "./components/new-era/IntroGate";
 import { RevealRefresher } from "./components/Reveal";
 import { LanguageProvider } from "./lib/i18n";
 
@@ -37,6 +37,22 @@ const dmSerif = DM_Serif_Display({
 
 // Applies the stored theme (light | dark | system) before first paint so there
 // is no flash. Must stay tiny and synchronous.
+// Decides before paint whether the New Era intro plays, so the homepage never
+// flashes first and the loader knows to stand down. Mirrors the theme script.
+const INTRO_SCRIPT = `(function(){var d=document.documentElement;var play=false;try{
+var u=new URL(location.href);
+var ok=location.pathname==="/"&&!u.hash&&!u.searchParams.has("nointro")
+  &&!navigator.webdriver
+  &&!/bot|crawl|spider|lighthouse|headless/i.test(navigator.userAgent)
+  &&!(window.matchMedia&&window.matchMedia("(prefers-reduced-data: reduce)").matches);
+if(ok){var nav=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];
+  if(nav&&nav.type==="back_forward")ok=false;}
+if(ok){var seen=null;try{seen=localStorage.getItem("mega:new-era:seen")}catch(e){
+  try{seen=sessionStorage.getItem("mega:new-era:seen")}catch(e2){}}
+  play=seen!=="1";}
+}catch(e){play=false}
+d.dataset.intro=play?"play":"skip";})()`;
+
 const THEME_SCRIPT = `(function(){try{var p=localStorage.getItem("theme");var t=p==="light"||p==="dark"?p:(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}})()`;
 
 export const metadata: Metadata = {
@@ -81,6 +97,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
       </head>
       <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cairo.variable} ${dmSerif.variable}`}>
         <noscript>
@@ -91,7 +108,7 @@ export default function RootLayout({
           <MotionProvider>
             <SkipLink />
             <LoadingScreen />
-            <LaunchIntro />
+            <IntroGate />
             <Navbar />
             <ChromeExtras />
             <CustomCursor />

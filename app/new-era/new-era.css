@@ -1,0 +1,161 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   NEW ERA — scoped page styles (.ne-*). Brand tokens only; no new colors
+   or fonts. Shares the chapter motif with the cinematic intro.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ne-root { position: relative; z-index: 2; }
+
+/* ── Hero ── */
+.ne-hero { position: relative; padding: 150px 0 80px; }
+.ne-hero-kicker { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+.ne-title {
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: clamp(3rem, 11vw, 9rem); line-height: 0.92; letter-spacing: -0.05em;
+  color: var(--ink); margin-bottom: 24px;
+}
+.ne-title em {
+  font-family: var(--font-accent); font-style: italic; font-weight: 400;
+  color: var(--accent); letter-spacing: -0.02em;
+}
+.ne-headline {
+  font-family: var(--font-ui); font-weight: 600;
+  font-size: clamp(1.3rem, 3vw, 2.1rem); letter-spacing: -0.03em;
+  color: var(--ink); margin-bottom: 14px;
+}
+.ne-dek { max-width: 54ch; font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.7; color: var(--ink-soft); }
+.ne-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+.ne-hero-cta .btn-line { cursor: pointer; }
+.ne-hero-rule {
+  display: flex; align-items: center; gap: 16px;
+  max-width: var(--maxw); margin: 64px auto 0; padding: 0 var(--gutter);
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--ink-mute);
+}
+.ne-hero-rule i { flex: 1; height: 1px; background: linear-gradient(90deg, var(--rule-2), var(--rule)); }
+
+/* ── Chapter rail ── */
+.ne-index {
+  position: fixed; inset-inline-start: 18px; top: 50%; transform: translateY(-50%);
+  z-index: var(--z-rail); display: none; flex-direction: column; gap: 14px;
+}
+.ne-index-item {
+  position: relative; display: flex; align-items: center; gap: 10px;
+  text-decoration: none; padding-inline-start: 10px;
+  border-inline-start: 1px solid var(--rule-2);
+  font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-mute);
+  transition: color var(--dur-base) var(--ease-out);
+}
+.ne-index-item.is-on { color: var(--ink); }
+.ne-index-fill {
+  position: absolute; inset-inline-start: -1px; top: 0; bottom: 0; width: 1px;
+  background: var(--accent);
+}
+.ne-index-label { max-width: 12ch; }
+@media (min-width: 1280px) { .ne-index { display: flex; } }
+
+/* ── Bento overview ── */
+.ne-bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ne-bento-item { text-decoration: none; color: inherit; display: block; }
+.ne-bento-item.is-cyber, .ne-bento-item.is-megaos { grid-column: span 2; }
+@media (max-width: 1023px) { .ne-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .ne-bento { grid-template-columns: 1fr; }
+  .ne-bento-item.is-cyber, .ne-bento-item.is-megaos { grid-column: auto; }
+}
+
+/* ── Chapters ── */
+.ne-chapter .sec-title { margin-top: 10px; }
+.ne-body { max-width: 56ch; margin-top: 16px; font-size: 0.98rem; line-height: 1.75; color: var(--ink-soft); }
+.ne-cta-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 30px; }
+.ne-split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+@media (max-width: 1023px) { .ne-split { grid-template-columns: 1fr; gap: 36px; } }
+
+/* Cyber: wireframe browser with a scan line (CSS only, no imagery). */
+.ne-scan {
+  border: 1px solid var(--rule-2); border-radius: 14px; overflow: hidden;
+  background: var(--panel);
+}
+.ne-scan-bar { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+.ne-scan-bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--rule-2); }
+.ne-scan-body { position: relative; padding: 24px; display: flex; flex-direction: column; gap: 12px; min-height: 220px; }
+.ne-scan-row { height: 10px; border-radius: 3px; background: var(--rule); }
+.ne-scan-row.short { width: 62%; }
+.ne-scan-line {
+  position: absolute; inset-inline: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: ne-scan 3.2s var(--ease-in-out) infinite;
+}
+@keyframes ne-scan { 0% { top: 0; opacity: 0; } 10%,90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+/* Tools */
+.ne-tools-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.ne-stat { display: flex; align-items: center; gap: 14px; }
+.ne-stat-n {
+  font-family: var(--font-ui); font-weight: 700; font-size: clamp(2.4rem, 6vw, 4rem);
+  letter-spacing: -0.05em; color: var(--accent); line-height: 1;
+}
+.ne-stat-l { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); line-height: 1.8; }
+.ne-tools-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 36px; }
+.ne-tool { display: flex; flex-direction: column; gap: 8px; padding: 18px 16px; }
+.ne-tool-icon { color: var(--accent); line-height: 0; }
+.ne-tool-name { font-family: var(--font-ui); font-weight: 600; font-size: 0.92rem; color: var(--ink); }
+.ne-tool-blurb { font-size: 0.76rem; line-height: 1.55; color: var(--ink-soft); }
+@media (max-width: 1023px) { .ne-tools-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .ne-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* MegaOS revival timeline */
+.ne-revival { display: flex; gap: 0; margin-top: 40px; flex-wrap: wrap; }
+.ne-revival-step {
+  position: relative; flex: 1; min-width: 160px;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 20px 0 0; border-top: 1px solid var(--rule);
+}
+.ne-revival-step.is-on { border-top-color: var(--accent); }
+.ne-revival-dot {
+  position: absolute; top: -4px; inset-inline-start: 0;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--rule-2);
+}
+.ne-revival-step.is-on .ne-revival-dot { background: var(--accent); }
+.ne-revival-when { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); }
+.ne-revival-what { font-family: var(--font-ui); font-weight: 600; font-size: 1rem; color: var(--ink); }
+.ne-revival-step.is-on .ne-revival-what { color: var(--accent); }
+.ne-count { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.ne-count b { color: var(--accent); font-size: 1.1rem; }
+
+/* Team / org */
+.ne-org { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 36px; }
+.ne-org-unit { display: flex; flex-direction: column; gap: 6px; padding: 20px 18px; }
+.ne-org-name { font-family: var(--font-ui); font-weight: 600; font-size: 1rem; color: var(--ink); }
+.ne-org-note { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); }
+@media (max-width: 1023px) { .ne-org { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .ne-org { grid-template-columns: 1fr; } }
+
+/* Vision */
+.ne-vision { text-align: center; }
+.ne-vision-title {
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: clamp(2.2rem, 7vw, 5rem); line-height: 1.02; letter-spacing: -0.045em; color: var(--ink);
+}
+.ne-vision-links { display: flex; justify-content: center; gap: 26px; flex-wrap: wrap; margin: 34px 0 10px; }
+.ne-vision-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-soft); text-decoration: none;
+  transition: color var(--dur-base) var(--ease-out);
+}
+.ne-vision-link:hover { color: var(--accent); }
+.ne-vision .ne-cta-row { justify-content: center; }
+
+/* Deep links must clear the fixed navbar. */
+.ne-root section[id], .ne-root [id="top"] { scroll-margin-top: 90px; }
+
+@media (max-width: 767px) {
+  .ne-hero { padding-top: 24px; }
+  .ne-index { display: none; }
+}
+
+/* Print: drop decoration, surface the URLs. */
+@media print {
+  .ne-index, .paper-glow, .ne-scan-line { display: none !important; }
+  .ne-vision-link::after, .ne-cta-row a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.7em; }
+}

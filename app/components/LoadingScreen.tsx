@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { isFirstEverVisit } from "../lib/firstVisit";
 
 const SESSION_KEY = "mega-loaded";
 // Hard ceiling: the intro may never hold the page hostage (perf budget §9).
@@ -21,7 +20,8 @@ export default function LoadingScreen() {
       seen = sessionStorage.getItem(SESSION_KEY) === "1";
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {}
-    if (isFirstEverVisit()) seen = true;
+    // The New Era intro owns this visit (decided pre-paint in layout.tsx).
+    if (document.documentElement.dataset.intro === "play") seen = true;
     if (seen) {
       setSkipped(true);
       setIsLoading(false);

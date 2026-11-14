@@ -14,11 +14,13 @@ import {
   Widget2Icon,
   Logout2Icon,
   CloseCircleIcon,
+  PlayCircleIcon,
 } from "@solar-icons/react/linear";
 import { GitHubLogo } from "../icons/brand";
 import LiquidGlass from "../LiquidGlass";
 import { useLang } from "../../lib/i18n";
 import { sections } from "../../lib/appRoutes";
+import { replayIntro } from "../../lib/newEraIntro";
 
 type Entry = {
   id: string;
@@ -69,6 +71,16 @@ export default function CommandPalette({
       { id: "act-top", group: "Actions", label: t("Scroll to Top"), icon: <ArrowUpIcon size={16} />, run: () => { window.scrollTo({ top: 0, behavior: "smooth" }); onClose(); } },
       { id: "act-gh", group: "Actions", label: t("Open GitHub"), icon: <GitHubLogo size={15} />, run: () => { window.open("https://github.com/AdhamBinAhmed", "_blank"); onClose(); } },
       { id: "act-ps", group: "Actions", label: t("Stand with Palestine"), icon: <HeartIcon size={16} />, run: () => go("/palestine") },
+      {
+        id: "act-intro",
+        group: "Actions",
+        label: t("Replay the introduction"),
+        icon: <PlayCircleIcon size={16} />,
+        run: () => {
+          onClose();
+          replayIntro();
+        },
+      },
     ];
     const account: Entry[] =
       signedIn === true

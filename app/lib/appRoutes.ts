@@ -18,7 +18,7 @@ export function isSubdomainHost(host: string): boolean {
 export const sections = [
   { l: "Services", h: "/#services" },
   { l: "Process", h: "/#process" },
-  { l: "DevMega", h: "https://dev.megadevs.site" },
+  { l: "New Era", h: "/new-era" },
   { l: "Works", h: "/works" },
   { l: "Our Story", h: "/history" },
   { l: "Stack", h: "/#stack" },
@@ -30,7 +30,7 @@ export const sections = [
 
 // Only the essentials sit on the desktop bar.
 export const essentials = [
-  { l: "DevMega", h: "https://dev.megadevs.site" },
+  { l: "New Era", h: "/new-era" },
   { l: "Works", h: "/works" },
   { l: "Our Story", h: "/history" },
   { l: "Contact", h: "/#contact" },
